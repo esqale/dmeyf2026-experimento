@@ -22,8 +22,8 @@ Estado: ✅ hecho · 🔄 en curso · 🟡 esperando una decisión del grupo · 
   - Optimiza `num_leaves`, `learning_rate`, `min_data_in_leaf`, `feature_fraction` y `bagging_fraction`, con `bagging_freq` = 1.
   - Valida 201908 con AUC (optimización y early stopping) y testea 201910 con ganancia.
   - Resultado: 281,6 M (R1).
-  - **A confirmar con Bolaños:** ¿para el test se reentrena con 201907–08 o se usa el modelo entrenado solo con 201903–06?
-- ✅ **Paso 7. Ruido por semilla (objetivo 2)** (`src/04_semillas.py`): 284,0 ± 3,3 M con 20 semillas (R2).
+  - El test usa el modelo entrenado en 201903–06, sin reentrenar, como dice el texto del baseline (D13).
+- 🔄 **Paso 7. Ruido por semilla (objetivo 2)** (`src/04_semillas.py`): se está corriendo de nuevo con el esquema del texto (D13). La versión con reentrenamiento dio 284,0 ± 3,3 M y queda como sensibilidad.
 
 ## Deflactación
 - ✅ **Paso 8. Índices y bibliografía** (`src/05_indices.py`, `datos_externos/FUENTES.md`).

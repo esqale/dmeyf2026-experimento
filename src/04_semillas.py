@@ -1,4 +1,5 @@
-"""Paso 7: ruido por semilla. Reentrena el modelo final (201903–201908) con K semillas y mide en 201910.
+"""Paso 7: ruido por semilla. Entrena el modelo (201903–201906, como el baseline) con K semillas y mide en 201910.
+--entrena-test 0308 reentrena sumando 201907–08: solo para el análisis de sensibilidad.
 
 Uso:
     python src/04_semillas.py --dataset datasets/fe_base --nombre baseline [--params reportes/baseline/resultado.json]
@@ -24,7 +25,7 @@ import pandas as pd
 from sklearn.metrics import roc_auc_score
 
 sys.path.insert(0, os.path.dirname(__file__))
-from comun import (ENTRENA_FINAL, FIJOS, TEST, cargar, curva_ganancia,  # noqa: E402
+from comun import (MESES_TEST, FIJOS, TEST, cargar, curva_ganancia,  # noqa: E402
                    ganancia_zona_plana, mejor_n, progreso)
 
 SEMILLA_MADRE = 102191
@@ -42,7 +43,7 @@ def main(a):
     probs = pd.read_parquet(archivo_probs) if os.path.exists(archivo_probs) else None
 
     t0 = time.time()
-    Xf, yf, _ = cargar(a.dataset, ENTRENA_FINAL)
+    Xf, yf, _ = cargar(a.dataset, MESES_TEST[a.entrena_test])
     dtr = lgb.Dataset(Xf, yf, params={"feature_pre_filter": False}, free_raw_data=False).construct()
     df_te = pd.read_parquet(os.path.join(a.dataset, f"{TEST}.parquet"), columns=["numero_de_cliente"])
     Xte, yte, b2te = cargar(a.dataset, [TEST])
@@ -88,4 +89,5 @@ if __name__ == "__main__":
     p.add_argument("--params", default="reportes/baseline/resultado.json")
     p.add_argument("--semillas", type=int, default=20)
     p.add_argument("--envios", type=int, default=5000)
+    p.add_argument("--entrena-test", choices=sorted(MESES_TEST), default="0306")
     main(p.parse_args())

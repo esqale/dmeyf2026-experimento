@@ -7,7 +7,7 @@ Qué se decidió, por qué y qué se descartó. Los resultados de la exploració
 ## D1 — Meses y clase (baseline de Bolaños, #Experimentos - Lunes › Baseline + Entregables)
 - Se usa solo 2019. La clase de la foto *t* se arma con la presencia del cliente en *t+1* y *t+2*. BAJA+1 = no está en *t+1*. BAJA+2 = está en *t+1* y no en *t+2*.
 - Meses con clase: 201901–201910. Para la clase de 201910 se mira 201911 y 201912 (es un supuesto a validar). 201911 y 201912 no se usan como meses con clase.
-- 201901–201902: solo historia para lags. Entrena 201903–201906, valida 201908 con AUC y testea 201910 con ganancia, reentrenando con 201903–201908.
+- 201901–201902: solo historia para lags. Entrena 201903–201906, valida 201908 con AUC y testea 201910 con ganancia, con el modelo entrenado en 201903–201906 (sin reentrenar, ver D13).
 
 ## D2 — Historia en parquet por mes
 - `historia/mensual/<yyyymm>.parquet`: 32 meses, 4.707.495 filas, 154 columnas. No hay duplicados `(numero_de_cliente, foto_mes)` ni ids nulos (`01_exploracion.py`, sección a).
@@ -35,7 +35,7 @@ Qué se decidió, por qué y qué se descartó. Los resultados de la exploració
 - Espacio: `learning_rate` 0,01–0,3 (log) · `num_leaves` 8–1024 (log) · `min_data_in_leaf` 10–5000 (log) · `feature_fraction` 0,1–1 · `bagging_fraction` 0,5–1. `bagging_freq` = 1 y el resto en default. Es la ventana del HTML de canaritos de la cátedra.
 - Early stopping de 100 rondas sobre el AUC de 201908, con un tope de 5000 rondas.
 - Envíos: N es el máximo de la curva de ganancia de 201908 del mejor trial, mirando cortes de a 500 (el criterio de la cátedra).
-- Test: reentrena con 201903–201908, con los parámetros y las iteraciones del mejor trial, y mide en 201910 con ese N. El máximo de la curva en 201910 se reporta solo como dato informativo, no para elegir.
+- Test: modelo entrenado en 201903–201906 con los parámetros y las iteraciones del mejor trial, medido en 201910 con ese N (D13). El máximo de la curva en 201910 se reporta solo como dato informativo, no para elegir.
 - El mismo script corre cualquier dataset con este formato, así que los brazos de deflactación van a ser `--dataset` distintos.
 
 ## D8 — Índices externos (`src/05_indices.py`, detalle en `datos_externos/FUENTES.md`)
@@ -46,7 +46,7 @@ Qué se decidió, por qué y qué se descartó. Los resultados de la exploració
 - La UVA es el CER reescalado, así que se usa uno solo.
 
 ## D9 — Cómo se comparan los brazos (2026-11-15)
-- Comparación principal: los tres brazos (sin deflactar, todo con IPC y por grupo) con los hiperparámetros e iteraciones del baseline (R1) y las mismas 20 semillas. Se reentrena con 201903–201908 y se mide en 201910 (`src/04_semillas.py`).
+- Comparación principal: los tres brazos (sin deflactar, todo con IPC y por grupo) con los hiperparámetros e iteraciones del baseline (R1) y las mismas 20 semillas. Se entrena con 201903–201906 (D13) y se mide en 201910 (`src/04_semillas.py`).
 - Métrica: ganancia con N fijo = 5.000 (elegido en 201908 por el baseline). Se reportan también la ganancia media en la zona plana (3.000–6.500) y el AUC de 201910. La comparación es pareada por semilla (Wilcoxon).
 - Chequeo de robustez, si sobra tiempo: una optimización de Optuna propia para cada brazo (`03_baseline.py` con otro `--dataset`) y después sus 20 semillas.
 - **Descartado:** usar solo la Optuna por brazo. Mezcla el ruido de la búsqueda con el efecto de deflactar y cuesta el triple.
@@ -72,15 +72,22 @@ Qué se decidió, por qué y qué se descartó. Los resultados de la exploració
 - Verificación a mano (cliente 48000000, 201904): `mrentabilidad`, el lag1 y el delta1 coinciden con el cálculo hecho a mano en las dos versiones. `cliente_edad` no cambia.
 - Comparación: `src/07_comparar.py`, pareado por semilla (Wilcoxon y t pareado), con la ganancia a N fijo, la zona plana y el AUC.
 
+## D13 — El test usa el modelo entrenado en 201903–201906, sin reentrenar (2026-11-15)
+- El texto del baseline de Bolaños dice "Meses de entrenamiento: 201903, 201904, 201905, 201906" y "Mes de test: 201910". No pide reentrenar.
+- La idea de reentrenar sumando 201907–08 venía de un resumen previo y no está en el texto del baseline. Se corrige.
+- Se rehicieron con el esquema correcto el test del baseline (R1) y las 20 semillas de los tres brazos. Optuna no cambia, porque nunca usó 201907–08.
+- Lo que ya se había corrido con el reentrenamiento queda en `reportes/sensibilidad_reentreno_0308/`: el baseline con 20 semillas (284,0 ± 3,3 M) y el brazo IPC (mes anterior) con 11 semillas (281,1 ± 3,7 M). Sirve como análisis de sensibilidad. `--entrena-test 0308` lo reproduce.
+
 ## R1 — Resultado del baseline (2026-11-15, 50 trials, 1 h 45 min)
 - Mejor trial: el 32. AUC 0,93294 en 201908 · `learning_rate` 0,0132 · `num_leaves` 104 · `min_data_in_leaf` 1398 · `feature_fraction` 0,514 · `bagging_fraction` 0,680 · 405 iteraciones.
 - En 201908 la ganancia es 209,0 M y el máximo de la curva está en N = 5.000.
-- **Test 201910: 281,6 M con 5.000 envíos.** Equivale a unos 381 de los 632 BAJA+2. El máximo de la curva de 201910 es 289,9 M con 3.500, pero es solo un dato informativo.
+- **Test 201910: 281,6 M con 5.000 envíos**, unos 381 de los 632 BAJA+2. Con el modelo entrenado en 201903–06 (D13) da exactamente lo mismo, porque acierta la misma cantidad de BAJA+2 con 5.000 envíos. El máximo de la curva cambia: 286,6 M con 5.500 (con reentrenamiento era 289,9 M con 3.500). Es solo un dato informativo.
 - La curva de 201910 es plana entre 3.000 y 6.500 envíos (280–290 M). Elegir N cuesta como mucho unos 8 M.
 - Los mejores trials quedan a menos de 0,0005 de AUC entre sí, y su ganancia en 201908 (205–215 M) no sigue el orden del AUC.
 - Archivos: `reportes/baseline/` (resultado.json, trials.csv, curva_201910.csv, log.txt) y `modelos/baseline_final.txt`.
 
-## R2 — Ruido por semilla del baseline (Paso 7, 2026-11-15, 20 semillas, 55 min)
+## R2 — Ruido por semilla del baseline (Paso 7, 2026-11-15, 20 semillas, 55 min) · ⚠️ con reentrenamiento 201903–08
+- **Estos números son del esquema con reentrenamiento (D13).** Quedan como sensibilidad. Los del esquema correcto se están corriendo.
 - **Ganancia en 201910 con N = 5.000: media 284,0 M · desvío 3,3 M · rango 279,4–289,3 M.** El IC 95% de la media es ±1,5 M.
 - Ganancia media en la zona plana (3.000–6.500): media 283,9 M · **desvío 1,9 M**. Tiene casi la mitad del ruido, así que conviene usarla como métrica secundaria para comparar brazos.
 - AUC en 201910: 0,93749 ± 0,00036.

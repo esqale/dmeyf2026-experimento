@@ -1,0 +1,56 @@
+ipc_d1: 768,499 filas de train · params de reportes/baseline/resultado.json · 405 iter · N = 5,000 · 15 s
+      semilla 1 · iter  100 · 59 s
+      semilla 1 · iter  200 · 92 s
+      semilla 1 · iter  300 · 129 s
+      semilla 1 · iter  400 · 168 s
+  semilla  1/20 · 286.0 M con 5,000 · media 286.0 M · desvío nan M · 157 s · faltan ~55 min
+      semilla 2 · iter  100 · 213 s
+      semilla 2 · iter  200 · 253 s
+      semilla 2 · iter  300 · 291 s
+      semilla 2 · iter  400 · 335 s
+  semilla  2/20 · 284.9 M con 5,000 · media 285.4 M · desvío 0.8 M · 166 s · faltan ~51 min
+      semilla 3 · iter  100 · 380 s
+      semilla 3 · iter  200 · 416 s
+      semilla 3 · iter  300 · 456 s
+      semilla 3 · iter  400 · 495 s
+  semilla  3/20 · 275.0 M con 5,000 · media 282.0 M · desvío 6.1 M · 159 s · faltan ~47 min
+      semilla 4 · iter  100 · 538 s
+      semilla 4 · iter  200 · 573 s
+      semilla 4 · iter  300 · 613 s
+      semilla 4 · iter  400 · 656 s
+  semilla  4/20 · 281.6 M con 5,000 · media 281.9 M · desvío 4.9 M · 162 s · faltan ~44 min
+      semilla 5 · iter  100 · 703 s
+      semilla 5 · iter  200 · 739 s
+      semilla 5 · iter  300 · 783 s
+      semilla 5 · iter  400 · 830 s
+  semilla  5/20 · 279.4 M con 5,000 · media 281.4 M · desvío 4.4 M · 174 s · faltan ~42 min
+      semilla 6 · iter  100 · 875 s
+      semilla 6 · iter  200 · 917 s
+      semilla 6 · iter  300 · 957 s
+      semilla 6 · iter  400 · 999 s
+  semilla  6/20 · 279.4 M con 5,000 · media 281.1 M · desvío 4.0 M · 169 s · faltan ~39 min
+      semilla 7 · iter  100 · 1041 s
+      semilla 7 · iter  200 · 1080 s
+      semilla 7 · iter  300 · 1121 s
+      semilla 7 · iter  400 · 1167 s
+  semilla  7/20 · 283.8 M con 5,000 · media 281.4 M · desvío 3.8 M · 169 s · faltan ~36 min
+      semilla 8 · iter  100 · 1213 s
+      semilla 8 · iter  200 · 1252 s
+      semilla 8 · iter  300 · 1291 s
+      semilla 8 · iter  400 · 1332 s
+  semilla  8/20 · 278.3 M con 5,000 · media 281.1 M · desvío 3.7 M · 165 s · faltan ~33 min
+      semilla 9 · iter  100 · 1376 s
+      semilla 9 · iter  200 · 1418 s
+      semilla 9 · iter  300 · 1463 s
+      semilla 9 · iter  400 · 1503 s
+  semilla  9/20 · 289.3 M con 5,000 · media 282.0 M · desvío 4.4 M · 171 s · faltan ~31 min
+      semilla 10 · iter  100 · 1554 s
+      semilla 10 · iter  200 · 1596 s
+      semilla 10 · iter  300 · 1639 s
+      semilla 10 · iter  400 · 1682 s
+  semilla 10/20 · 282.7 M con 5,000 · media 282.0 M · desvío 4.2 M · 180 s · faltan ~28 min
+      semilla 11 · iter  100 · 1728 s
+      semilla 11 · iter  200 · 1763 s
+      semilla 11 · iter  300 · 1801 s
+      semilla 11 · iter  400 · 1841 s
+  semilla 11/20 · 279.4 M con 5,000 · media 281.8 M · desvío 4.1 M · 158 s · faltan ~25 min

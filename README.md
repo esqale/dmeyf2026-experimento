@@ -69,5 +69,5 @@ Get-Content reportes\baseline\log.txt -Wait -Tail 20 -Encoding UTF8 | Select-Str
 
 - Solo 2019. Entrena 201903–201906 con BAJA+1 y BAJA+2 combinadas.
 - Valida 201908 con AUC (Optuna y early stopping).
-- Test en 201910 con ganancia: +1.072.500 por cada BAJA+2 y −27.500 por envío. Para el test se reentrena con 201903–201908 y se usa el N elegido en 201908.
+- Test en 201910 con ganancia: +1.072.500 por cada BAJA+2 y −27.500 por envío. El test usa el modelo entrenado en 201903–06, sin reentrenar, y el N elegido en 201908.
 - **Resultado: 281,6 M en 201910 con 5.000 envíos.** El detalle está en `DECISIONES.md` (R1).

@@ -7,7 +7,8 @@ Uso:
 Esquema:
     Optuna (TPE)  entrena 201903–201906 · valida 201908 con AUC (ordena los trials y hace el early stopping)
     Envíos        se elige N en la curva de ganancia de 201908, de a 500 envíos
-    Test          reentrena con 201903–201908 y mide la ganancia en 201910 con ese N
+    Test          con el mismo esquema de entrenamiento (201903–201906), mide la ganancia en 201910 con ese N
+                  (--entrena-test 0308 reentrena sumando 201907–08: solo para el análisis de sensibilidad)
 Target binario: BAJA+1 y BAJA+2 contra CONTINUA. La ganancia cuenta solo BAJA+2.
 El estudio se guarda en SQLite: si se corta, se relanza el mismo comando y retoma.
 """
@@ -23,7 +24,7 @@ import optuna
 import pandas as pd
 
 sys.path.insert(0, os.path.dirname(__file__))
-from comun import (ENTRENA, ENTRENA_FINAL, FIJOS, PASO_ENVIOS, TEST, VALIDA,  # noqa: E402
+from comun import (ENTRENA, MESES_TEST, FIJOS, PASO_ENVIOS, TEST, VALIDA,  # noqa: E402
                    cargar, curva_ganancia, mejor_n, progreso)
 
 
@@ -83,9 +84,10 @@ def main(a):
     print(f"Mejor trial {mejor.number}: AUC {mejor.value:.5f} · {iteraciones} iter · N = {n_envios:,}", flush=True)
     del dtr, dva, Xtr, Xva
 
-    # test: reentreno con 201903–201908, mismas iteraciones, y aplico el N elegido en 201908
-    Xf, yf, _ = cargar(a.dataset, ENTRENA_FINAL)
-    print(f"Reentreno final con {len(yf):,} filas ({iteraciones} iter)", flush=True)
+    # test: modelo con los params e iteraciones del mejor trial, entrenado en los meses de --entrena-test,
+    # y el N elegido en 201908
+    Xf, yf, _ = cargar(a.dataset, MESES_TEST[a.entrena_test])
+    print(f"Modelo final: entrena {a.entrena_test} · {len(yf):,} filas ({iteraciones} iter)", flush=True)
     final = lgb.train(params, lgb.Dataset(Xf, yf, params={"feature_pre_filter": False}),
                       num_boost_round=iteraciones, callbacks=[progreso("final", t0, cada=100)])
     final.save_model(f"modelos/{a.nombre}_final.txt")
@@ -97,7 +99,7 @@ def main(a):
       .assign(ganancia=lambda d: curva[d.envios - 1]) \
       .to_csv(os.path.join(salida, "curva_201910.csv"), index=False)
 
-    resultado = dict(dataset=a.dataset, semilla=a.semilla, trials=len(estudio.trials),
+    resultado = dict(dataset=a.dataset, semilla=a.semilla, entrena_test=a.entrena_test, trials=len(estudio.trials),
                      mejor_trial=mejor.number, auc_201908=mejor.value, params=mejor.params,
                      iteraciones=iteraciones, envios=n_envios,
                      ganancia_201908=mejor.user_attrs["ganancia_201908"],
@@ -116,4 +118,5 @@ if __name__ == "__main__":
     p.add_argument("--nombre", default="baseline")
     p.add_argument("--trials", type=int, default=50)
     p.add_argument("--semilla", type=int, default=102191)
+    p.add_argument("--entrena-test", choices=sorted(MESES_TEST), default="0306")
     main(p.parse_args())

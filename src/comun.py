@@ -13,7 +13,10 @@ ZONA_PLANA = (3000, 6500)  # envíos donde la curva del baseline en 201910 es pl
 
 ENTRENA = [201903, 201904, 201905, 201906]
 VALIDA = 201908
-ENTRENA_FINAL = [201903, 201904, 201905, 201906, 201907, 201908]
+# Test en 201910 con el modelo entrenado en ENTRENA, como dice el baseline de la cátedra.
+# ENTRENA_EXTENDIDO (reentrenar sumando 201907–08) queda solo como análisis de sensibilidad.
+ENTRENA_EXTENDIDO = [201903, 201904, 201905, 201906, 201907, 201908]
+MESES_TEST = {"0306": ENTRENA, "0308": ENTRENA_EXTENDIDO}
 TEST = 201910
 NO_FEATURES = ("numero_de_cliente", "foto_mes", "clase_ternaria")
 
