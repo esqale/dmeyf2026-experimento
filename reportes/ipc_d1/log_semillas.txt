@@ -54,3 +54,4 @@ ipc_d1: 768,499 filas de train · params de reportes/baseline/resultado.json · 
       semilla 11 · iter  300 · 1801 s
       semilla 11 · iter  400 · 1841 s
   semilla 11/20 · 279.4 M con 5,000 · media 281.8 M · desvío 4.1 M · 158 s · faltan ~25 min
+ipc_d1: 768,499 filas de train · params de reportes/baseline/resultado.json · 405 iter · N = 5,000 · 17 s

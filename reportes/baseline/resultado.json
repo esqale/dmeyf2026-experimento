@@ -1,7 +1,6 @@
 {
   "dataset": "datasets/fe_base",
   "semilla": 102191,
-  "entrena_test": "0306",
   "trials": 50,
   "mejor_trial": 32,
   "auc_201908": 0.9329371322278676,
@@ -18,8 +17,8 @@
   "ganancia_201910": 281600000.0,
   "baja2_201910": 632,
   "max_201910_informativo": {
-    "envios": 5500,
-    "ganancia": 286550000.0
+    "envios": 3500,
+    "ganancia": 289850000.0
   },
-  "segundos": 152
+  "segundos": 6330
 }

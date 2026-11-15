@@ -1,5 +1,5 @@
-"""Paso 7: ruido por semilla. Entrena el modelo (201903–201906, como el baseline) con K semillas y mide en 201910.
---entrena-test 0308 reentrena sumando 201907–08: solo para el análisis de sensibilidad.
+"""Paso 7: ruido por semilla. Reentrena el modelo final (201903–201908) con K semillas y mide en 201910.
+--entrena-test 0306 usa solo 201903–06, sin reentrenar: solo para el análisis de sensibilidad.
 
 Uso:
     python src/04_semillas.py --dataset datasets/fe_base --nombre baseline [--params reportes/baseline/resultado.json]
@@ -89,5 +89,5 @@ if __name__ == "__main__":
     p.add_argument("--params", default="reportes/baseline/resultado.json")
     p.add_argument("--semillas", type=int, default=20)
     p.add_argument("--envios", type=int, default=5000)
-    p.add_argument("--entrena-test", choices=sorted(MESES_TEST), default="0306")
+    p.add_argument("--entrena-test", choices=sorted(MESES_TEST), default="0308")
     main(p.parse_args())

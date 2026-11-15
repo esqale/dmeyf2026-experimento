@@ -7,8 +7,8 @@ Uso:
 Esquema:
     Optuna (TPE)  entrena 201903–201906 · valida 201908 con AUC (ordena los trials y hace el early stopping)
     Envíos        se elige N en la curva de ganancia de 201908, de a 500 envíos
-    Test          con el mismo esquema de entrenamiento (201903–201906), mide la ganancia en 201910 con ese N
-                  (--entrena-test 0308 reentrena sumando 201907–08: solo para el análisis de sensibilidad)
+    Test          reentrena con 201903–201908 y mide la ganancia en 201910 con ese N
+                  (--entrena-test 0306 usa el modelo de 201903–06 sin reentrenar: solo para el análisis de sensibilidad)
 Target binario: BAJA+1 y BAJA+2 contra CONTINUA. La ganancia cuenta solo BAJA+2.
 El estudio se guarda en SQLite: si se corta, se relanza el mismo comando y retoma.
 """
@@ -118,5 +118,5 @@ if __name__ == "__main__":
     p.add_argument("--nombre", default="baseline")
     p.add_argument("--trials", type=int, default=50)
     p.add_argument("--semilla", type=int, default=102191)
-    p.add_argument("--entrena-test", choices=sorted(MESES_TEST), default="0306")
+    p.add_argument("--entrena-test", choices=sorted(MESES_TEST), default="0308")
     main(p.parse_args())

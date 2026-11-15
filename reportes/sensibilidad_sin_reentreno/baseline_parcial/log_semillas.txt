@@ -1,0 +1,26 @@
+baseline: 506,871 filas de train · params de reportes/baseline/resultado.json · 405 iter · N = 5,000 · 12 s
+      semilla 1 · iter  100 · 50 s
+      semilla 1 · iter  200 · 79 s
+      semilla 1 · iter  300 · 106 s
+      semilla 1 · iter  400 · 134 s
+  semilla  1/20 · 282.7 M con 5,000 · media 282.7 M · desvío nan M · 127 s · faltan ~44 min
+      semilla 2 · iter  100 · 169 s
+      semilla 2 · iter  200 · 196 s
+      semilla 2 · iter  300 · 226 s
+      semilla 2 · iter  400 · 259 s
+  semilla  2/20 · 291.5 M con 5,000 · media 287.1 M · desvío 6.2 M · 124 s · faltan ~39 min
+      semilla 3 · iter  100 · 300 s
+      semilla 3 · iter  200 · 329 s
+      semilla 3 · iter  300 · 359 s
+      semilla 3 · iter  400 · 395 s
+  semilla  3/20 · 283.8 M con 5,000 · media 286.0 M · desvío 4.8 M · 136 s · faltan ~38 min
+      semilla 4 · iter  100 · 439 s
+      semilla 4 · iter  200 · 472 s
+      semilla 4 · iter  300 · 503 s
+      semilla 4 · iter  400 · 531 s
+  semilla  4/20 · 280.5 M con 5,000 · media 284.6 M · desvío 4.8 M · 136 s · faltan ~36 min
+      semilla 5 · iter  100 · 572 s
+      semilla 5 · iter  200 · 601 s
+      semilla 5 · iter  300 · 633 s
+      semilla 5 · iter  400 · 671 s
+  semilla  5/20 · 279.4 M con 5,000 · media 283.6 M · desvío 4.8 M · 140 s · faltan ~34 min

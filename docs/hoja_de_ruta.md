@@ -22,8 +22,8 @@ Estado: ✅ hecho · 🔄 en curso · 🟡 esperando una decisión del grupo · 
   - Optimiza `num_leaves`, `learning_rate`, `min_data_in_leaf`, `feature_fraction` y `bagging_fraction`, con `bagging_freq` = 1.
   - Valida 201908 con AUC (optimización y early stopping) y testea 201910 con ganancia.
   - Resultado: 281,6 M (R1).
-  - El test usa el modelo entrenado en 201903–06, sin reentrenar, como fija el esquema de referencia (D13).
-- 🔄 **Paso 7. Ruido por semilla (objetivo 2)** (`src/04_semillas.py`): se está corriendo de nuevo con el esquema del texto (D13). La versión con reentrenamiento dio 284,0 ± 3,3 M y queda como sensibilidad.
+  - Para el test se reentrena con 201903–201908 (D13).
+- ✅ **Paso 7. Ruido por semilla (objetivo 2)** (`src/04_semillas.py`): 284,0 ± 3,3 M con 20 semillas (R2).
 
 ## Deflactación
 - ✅ **Paso 8. Índices y bibliografía** (`src/05_indices.py`, `datos_externos/FUENTES.md`).
@@ -39,7 +39,14 @@ Estado: ✅ hecho · 🔄 en curso · 🟡 esperando una decisión del grupo · 
 
 ## Entrega
 - ⬜ **Paso 12a.** Completar Resultados, Discusión y Conclusión en `docs/investigacion.md`.
-- ⬜ **Paso 12b.** Guion, gráficos, grabación y entrega del video (10 minutos).
+- ⬜ **Paso 12b.** Guion, gráficos, grabación y entrega del video (10 minutos como máximo). Tiene que ser directo, claro y no aburrido. No se suben slides, pero su estructura guía el video:
+  1. **Hipótesis:** qué se experimenta y qué se espera.
+  2. **Diseño experimental:** cómo fue el método.
+  3. **Limitaciones** de lo que se probó.
+  4. **Resultados.**
+  5. **Conclusiones** y qué seguiríamos experimentando.
+
+  La bibliografía se comparte por Zulip junto con el video. La plantilla de referencia, `docs/experimentos_colaborativos_2026_google_slides.pptx`, tiene 10 secciones: Hipótesis, Bibliografía, Sesgos, Diseño, Limitaciones, Resultados (sin interpretar), Discusión (resultados ↔ hipótesis y ↔ otros problemas), Conclusiones, Futuros y Anexo. El Anexo es el link al repo con los scripts, cómo correrlos desde el dataset y las salidas: este repo ya lo cubre.
 
 ## Decisiones a hablar entre los tres
 - Las 5 preguntas de `docs/paso10_clasificacion.md`.
