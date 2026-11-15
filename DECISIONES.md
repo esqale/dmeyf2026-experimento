@@ -4,7 +4,7 @@ Qué se decidió, por qué y qué se descartó. Los resultados de la exploració
 
 ---
 
-## D1 — Meses y clase (baseline de Bolaños, #Experimentos - Lunes › Baseline + Entregables)
+## D1 — Meses y clase (esquema de referencia)
 - Se usa solo 2019. La clase de la foto *t* se arma con la presencia del cliente en *t+1* y *t+2*. BAJA+1 = no está en *t+1*. BAJA+2 = está en *t+1* y no en *t+2*.
 - Meses con clase: 201901–201910. Para la clase de 201910 se mira 201911 y 201912 (es un supuesto a validar). 201911 y 201912 no se usan como meses con clase.
 - 201901–201902: solo historia para lags. Entrena 201903–201906, valida 201908 con AUC y testea 201910 con ganancia, con el modelo entrenado en 201903–201906 (sin reentrenar, ver D13).
@@ -32,9 +32,9 @@ Qué se decidió, por qué y qué se descartó. Los resultados de la exploració
 
 ## D7 — Optimización del baseline (`src/03_baseline.py`)
 - Optuna TPE con semilla 102191 y 50 trials. El estudio se guarda en SQLite y retoma si se corta.
-- Espacio: `learning_rate` 0,01–0,3 (log) · `num_leaves` 8–1024 (log) · `min_data_in_leaf` 10–5000 (log) · `feature_fraction` 0,1–1 · `bagging_fraction` 0,5–1. `bagging_freq` = 1 y el resto en default. Es la ventana del HTML de canaritos de la cátedra.
+- Espacio: `learning_rate` 0,01–0,3 (log) · `num_leaves` 8–1024 (log) · `min_data_in_leaf` 10–5000 (log) · `feature_fraction` 0,1–1 · `bagging_fraction` 0,5–1. `bagging_freq` = 1 y el resto en default. La ventana de búsqueda es decisión nuestra.
 - Early stopping de 100 rondas sobre el AUC de 201908, con un tope de 5000 rondas.
-- Envíos: N es el máximo de la curva de ganancia de 201908 del mejor trial, mirando cortes de a 500 (el criterio de la cátedra).
+- Envíos: N es el máximo de la curva de ganancia de 201908 del mejor trial, mirando cortes de a 500.
 - Test: modelo entrenado en 201903–201906 con los parámetros y las iteraciones del mejor trial, medido en 201910 con ese N (D13). El máximo de la curva en 201910 se reporta solo como dato informativo, no para elegir.
 - El mismo script corre cualquier dataset con este formato, así que los brazos de deflactación van a ser `--dataset` distintos.
 
@@ -73,8 +73,8 @@ Qué se decidió, por qué y qué se descartó. Los resultados de la exploració
 - Comparación: `src/07_comparar.py`, pareado por semilla (Wilcoxon y t pareado), con la ganancia a N fijo, la zona plana y el AUC.
 
 ## D13 — El test usa el modelo entrenado en 201903–201906, sin reentrenar (2026-11-15)
-- El texto del baseline de Bolaños dice "Meses de entrenamiento: 201903, 201904, 201905, 201906" y "Mes de test: 201910". No pide reentrenar.
-- La idea de reentrenar sumando 201907–08 venía de un resumen previo y no está en el texto del baseline. Se corrige.
+- El esquema de referencia fija 201903–201906 como meses de entrenamiento y 201910 como test, sin reentrenar.
+- La idea de reentrenar sumando 201907–08 venía de un resumen previo y no forma parte del esquema de referencia. Se corrige.
 - Se rehicieron con el esquema correcto el test del baseline (R1) y las 20 semillas de los tres brazos. Optuna no cambia, porque nunca usó 201907–08.
 - Lo que ya se había corrido con el reentrenamiento queda en `reportes/sensibilidad_reentreno_0308/`: el baseline con 20 semillas (284,0 ± 3,3 M) y el brazo IPC (mes anterior) con 11 semillas (281,1 ± 3,7 M). Sirve como análisis de sensibilidad. `--entrena-test 0308` lo reproduce.
 

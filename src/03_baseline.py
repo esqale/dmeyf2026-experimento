@@ -1,4 +1,4 @@
-"""Paso 6: LightGBM con el esquema del baseline de Bolaños. Sirve para cualquier dataset con el formato
+"""Paso 6: LightGBM con el esquema de referencia del experimento. Sirve para cualquier dataset con el formato
 de 02_dataset.py, así que los brazos del experimento de deflactación corren con el mismo script.
 
 Uso:

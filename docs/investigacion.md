@@ -308,7 +308,7 @@ Las variables del banco no se mueven todas igual. Un consumo sigue los precios m
 
 Controles contra valores publicados: inflación de 2019 = 53,8% (igual que INDEC), dólar 44,9 → 59,1 después de las PASO y UVA al 31/12/2019 = 47,16.
 
-  **Esquema del experimento** (baseline de la cátedra, #Experimentos - Lunes)
+  **Esquema de referencia del experimento**
   - Solo 2019. La clase llega hasta 201910, y para armarla se usa la presencia en 201911 y 201912.
   - Features: columnas crudas, más lag 1 y 2 y delta 1 y 2. En los brazos 2 y 3, la deflactación se aplica **antes** de calcular los lags y deltas.
   - LightGBM. Optuna optimiza `num_leaves`, `learning_rate`, `min_data_in_leaf`, `feature_fraction` y `bagging_fraction`, con `bagging_freq` = 1. Entrena 201903–201906 completos con BAJA+1 y BAJA+2 combinadas, y valida en 201908 con AUC (también para el early stopping).
@@ -332,7 +332,7 @@ Controles contra valores publicados: inflación de 2019 = 53,8% (igual que INDEC
   - La comparación principal usa los hiperparámetros del baseline. Puede favorecer al brazo sin deflactar, porque esos hiperparámetros se optimizaron para él (el chequeo de robustez es la Optuna por brazo).
 - **Resultados:**
   - *Preliminar, brazo sin deflactar (baseline), una semilla:* AUC 0,9329 en 201908, N = 5.000 elegido en 201908 y **ganancia en 201910 de 281,6 M** (unos 381 de los 632 BAJA+2). La curva de 201910 es plana entre 3.000 y 6.500 envíos (280–290 M).
-  - *Ruido por semilla (objetivo 2):* en curso, con el esquema del texto del baseline (test con el modelo entrenado en 201903–06). Una corrida anterior con reentrenamiento en 201903–08 dio 284,0 M ± 3,3 M; queda como análisis de sensibilidad.
+  - *Ruido por semilla (objetivo 2):* en curso, con el esquema de referencia (test con el modelo entrenado en 201903–06). Una corrida anterior con reentrenamiento en 201903–08 dio 284,0 M ± 3,3 M; queda como análisis de sensibilidad.
   - *Brazos 2 y 3:* pendientes.
 - **Discusión:**  
 - **Conclusión:**  

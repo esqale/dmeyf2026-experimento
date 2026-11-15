@@ -36,7 +36,7 @@ Hay 73 columnas monetarias: las que empiezan con `m`, `Visa_m` o `Master_m`. Los
 
 ## Datos generales que aparecieron
 
-- **Los montos parecen multiplicados por 1,173.** Las modas son 5.865 (= 5.000 × 1,173), 11.730, 117,30, 1.173 y 23.460. Es seguramente la anonimización de la cátedra. Como es un factor constante, no afecta a los árboles ni a la deflactación.
+- **Los montos parecen multiplicados por 1,173.** Las modas son 5.865 (= 5.000 × 1,173), 11.730, 117,30, 1.173 y 23.460. Es seguramente la anonimización del dataset. Como es un factor constante, no afecta a los árboles ni a la deflactación.
 - **El brazo "todo con IPC"** divide las 73 columnas por el IPC, incluidos los dólares y los límites. Así queda definido, y es lo que la hipótesis espera que funcione peor que el brazo por grupos.
 - **Objetivo 1:** el IPC y el RIPTE del mes t se publican después, así que al momento de predecir se usa el de t-1. Las series del BCRA (tasas, tipo de cambio, CER) ya están disponibles cuando llega el mes.
 

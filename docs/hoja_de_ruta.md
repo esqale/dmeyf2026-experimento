@@ -4,7 +4,7 @@ DMEyF 2026, comisión lunes · Manuel Marasco, Alejandro Esquivel y Alexander Ar
 
 **Hipótesis:** deflactar cada grupo de variables monetarias con su propio índice da más ganancia que dividir todo por el IPC, y deflactar da más que no deflactar.
 **Entrega:** video grupal de 10 minutos, **23/11 antes del mediodía**. Se discute en clase el 24/11.
-**Consigna:** `docs/investigacion.md` y el baseline de Bolaños (#Experimentos - Lunes › Baseline + Entregables).
+**Documento:** `docs/investigacion.md`. El esquema de referencia (meses, modelo y métrica) está en `DECISIONES.md` (D1, D7 y D13).
 
 Los números de paso son los de la versión original, así siguen valiendo las referencias de `DECISIONES.md`.
 
@@ -17,12 +17,12 @@ Estado: ✅ hecho · 🔄 en curso · 🟡 esperando una decisión del grupo · 
 
 ## Baseline (es el brazo "sin deflactar")
 - ✅ **Paso 5. FE base**: lag y delta 1 y 2, en una sola función (`src/fe.py`).
-- ✅ **Paso 6. Modelo base** con el esquema de Bolaños (`src/03_baseline.py`):
+- ✅ **Paso 6. Modelo base** con el esquema de referencia (`src/03_baseline.py`):
   - Entrena 201903–201906 completos, sin sampling, con BAJA+1 y BAJA+2 combinadas.
   - Optimiza `num_leaves`, `learning_rate`, `min_data_in_leaf`, `feature_fraction` y `bagging_fraction`, con `bagging_freq` = 1.
   - Valida 201908 con AUC (optimización y early stopping) y testea 201910 con ganancia.
   - Resultado: 281,6 M (R1).
-  - El test usa el modelo entrenado en 201903–06, sin reentrenar, como dice el texto del baseline (D13).
+  - El test usa el modelo entrenado en 201903–06, sin reentrenar, como fija el esquema de referencia (D13).
 - 🔄 **Paso 7. Ruido por semilla (objetivo 2)** (`src/04_semillas.py`): se está corriendo de nuevo con el esquema del texto (D13). La versión con reentrenamiento dio 284,0 ± 3,3 M y queda como sensibilidad.
 
 ## Deflactación

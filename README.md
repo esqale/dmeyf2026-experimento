@@ -4,7 +4,7 @@ Manuel Marasco · Alejandro Esquivel · Alexander Arias
 
 **Pregunta:** ¿deflactar cada grupo de variables monetarias con su propio índice da más ganancia que dividir todo por el IPC? ¿Y deflactar da más que no deflactar?
 
-Se comparan tres brazos sobre el baseline de la cátedra (churn BAJA+2, LightGBM, solo 2019): **sin deflactar**, **todo con IPC** y **cada grupo con su deflactor**. Cada brazo se corre con las mismas 20 semillas y se compara contra el ruido entre semillas.
+Se comparan tres brazos con un mismo esquema de referencia (churn BAJA+2, LightGBM, solo 2019): **sin deflactar**, **todo con IPC** y **cada grupo con su deflactor**. Cada brazo se corre con las mismas 20 semillas y se compara contra el ruido entre semillas.
 
 Entrega: video de 10 minutos, 23/11 antes del mediodía. El documento del experimento es `docs/investigacion.md`, y el plan con el estado de cada paso, `docs/hoja_de_ruta.md`.
 
@@ -65,7 +65,7 @@ Get-Content reportes\baseline\log.txt -Wait -Tail 20 -Encoding UTF8 | Select-Str
 | `historia/` | Un parquet por mes, generado por `00_convertir_a_parquet.py` (830 MB) | **no**, se regenera |
 | `datasets/` | Features por mes, generadas por `02_dataset.py` (570 MB) | **no**, se regenera |
 
-## Esquema del baseline (Bolaños, #Experimentos - Lunes)
+## Esquema de referencia
 
 - Solo 2019. Entrena 201903–201906 con BAJA+1 y BAJA+2 combinadas.
 - Valida 201908 con AUC (Optuna y early stopping).
