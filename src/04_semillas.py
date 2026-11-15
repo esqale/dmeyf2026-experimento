@@ -53,6 +53,7 @@ def main(a):
           f"N = {a.envios:,} · {time.time() - t0:.0f} s", flush=True)
 
     filas = hechas.to_dict("records")
+    corridas = 0  # semillas corridas en esta ejecución (para estimar lo que falta al retomar)
     for i, s in enumerate(semillas, 1):
         if len(hechas) and s in set(hechas["semilla"]):
             continue
@@ -70,7 +71,8 @@ def main(a):
         pd.DataFrame(filas).to_csv(archivo, index=False)
         probs.to_parquet(archivo_probs, index=False)
         g = pd.DataFrame(filas)["ganancia_n_fijo"] / 1e6
-        eta = (time.time() - t0) / i * (len(semillas) - i) / 60
+        corridas += 1
+        eta = (time.time() - t0) / corridas * (len(semillas) - len(filas)) / 60
         print(f"  semilla {i:>2}/{len(semillas)} · {filas[-1]['ganancia_n_fijo'] / 1e6:,.1f} M con {a.envios:,} · "
               f"media {g.mean():,.1f} M · desvío {g.std():,.1f} M · {time.time() - t1:.0f} s · "
               f"faltan ~{eta:.0f} min", flush=True)
