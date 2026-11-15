@@ -92,3 +92,18 @@ Qué se decidió, por qué y qué se descartó. Los resultados de la exploració
 - El máximo de la curva en 201910 cae siempre entre 3.500 y 4.500 envíos (media 290,5 M). N = 5.000 deja unos 6,5 M sobre la mesa. Es un dato informativo: no se usa para elegir N, porque 201910 es el mes de test.
 - Consecuencia: con 20 semillas pareadas, una diferencia entre brazos de unos 2–3 M ya se puede distinguir del azar. Diferencias de 1 M no.
 - Archivos: `reportes/baseline/semillas.csv`, `probs_201910.parquet` (no está en git) y `log_semillas.txt`.
+
+## R3 — Brazo "todo con IPC" y objetivo 1 (2026-11-15, 20 semillas por versión, hiperparámetros del baseline, reentrenando con 201903–08)
+- Contra el baseline (pareado por semilla, `reportes/comparacion.csv`):
+
+  | Versión | N = 5.000 | Diferencia | Gana | p Wilcoxon | Zona plana | Diferencia | Gana | p Wilcoxon |
+  |---|---|---|---|---|---|---|---|---|
+  | Baseline | 284,0 ± 3,3 M | — | — | — | 283,9 ± 1,9 M | — | — | — |
+  | IPC mes anterior (`ipc_d1`) | 282,3 ± 3,4 M | −1,8 M | 6/20 | 0,14 | 279,0 ± 1,8 M | −4,9 M | 0/20 | 0,0001 |
+  | IPC mismo mes (`ipc_d0`) | 284,0 ± 2,9 M | −0,1 M | 9/20 | 0,81 | 280,4 ± 1,9 M | −3,5 M | 2/20 | < 0,0001 |
+
+- AUC en 201910: 0,9374 y 0,9373, igual que el baseline.
+- **Brazo 2: deflactar todo por el IPC no mejora la ganancia. En la zona plana la empeora de forma clara.** Con N fijo, la diferencia no se distingue del ruido.
+- **Objetivo 1** (`reportes/comparacion_objetivo1.csv`): el IPC del mismo mes da 1,7 M más que el del mes anterior con N fijo (gana 12/20, p = 0,04) y 1,4 M más en la zona plana (gana 13/20, p = 0,015). Usar el índice del mes anterior cuesta poco, pero algo.
+- Limitación: los hiperparámetros son los del baseline (D9), lo que puede favorecerlo. La Optuna por brazo es el chequeo.
+- Archivos: `reportes/ipc_d1/` y `reportes/ipc_d0/` (semillas.csv, log_semillas.txt).

@@ -333,7 +333,16 @@ Controles contra valores publicados: inflación de 2019 = 53,8% (igual que INDEC
 - **Resultados:**
   - *Preliminar, brazo sin deflactar (baseline), una semilla:* AUC 0,9329 en 201908, N = 5.000 elegido en 201908 y **ganancia en 201910 de 281,6 M** (unos 381 de los 632 BAJA+2). La curva de 201910 es plana entre 3.000 y 6.500 envíos (280–290 M).
   - *Ruido por semilla (objetivo 2), brazo sin deflactar, 20 semillas:* ganancia en 201910 con 5.000 envíos de **284,0 M ± 3,3 M** (rango 279,4–289,3 M). En la zona plana de la curva (3.000–6.500 envíos) el desvío baja a 1,9 M. AUC 0,9375 ± 0,0004. Con 20 semillas pareadas, una diferencia de unos 2–3 M entre brazos ya se distingue del azar.
-  - *Brazos 2 y 3:* pendientes.
+  - *Brazo 2, todo con IPC (IPC del mes anterior), 20 semillas pareadas con el baseline:*
+    - Con 5.000 envíos da **282,3 M ± 3,4 M**, 1,8 M menos que el baseline. Gana en 6 de 20 semillas (Wilcoxon p = 0,14), así que con N fijo no se distingue del azar.
+    - En la zona plana da **279,0 M**, 4,9 M menos que el baseline. **No gana en ninguna de las 20 semillas** (p = 0,0001).
+    - El AUC es igual al del baseline (0,9374).
+    - Conclusión: deflactar todo por el IPC **no mejora y, en la zona plana, empeora**. La hipótesis "deflactar da más que no deflactar" no se cumple para el brazo IPC.
+  - *Objetivo 1, IPC del mes anterior contra IPC del mismo mes:*
+    - Con el IPC del mismo mes, el brazo da 284,0 M con 5.000 envíos (igual que el baseline) y 280,4 M en la zona plana.
+    - Contra el del mes anterior, el del mismo mes da 1,7 M más con N fijo (gana 12 de 20, p = 0,04) y 1,4 M más en la zona plana (gana 13 de 20, p = 0,015).
+    - La diferencia es chica, del orden del ruido de una semilla, pero consistente: usar el índice del mes anterior (lo único disponible al predecir) cuesta algo. Ninguna de las dos versiones le gana al baseline.
+  - *Brazo 3, por grupo:* pendiente de la clasificación (Paso 10).
 - **Discusión:**  
 - **Conclusión:**  
 - **Antecedente** (plantilla de referencia, ejemplo de 2023, "Data Drifting"): otro grupo deflactó las 73 variables monetarias por el IPC general. Encontró la misma limitación que nosotros, porque las variables en dólares vienen convertidas a pesos al tipo de cambio oficial. También dejó escrito: "no encontré paper de performance por ajuste por inflación". Nuestro brazo "todo con IPC" replica ese enfoque, y el brazo "por grupo" lo extiende. Sirve para la Discusión (problema ↔ otros problemas).
