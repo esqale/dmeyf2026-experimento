@@ -1,0 +1,24 @@
+{
+  "dataset": "datasets/fe_base",
+  "semilla": 102191,
+  "trials": 50,
+  "mejor_trial": 32,
+  "auc_201908": 0.9329371322278676,
+  "params": {
+    "learning_rate": 0.013210785255509958,
+    "num_leaves": 104,
+    "min_data_in_leaf": 1398,
+    "feature_fraction": 0.5141942321806005,
+    "bagging_fraction": 0.6796933571194742
+  },
+  "iteraciones": 405,
+  "envios": 5000,
+  "ganancia_201908": 209000000.0,
+  "ganancia_201910": 281600000.0,
+  "baja2_201910": 632,
+  "max_201910_informativo": {
+    "envios": 3500,
+    "ganancia": 289850000.0
+  },
+  "segundos": 6330
+}

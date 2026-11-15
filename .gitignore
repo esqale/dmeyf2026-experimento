@@ -1,0 +1,18 @@
+# datos pesados: no van a git
+historia/
+datasets/
+# modelos: se versionan los finales (.txt de LightGBM, pocos MB) y los estudios de Optuna
+modelos/*
+!modelos/*.txt
+!modelos/*.db
+datos_externos/*.parquet
+*.csv
+*.csv.gz
+*.parquet
+__pycache__/
+.ipynb_checkpoints/
+# los índices externos son chicos y se versionan (las APIs cambian: la v3 del BCRA ya no existe)
+!datos_externos/*.csv
+!datos_externos/crudo/*.csv
+# los reportes son tablas chicas de resultados
+!reportes/**/*.csv
