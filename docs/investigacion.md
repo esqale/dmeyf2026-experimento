@@ -347,6 +347,10 @@ Controles contra valores publicados: inflación de 2019 = 53,8% (igual que INDEC
     - **Contra el brazo IPC (mismo desfase): gana.** Da +2,1 M con N fijo (14 de 20 semillas, p = 0,017) y +1,4 M en la zona plana (14 de 20, p = 0,002). La primera parte de la hipótesis se cumple.
     - **Contra el baseline sin deflactar: no gana.** Con N fijo empatan (+0,4 M, p = 0,69). En la zona plana pierde por 3,5 M (gana 1 de 20, p = 0,0001). La segunda parte de la hipótesis no se cumple.
   - *Lectura conjunta:* deflactar por grupo es mejor que deflactar todo por el IPC, pero ninguna forma de deflactar mejora al modelo sin deflactar. Los tres brazos tienen el mismo AUC. Las diferencias están en la forma de la curva de ganancia: los brazos deflactados pierden en la zona plana, aunque empatan en N = 5.000. La salvedad es que todos usan los hiperparámetros optimizados para el baseline.
+  - *Chequeo de robustez, Optuna propia por brazo (R5):*
+    - Con sus propios hiperparámetros, los brazos deflactados siguen por debajo del baseline. Todo con IPC da 281,9 M con N fijo y 278,1 M en la zona plana. Por grupo da 281,5 M y 278,7 M. En la zona plana pierden en las 20 semillas, y ahora también pierden en AUC (0,9360 y 0,9357 contra 0,9375).
+    - **Que no deflactar sea mejor no depende de los hiperparámetros.**
+    - En cambio, la ventaja de por grupo sobre todo con IPC desaparece: empatan (p = 0,84 y 0,28). **La primera parte de la hipótesis no es robusta.**
 - **Discusión:**  
 - **Conclusión:**  
 - **Antecedente** (plantilla de referencia, ejemplo de 2023, "Data Drifting"): otro grupo deflactó las 73 variables monetarias por el IPC general. Encontró la misma limitación que nosotros, porque las variables en dólares vienen convertidas a pesos al tipo de cambio oficial. También dejó escrito: "no encontré paper de performance por ajuste por inflación". Nuestro brazo "todo con IPC" replica ese enfoque, y el brazo "por grupo" lo extiende. Sirve para la Discusión (problema ↔ otros problemas).

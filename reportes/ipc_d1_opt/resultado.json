@@ -1,0 +1,25 @@
+{
+  "dataset": "datasets/fe_ipc_d1",
+  "semilla": 102191,
+  "entrena_test": "0308",
+  "trials": 50,
+  "mejor_trial": 19,
+  "auc_201908": 0.9324839396932805,
+  "params": {
+    "learning_rate": 0.02212068030647859,
+    "num_leaves": 315,
+    "min_data_in_leaf": 1999,
+    "feature_fraction": 0.9284768415005652,
+    "bagging_fraction": 0.560600199108544
+  },
+  "iteraciones": 274,
+  "envios": 5000,
+  "ganancia_201908": 195800000.0,
+  "ganancia_201910": 286000000.0,
+  "baja2_201910": 632,
+  "max_201910_informativo": {
+    "envios": 4500,
+    "ganancia": 287650000.0
+  },
+  "segundos": 8373
+}

@@ -154,3 +154,18 @@ Las decisiones 1–5 del Paso 10 se tomaron así para tener el brazo terminado. 
 - Ningún brazo cambia el AUC. Lo que cambia es el orden de los clientes en la zona plana de la curva.
 - Limitaciones: hiperparámetros del baseline (D9), un solo mes de test, comisiones y rentabilidad en 0 en 201910 (D4). La Optuna por brazo es el chequeo de robustez pendiente.
 - Archivos: `reportes/grupo/` (semillas.csv, log_semillas.txt).
+
+## R5 — Chequeo de robustez: Optuna propia por brazo (2026-11-16, 50 trials por brazo, mismo esquema y semilla del sampler que el baseline)
+- Cada brazo se optimizó con su propia Optuna (`reportes/ipc_d1_opt/`, `reportes/grupo_opt/`) y después se corrió con las mismas 20 semillas. Se compara con N = 5.000 y en la zona plana, igual que en R3 y R4.
+- AUC de validación en 201908 del mejor trial: baseline 0,93294 · IPC 0,93248 · por grupo 0,93222. Los tres eligen N = 5.000 en 201908.
+
+  | Brazo | N = 5.000 | vs baseline | Zona plana | vs baseline | AUC 201910 |
+  |---|---|---|---|---|---|
+  | Sin deflactar (baseline) | 284,0 ± 3,3 M | — | 283,9 ± 1,9 M | — | 0,9375 |
+  | Todo con IPC, Optuna propia | 281,9 ± 3,2 M | −2,1 M (gana 4/20, p = 0,013) | 278,1 ± 1,9 M | −5,8 M (0/20, p = 0,0001) | 0,9360 |
+  | Por grupo, Optuna propia | 281,5 ± 4,2 M | −2,5 M (gana 7/20, p = 0,08) | 278,7 ± 1,7 M | −5,2 M (0/20, p = 0,0001) | 0,9357 |
+
+- **Con hiperparámetros propios, los brazos deflactados quedan más abajo que el baseline**, y ahora también en AUC (−0,0015 y −0,0018, peor en las 20 semillas). → **La ventaja del modelo sin deflactar no se explica por los hiperparámetros: el resultado de R4 es robusto.**
+- **Por grupo contra IPC, cada uno con su Optuna: empate** (−0,4 M con N fijo, p = 0,84; +0,6 M en la zona plana, p = 0,28; `reportes/comparacion_opt_grupo_vs_ipc.csv`). → **La ventaja de "por grupo" sobre "todo IPC" de R4 (+2,1 M) no se sostiene con hiperparámetros propios.** Es una diferencia chica y depende de la configuración.
+- La Optuna propia no mejora a ninguno de los dos brazos (281,9 contra 282,3 y 281,5 contra 284,4). Optimizar el AUC de 201908 no se traslada a la ganancia de 201910, lo mismo que ya se vio en R1.
+- Archivos: `reportes/{ipc_d1_opt,grupo_opt}/`, `reportes/comparacion_opt.csv`, `modelos/{ipc_d1_opt,grupo_opt}_{final.txt,optuna.db}`.

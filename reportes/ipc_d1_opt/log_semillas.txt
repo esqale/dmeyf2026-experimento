@@ -1,0 +1,73 @@
+ipc_d1_opt: 768,499 filas de train · params de reportes/ipc_d1_opt/resultado.json · 274 iter · N = 5,000 · 14 s
+      semilla 1 · iter  100 · 100 s
+      semilla 1 · iter  200 · 182 s
+  semilla  1/20 · 277.2 M con 5,000 · media 277.2 M · desvío nan M · 229 s · faltan ~77 min
+      semilla 2 · iter  100 · 328 s
+      semilla 2 · iter  200 · 408 s
+  semilla  2/20 · 286.0 M con 5,000 · media 281.6 M · desvío 6.2 M · 227 s · faltan ~70 min
+      semilla 3 · iter  100 · 556 s
+      semilla 3 · iter  200 · 637 s
+  semilla  3/20 · 280.5 M con 5,000 · media 281.2 M · desvío 4.4 M · 229 s · faltan ~66 min
+      semilla 4 · iter  100 · 784 s
+      semilla 4 · iter  200 · 865 s
+  semilla  4/20 · 281.6 M con 5,000 · media 281.3 M · desvío 3.6 M · 228 s · faltan ~62 min
+      semilla 5 · iter  100 · 1012 s
+      semilla 5 · iter  200 · 1093 s
+  semilla  5/20 · 278.3 M con 5,000 · media 280.7 M · desvío 3.4 M · 228 s · faltan ~58 min
+      semilla 6 · iter  100 · 1238 s
+      semilla 6 · iter  200 · 1320 s
+  semilla  6/20 · 282.7 M con 5,000 · media 281.1 M · desvío 3.2 M · 226 s · faltan ~54 min
+      semilla 7 · iter  100 · 1465 s
+      semilla 7 · iter  200 · 1546 s
+  semilla  7/20 · 279.4 M con 5,000 · media 280.8 M · desvío 3.0 M · 227 s · faltan ~50 min
+      semilla 8 · iter  100 · 1692 s
+      semilla 8 · iter  200 · 1771 s
+  semilla  8/20 · 287.1 M con 5,000 · media 281.6 M · desvío 3.5 M · 224 s · faltan ~46 min
+      semilla 9 · iter  100 · 1917 s
+      semilla 9 · iter  200 · 1997 s
+  semilla  9/20 · 279.4 M con 5,000 · media 281.4 M · desvío 3.4 M · 227 s · faltan ~42 min
+      semilla 10 · iter  100 · 2148 s
+      semilla 10 · iter  200 · 2233 s
+  semilla 10/20 · 280.5 M con 5,000 · media 281.3 M · desvío 3.2 M · 239 s · faltan ~38 min
+      semilla 11 · iter  100 · 2390 s
+      semilla 11 · iter  200 · 2477 s
+  semilla 11/20 · 279.4 M con 5,000 · media 281.1 M · desvío 3.1 M · 241 s · faltan ~35 min
+      semilla 12 · iter  100 · 2625 s
+      semilla 12 · iter  200 · 2706 s
+  semilla 12/20 · 279.4 M con 5,000 · media 281.0 M · desvío 3.0 M · 227 s · faltan ~31 min
+      semilla 13 · iter  100 · 2850 s
+      semilla 13 · iter  200 · 2930 s
+  semilla 13/20 · 281.6 M con 5,000 · media 281.0 M · desvío 2.9 M · 225 s · faltan ~27 min
+      semilla 14 · iter  100 · 3076 s
+      semilla 14 · iter  200 · 3157 s
+  semilla 14/20 · 284.9 M con 5,000 · media 281.3 M · desvío 2.9 M · 225 s · faltan ~23 min
+      semilla 15 · iter  100 · 3302 s
+      semilla 15 · iter  200 · 3382 s
+  semilla 15/20 · 284.9 M con 5,000 · media 281.5 M · desvío 3.0 M · 225 s · faltan ~19 min
+      semilla 16 · iter  100 · 3527 s
+      semilla 16 · iter  200 · 3608 s
+  semilla 16/20 · 278.3 M con 5,000 · media 281.3 M · desvío 3.0 M · 228 s · faltan ~15 min
+      semilla 17 · iter  100 · 3753 s
+      semilla 17 · iter  200 · 3833 s
+  semilla 17/20 · 281.6 M con 5,000 · media 281.3 M · desvío 2.9 M · 225 s · faltan ~11 min
+      semilla 18 · iter  100 · 3979 s
+      semilla 18 · iter  200 · 4059 s
+  semilla 18/20 · 287.1 M con 5,000 · media 281.7 M · desvío 3.1 M · 227 s · faltan ~8 min
+      semilla 19 · iter  100 · 4208 s
+      semilla 19 · iter  200 · 4288 s
+  semilla 19/20 · 281.6 M con 5,000 · media 281.7 M · desvío 3.0 M · 229 s · faltan ~4 min
+      semilla 20 · iter  100 · 4435 s
+      semilla 20 · iter  200 · 4514 s
+  semilla 20/20 · 287.1 M con 5,000 · media 281.9 M · desvío 3.2 M · 224 s · faltan ~0 min
+
+Resumen (M):
+       ganancia_n_fijo  ganancia_zona_plana  max_informativo
+count             20.0                 20.0             20.0
+mean             281.9                278.1            284.0
+std                3.2                  1.9              2.7
+min              277.2                275.1            280.0
+25%              279.4                276.9            282.0
+50%              281.6                277.8            283.5
+75%              284.9                279.3            285.6
+max              287.1                282.3            288.8
+AUC 201910: media 0.93598 · desvío 0.00059
