@@ -179,3 +179,9 @@ Las decisiones 1–5 del Paso 10 se tomaron así para tener el brazo terminado. 
   - E empata con `ipc_d1` → lo que se pierde al deflactar no es "de qué mes es la fila", sino el monto nominal en sí (comisiones de lista, cuotas fijas, ceros). No descarta que deflactar borre información.
   - Por el aviso previo, que no gane no es evidencia contra la hipótesis del mes en general: solo dice que, para un único mes de test, no se recupera nada.
 - Optuna propia de E: después, como chequeo, si da el tiempo.
+
+## R6 — Brazo diagnóstico E: IPC + `foto_mes` (2026-11-16, 20 semillas, hiperparámetros del baseline; criterio en D15)
+- **E contra `ipc_d1`: empate.** +0,7 M con N fijo (gana 8/20, p = 0,49) y +0,6 M en la zona plana (13/20, p = 0,31). El AUC es igual. No cumple el criterio (p < 0,05 y al menos 15/20).
+- E contra el baseline: 282,9 M contra 284,0 M con N fijo (p = 0,14), y 279,6 M contra 283,9 M en la zona plana (gana 1/20, p = 0,0002). Sigue abajo, igual que el IPC solo.
+- **Lectura según D15:** lo que se pierde al deflactar no es "de qué mes es la fila". Devolverle el mes al modelo no recupera la ganancia, así que la pérdida tiene que venir del monto nominal en sí (comisiones de lista, cuotas fijas, ceros). Con un único mes de test no se puede descartar que el mes importe en otros diseños.
+- Archivos: `reportes/ipc_d1_mes/` (semillas.csv, log_semillas.txt, comparacion.txt). La Optuna propia de E (`reportes/ipc_d1_mes_opt/`) quedó corriendo como chequeo.

@@ -351,10 +351,15 @@ Controles contra valores publicados: inflación de 2019 = 53,8% (igual que INDEC
     - Con sus propios hiperparámetros, los brazos deflactados siguen por debajo del baseline. Todo con IPC da 281,9 M con N fijo y 278,1 M en la zona plana. Por grupo da 281,5 M y 278,7 M. En la zona plana pierden en las 20 semillas, y ahora también pierden en AUC (0,9360 y 0,9357 contra 0,9375).
     - **Que no deflactar sea mejor no depende de los hiperparámetros.**
     - En cambio, la ventaja de por grupo sobre todo con IPC desaparece: empatan (p = 0,84 y 0,28). **La primera parte de la hipótesis no es robusta.**
+  - *Brazo diagnóstico, IPC + `foto_mes` (R6; idea de la versión de Manuel, criterio fijado antes de correrlo en D15):*
+    - Es el brazo IPC con una columna más que le dice al modelo de qué mes es cada fila. Prueba si deflactar empeora porque borra la pista del mes que dan los montos nominales.
+    - Resultado: **empata con el IPC solo** (+0,7 M con N fijo, p = 0,49; +0,6 M en la zona plana, p = 0,31) y sigue debajo del baseline.
+    - Devolverle el mes al modelo no recupera nada: **lo que se pierde al deflactar no es el mes, sino el monto nominal en sí.**
 - **Discusión:**
   1. **Qué se encontró.** Deflactar no mejora la ganancia, ni con IPC ni por grupo. Con los hiperparámetros del baseline, por grupo le gana al IPC por 2,1 M (R4), pero esa ventaja desaparece cuando cada brazo tiene su propia Optuna (R5). Lo robusto es que el baseline gana: los brazos deflactados pierden en la zona plana en las 20 semillas, en las dos configuraciones.
   2. **Los montos sí importan.** Las variables monetarias (crudas, lags y deltas) explican el **51% de la ganancia** (gain) del modelo baseline. `mcaja_ahorro` es la segunda más importante, después de `ctrx_quarter`. Por eso, el resultado no se explica porque el modelo ignore los montos: los usa mucho, y aun así deflactarlos no ayuda.
-  3. **Por qué puede pasar** (hipótesis, no verificadas):
+  3. **Por qué puede pasar** (la primera, probada; el resto, hipótesis no verificadas):
+     - *No es la pista del mes:* el brazo IPC + `foto_mes` (R6) empata con el IPC solo. Esta explicación quedó probada y descartada, al menos para un único mes de test.
      - *La señal de baja está cerca de cero, y el cero no se deflacta.* Un cliente que se va vacía la cuenta y deja de consumir. Que el saldo quede en 0 o caiga a la mitad se ve igual en pesos nominales que en pesos de enero. Si los cortes de los árboles caen cerca de 0, dividir por un índice casi no los mueve.
      - *La ventana es corta.* Entre 201903 y 201910 el IPC sube ~27%, poco frente a la dispersión entre clientes, donde los montos van de cientos a millones. El drift existe, pero pesa menos que las diferencias entre un cliente y otro.
      - *Los índices no describen bien a las columnas.* Los saldos crecen 1,36–1,43 en el año, y ni la tasa (1,53) ni el IPC (1,50) los siguen. Dividir por un índice que no corresponde puede agregar ruido en lugar de quitarlo.
