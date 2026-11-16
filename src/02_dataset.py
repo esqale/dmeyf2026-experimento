@@ -5,6 +5,7 @@ Uso:
     python src/02_dataset.py --brazo ipc --desfase 1                # todo con IPC del mes anterior -> datasets/fe_ipc_d1
     python src/02_dataset.py --brazo ipc --desfase 0                # todo con IPC del mismo mes -> datasets/fe_ipc_d0
     python src/02_dataset.py --brazo grupo                          # cada grupo con su deflactor -> datasets/fe_grupo
+    python src/02_dataset.py --brazo ipc --con-mes                  # brazo E: IPC + foto_mes -> datasets/fe_ipc_d1_mes
 
 Meses: 201903–201910 (201901–201902 solo aportan lags; 201911–201912 solo la clase de 201909–201910).
 """
@@ -24,7 +25,7 @@ MESES = [201903, 201904, 201905, 201906, 201907, 201908, 201909, 201910]
 
 def main(a):
     salida = a.salida or {"base": "datasets/fe_base", "grupo": "datasets/fe_grupo"}.get(
-        a.brazo, f"datasets/fe_{a.brazo}_d{a.desfase}")
+        a.brazo, f"datasets/fe_{a.brazo}_d{a.desfase}") + ("_mes" if a.con_mes else "")
     os.makedirs(salida, exist_ok=True)
     con = duckdb.connect()
     con.execute("SET memory_limit='6GB'")
@@ -41,7 +42,8 @@ def main(a):
         fe = features_mes(con, a.historia, mes, deflactor)
         cl = clase_ternaria(con, a.historia, mes)
         destino = os.path.join(salida, f"{mes}.parquet").replace("\\", "/")
-        con.sql("SELECT fe.*, cl.clase_ternaria FROM fe JOIN cl USING (numero_de_cliente)") \
+        extra = ", fe.foto_mes AS foto_mes_feature" if a.con_mes else ""  # brazo diagnóstico E (D15)
+        con.sql(f"SELECT fe.*{extra}, cl.clase_ternaria FROM fe JOIN cl USING (numero_de_cliente)") \
            .write_parquet(destino + ".tmp", compression="zstd")
         os.replace(destino + ".tmp", destino)
         n, ncol = con.sql(f"SELECT count(*) FROM '{destino}'").fetchone()[0], len(fe.columns) + 1
@@ -54,4 +56,5 @@ if __name__ == "__main__":
     p.add_argument("--salida", default=None)
     p.add_argument("--brazo", choices=["base", "ipc", "grupo"], default="base")
     p.add_argument("--desfase", type=int, default=1, help="meses de atraso del índice (0 = mismo mes)")
+    p.add_argument("--con-mes", action="store_true", help="agrega foto_mes como feature (brazo diagnóstico E)")
     main(p.parse_args())

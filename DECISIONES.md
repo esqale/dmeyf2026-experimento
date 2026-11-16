@@ -169,3 +169,13 @@ Las decisiones 1–5 del Paso 10 se tomaron así para tener el brazo terminado. 
 - **Por grupo contra IPC, cada uno con su Optuna: empate** (−0,4 M con N fijo, p = 0,84; +0,6 M en la zona plana, p = 0,28; `reportes/comparacion_opt_grupo_vs_ipc.csv`). → **La ventaja de "por grupo" sobre "todo IPC" de R4 (+2,1 M) no se sostiene con hiperparámetros propios.** Es una diferencia chica y depende de la configuración.
 - La Optuna propia no mejora a ninguno de los dos brazos (281,9 contra 282,3 y 281,5 contra 284,4). Optimizar el AUC de 201908 no se traslada a la ganancia de 201910, lo mismo que ya se vio en R1.
 - Archivos: `reportes/{ipc_d1_opt,grupo_opt}/`, `reportes/comparacion_opt.csv`, `modelos/{ipc_d1_opt,grupo_opt}_{final.txt,optuna.db}`.
+
+## D15 — Brazo diagnóstico E: IPC + `foto_mes` (criterio fijado ANTES de correrlo, 2026-11-16 15:55)
+- Pregunta: ¿deflactar empeora porque borra la pista del mes que dan los montos nominales? (idea de la versión de Manuel, hoja de ruta v2).
+- Brazo: `datasets/fe_ipc_d1_mes` = `fe_ipc_d1` + la columna `foto_mes_feature` (copia de `foto_mes`). Mismos hiperparámetros del baseline, las mismas 20 semillas, N = 5.000 y zona plana.
+- Aviso previo: en el test todos los clientes tienen el mismo `foto_mes` (201910, fuera del rango de entrenamiento), así que la columna no puede reordenar clientes dentro del mes. Solo puede ayudar separando los efectos de cada mes durante el entrenamiento. Se espera un efecto chico.
+- **Criterio de lectura** (comparación pareada E contra `ipc_d1`, Wilcoxon p < 0,05 y que gane en al menos 15 de 20 semillas):
+  - E le gana a `ipc_d1` y se acerca al baseline → deflactar confundía los efectos de cada mes durante el entrenamiento, y `foto_mes` lo corrige.
+  - E empata con `ipc_d1` → lo que se pierde al deflactar no es "de qué mes es la fila", sino el monto nominal en sí (comisiones de lista, cuotas fijas, ceros). No descarta que deflactar borre información.
+  - Por el aviso previo, que no gane no es evidencia contra la hipótesis del mes en general: solo dice que, para un único mes de test, no se recupera nada.
+- Optuna propia de E: después, como chequeo, si da el tiempo.
