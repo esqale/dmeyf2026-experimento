@@ -342,7 +342,11 @@ Controles contra valores publicados: inflación de 2019 = 53,8% (igual que INDEC
     - Con el IPC del mismo mes, el brazo da 284,0 M con 5.000 envíos (igual que el baseline) y 280,4 M en la zona plana.
     - Contra el del mes anterior, el del mismo mes da 1,7 M más con N fijo (gana 12 de 20, p = 0,04) y 1,4 M más en la zona plana (gana 13 de 20, p = 0,015).
     - La diferencia es chica, del orden del ruido de una semilla, pero consistente: usar el índice del mes anterior (lo único disponible al predecir) cuesta algo. Ninguna de las dos versiones le gana al baseline.
-  - *Brazo 3, por grupo:* pendiente de la clasificación (Paso 10).
+  - *Brazo 3, por grupo (clasificación en DECISIONES.md, D14), 20 semillas pareadas:*
+    - Con 5.000 envíos da **284,4 M ± 3,8 M** y en la zona plana **280,4 M ± 1,3 M**. El AUC es 0,9373.
+    - **Contra el brazo IPC (mismo desfase): gana.** Da +2,1 M con N fijo (14 de 20 semillas, p = 0,017) y +1,4 M en la zona plana (14 de 20, p = 0,002). La primera parte de la hipótesis se cumple.
+    - **Contra el baseline sin deflactar: no gana.** Con N fijo empatan (+0,4 M, p = 0,69). En la zona plana pierde por 3,5 M (gana 1 de 20, p = 0,0001). La segunda parte de la hipótesis no se cumple.
+  - *Lectura conjunta:* deflactar por grupo es mejor que deflactar todo por el IPC, pero ninguna forma de deflactar mejora al modelo sin deflactar. Los tres brazos tienen el mismo AUC. Las diferencias están en la forma de la curva de ganancia: los brazos deflactados pierden en la zona plana, aunque empatan en N = 5.000. La salvedad es que todos usan los hiperparámetros optimizados para el baseline.
 - **Discusión:**  
 - **Conclusión:**  
 - **Antecedente** (plantilla de referencia, ejemplo de 2023, "Data Drifting"): otro grupo deflactó las 73 variables monetarias por el IPC general. Encontró la misma limitación que nosotros, porque las variables en dólares vienen convertidas a pesos al tipo de cambio oficial. También dejó escrito: "no encontré paper de performance por ajuste por inflación". Nuestro brazo "todo con IPC" replica ese enfoque, y el brazo "por grupo" lo extiende. Sirve para la Discusión (problema ↔ otros problemas).

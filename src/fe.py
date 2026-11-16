@@ -5,6 +5,8 @@ features_mes(): para la foto t devuelve las columnas crudas + lag1, lag2, delta1
     si el cliente no estaba en t-k, el lag queda NULL.
     Opcional `deflactor` = {columna: {foto_mes: divisor}}: cada valor se divide por el divisor de SU mes
     (el valor de t por el de t, el lag1 por el de t-1, ...) ANTES de calcular lags y deltas.
+    Si en vez del dict hay un nombre de columna ({columna: "otra"}), la columna se reemplaza por el cociente
+    otra / columna del mismo cliente y mes (límites de tarjeta en el brazo "por grupo"; 0 en el divisor da NULL).
     Sin deflactor, el resultado es exactamente el del baseline.
 clase_ternaria(): CONTINUA / BAJA+1 / BAJA+2 desde la presencia del cliente en t+1 y t+2. Solo entrenamiento.
 
@@ -45,6 +47,8 @@ def features_mes(con, carpeta, mes, deflactor=None):
     def v(alias, c, m):  # valor de la columna c en el mes m, deflactado si corresponde
         if c not in deflactor:
             return f'{alias}."{c}"'
+        if isinstance(deflactor[c], str):
+            return f'({alias}."{deflactor[c]}" / NULLIF({alias}."{c}", 0))'
         return f'({alias}."{c}" / {float(deflactor[c][m])!r})'
 
     sel = ["t.numero_de_cliente", "t.foto_mes"]

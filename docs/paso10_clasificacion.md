@@ -1,5 +1,7 @@
 # Paso 10 · Clasificación de las columnas monetarias y su deflactor (propuesta para discutir)
 
+> **Estado (2026-11-15):** la clasificación se cerró con criterio propio para correr el brazo 3, y queda para revisar entre los tres. La asignación final, la verificación de monedas (las tarjetas en dólares están en USD; las etiquetas de plazo fijo parecen cruzadas) y los motivos de cada decisión están en `DECISIONES.md` (D14). El código está en `src/deflactar.py` (`GRUPOS`).
+
 Hay 73 columnas monetarias: las que empiezan con `m`, `Visa_m` o `Master_m`. Los números salen de `src/06_monetarias.py` (tabla completa en `reportes/paso10/inventario.csv`).
 
 **Cómo leer la evidencia:**

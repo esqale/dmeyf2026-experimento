@@ -43,8 +43,14 @@ python src/02_dataset.py --brazo ipc --desfase 0
 python src/04_semillas.py --dataset datasets/fe_ipc_d1 --nombre ipc_d1
 python src/04_semillas.py --dataset datasets/fe_ipc_d0 --nombre ipc_d0
 
-# 9. Comparación pareada por semilla (el primero es la referencia)
-python src/07_comparar.py baseline ipc_d1 ipc_d0
+# 9. Verificación de monedas (Paso 10, D14) y brazo "por grupo" con sus 20 semillas
+python src/08_monedas.py
+python src/02_dataset.py --brazo grupo
+python src/04_semillas.py --dataset datasets/fe_grupo --nombre grupo
+
+# 10. Comparación pareada por semilla (el primero es la referencia)
+python src/07_comparar.py baseline ipc_d1 ipc_d0 grupo
+python src/07_comparar.py ipc_d1 grupo
 ```
 
 Para seguir una corrida larga desde otra terminal (PowerShell):

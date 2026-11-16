@@ -107,3 +107,50 @@ Qué se decidió, por qué y qué se descartó. Los resultados de la exploració
 - **Objetivo 1** (`reportes/comparacion_objetivo1.csv`): el IPC del mismo mes da 1,7 M más que el del mes anterior con N fijo (gana 12/20, p = 0,04) y 1,4 M más en la zona plana (gana 13/20, p = 0,015). Usar el índice del mes anterior cuesta poco, pero algo.
 - Limitación: los hiperparámetros son los del baseline (D9), lo que puede favorecerlo. La Optuna por brazo es el chequeo.
 - Archivos: `reportes/ipc_d1/` y `reportes/ipc_d0/` (semillas.csv, log_semillas.txt).
+
+## D14 — Brazo 3 "por grupo": clasificación cerrada con criterio propio, para revisar entre los tres (2026-11-15)
+Las decisiones 1–5 del Paso 10 se tomaron así para tener el brazo terminado. Si el grupo no está de acuerdo, se cambia `deflactar.GRUPOS` y se vuelve a correr (~1 h). Código: `src/deflactar.py` (`brazo_grupo`), `python src/02_dataset.py --brazo grupo` → `datasets/fe_grupo`.
+
+**Verificación de monedas** (decisión 2, `src/08_monedas.py`, salidas en `reportes/paso10/monedas_*.csv`):
+- **Consumos, pagos y adelantos en dólares de tarjeta (`Visa/Master_mconsumosdolares`, `_mpagosdolares`, `_madelantodolares`): están en USD.** Por cliente no se mueven con el dólar (crecimiento anual 1,0 y salto de agosto 1,0, cuando el tipo de cambio sube 35%). La mediana es de 10 (≈ USD 8,5 descontando el factor 1,173), contra 9.053 en pesos, y la moda es 1,16 ≈ USD 1. Además, `mconsumototal` es igual a `mconsumospesos` en el 100% de los casos: el total no suma los dólares. → **Sin deflactar.**
+- **Saldos en dólares de tarjeta (`Visa/Master_msaldodolares`): están en pesos.** Por cliente siguen al tipo de cambio (salto de agosto 1,27, crecimiento anual 1,60, contra 1,35 y 1,62 del dólar). → Tipo de cambio.
+- **Plazo fijo: las etiquetas parecen cruzadas.** `mplazo_fijo_pesos` sigue al dólar de forma exacta (1,618 y 1,347) y la tienen solo 837 clientes (0,6%). `mplazo_fijo_dolares` no se mueve con el dólar (1,19 y 1,02), la tienen 15.499 clientes (11%) y su moda es 117.300 = 100.000 × 1,173, un monto redondo típico de un plazo fijo en pesos. → **Se deflacta cada columna según cómo se comporta, no según su nombre:** `mplazo_fijo_pesos` por el tipo de cambio y `mplazo_fijo_dolares` por la tasa de plazo fijo. Los nombres no se tocan (criterio de D4).
+
+**Asignación (73 columnas):**
+
+| Grupo | Columnas | Deflactor | Desfase |
+|---|---|---|---|
+| Consumos y movimientos en pesos, préstamos, rentabilidad y márgenes | 43 | IPC | 1 mes |
+| Sueldo | `mpayroll`, `mpayroll2` | RIPTE | 1 mes |
+| Saldos en pesos | 7 + `mplazo_fijo_dolares` | Tasa de plazo fijo a 30 días acumulada (`idx_tasa_pf30`) | 0 |
+| Dólares expresados en pesos | `mcaja_ahorro_dolares`, `minversion1_dolares`, `mplazo_fijo_pesos`, `Visa/Master_msaldodolares` | Tipo de cambio de fin de mes | 0 |
+| Compra y venta de dólares | `mforex_buy`, `mforex_sell` | Tipo de cambio promedio del mes | 0 |
+| Comisiones | `mcomisiones`, `_mantenimiento`, `_otras` | Moda mensual de `mcomisiones_mantenimiento` | 0 |
+| Límites de tarjeta | `mlimitecompra` → `mconsumototal / mlimitecompra`; `mfinanciacion_limite` → `msaldototal / mfinanciacion_limite` | Se reemplazan por el cociente | — |
+| Consumos y pagos en dólares de tarjeta | 6 | Ninguno (USD) | — |
+
+**Por qué cada decisión:**
+1. *Saldos → tasa de plazo fijo.* Es lo que plantea la hipótesis, y el brazo IPC ya cubre la alternativa. Ningún índice describe bien los saldos (crecen 1,36–1,43): queda como limitación.
+2. *Monedas:* ver la verificación de arriba.
+3. *CER y tasa activa quedan sin usar.* No hay préstamos que se muevan como UVA (los hipotecarios crecen 0,95) ni montos de mora. Los préstamos van por IPC. En el video se cuenta como hallazgo: la tabla original de deflactores suponía columnas que el dataset no tiene.
+4. *Límites → se reemplazan por el cociente.* Así el brazo tiene las mismas columnas que los otros y la comparación queda limpia. El cociente usa los valores nominales (no tiene unidad), y 0 en el límite da NULL.
+5. *Rentabilidad y márgenes → IPC.* En el mes de test valen 0 para todos (D4), así que la elección pesa poco.
+6. *Desfase:* 1 mes para IPC y RIPTE, que es lo único disponible al predecir (objetivo 1: cuesta ~1,5 M, R3); 0 para las series del BCRA y para la moda de comisiones, que se calcula con el mismo mes del dataset.
+7. *Comisiones:* la moda de mantenimiento sube de a escalones (723,5 → 925,8 en 201903 → 1.092,1 en 201908) y existe en todos los meses, incluidos 201905 y 201910. Si algún mes faltara, se repite la del mes anterior.
+
+**Verificación a mano** (cliente 12311477, 201908): valor, lag1 y delta1 coinciden con el cálculo a mano en las cinco familias de deflactores, en el cociente del límite y en las columnas en USD sin tocar. En 201910, las columnas no monetarias y la clase son idénticas a las del baseline. Ejemplo para el video: este cliente paga 925,8 de mantenimiento en julio y 1.092,1 en agosto. Deflactado por la moda, queda en 723,5 en los dos meses (delta 0): el aumento de lista desaparece.
+
+## R4 — Brazo 3 "por grupo" (2026-11-15, 20 semillas, hiperparámetros del baseline, reentrenando con 201903–08)
+- Resumen de los tres brazos (pareado por semilla; `reportes/comparacion.csv` contra el baseline y `reportes/comparacion_grupo_vs_ipc.csv` contra el IPC):
+
+  | Brazo | N = 5.000 | Zona plana | AUC 201910 |
+  |---|---|---|---|
+  | Sin deflactar (baseline) | 284,0 ± 3,3 M | 283,9 ± 1,9 M | 0,9375 |
+  | Todo con IPC (mes anterior) | 282,3 ± 3,4 M | 279,0 ± 1,8 M | 0,9374 |
+  | Por grupo | 284,4 ± 3,8 M | 280,4 ± 1,3 M | 0,9373 |
+
+- **Por grupo contra todo con IPC: gana.** +2,1 M con N fijo (14/20, Wilcoxon p = 0,017) y +1,4 M en la zona plana (14/20, p = 0,002). → **Se confirma la primera parte de la hipótesis.**
+- **Por grupo contra sin deflactar: no gana.** +0,4 M con N fijo (8/20, p = 0,69: empate) y −3,5 M en la zona plana (1/20, p = 0,0001). → **No se confirma la segunda parte.**
+- Ningún brazo cambia el AUC. Lo que cambia es el orden de los clientes en la zona plana de la curva.
+- Limitaciones: hiperparámetros del baseline (D9), un solo mes de test, comisiones y rentabilidad en 0 en 201910 (D4). La Optuna por brazo es el chequeo de robustez pendiente.
+- Archivos: `reportes/grupo/` (semillas.csv, log_semillas.txt).
