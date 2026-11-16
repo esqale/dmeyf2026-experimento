@@ -351,10 +351,31 @@ Controles contra valores publicados: inflación de 2019 = 53,8% (igual que INDEC
     - Con sus propios hiperparámetros, los brazos deflactados siguen por debajo del baseline. Todo con IPC da 281,9 M con N fijo y 278,1 M en la zona plana. Por grupo da 281,5 M y 278,7 M. En la zona plana pierden en las 20 semillas, y ahora también pierden en AUC (0,9360 y 0,9357 contra 0,9375).
     - **Que no deflactar sea mejor no depende de los hiperparámetros.**
     - En cambio, la ventaja de por grupo sobre todo con IPC desaparece: empatan (p = 0,84 y 0,28). **La primera parte de la hipótesis no es robusta.**
-- **Discusión:**  
-- **Conclusión:**  
+- **Discusión:**
+  1. **Qué se encontró.** Deflactar no mejora la ganancia, ni con IPC ni por grupo. Con los hiperparámetros del baseline, por grupo le gana al IPC por 2,1 M (R4), pero esa ventaja desaparece cuando cada brazo tiene su propia Optuna (R5). Lo robusto es que el baseline gana: los brazos deflactados pierden en la zona plana en las 20 semillas, en las dos configuraciones.
+  2. **Los montos sí importan.** Las variables monetarias (crudas, lags y deltas) explican el **51% de la ganancia** (gain) del modelo baseline. `mcaja_ahorro` es la segunda más importante, después de `ctrx_quarter`. Por eso, el resultado no se explica porque el modelo ignore los montos: los usa mucho, y aun así deflactarlos no ayuda.
+  3. **Por qué puede pasar** (hipótesis, no verificadas):
+     - *La señal de baja está cerca de cero, y el cero no se deflacta.* Un cliente que se va vacía la cuenta y deja de consumir. Que el saldo quede en 0 o caiga a la mitad se ve igual en pesos nominales que en pesos de enero. Si los cortes de los árboles caen cerca de 0, dividir por un índice casi no los mueve.
+     - *La ventana es corta.* Entre 201903 y 201910 el IPC sube ~27%, poco frente a la dispersión entre clientes, donde los montos van de cientos a millones. El drift existe, pero pesa menos que las diferencias entre un cliente y otro.
+     - *Los índices no describen bien a las columnas.* Los saldos crecen 1,36–1,43 en el año, y ni la tasa (1,53) ni el IPC (1,50) los siguen. Dividir por un índice que no corresponde puede agregar ruido en lugar de quitarlo.
+     - *El monto nominal también tiene información.* Un sueldo que no se actualiza o una cuota fija pueden ser una señal en sí mismos, y al deflactarlos esa señal se pierde.
+     - *2019 tiene un quiebre de comportamiento.* Las PASO de agosto y el cepo de septiembre no son precios, y ningún deflactor los corrige.
+  4. **Objetivo 1.** Usar el índice del mes anterior, que es lo único disponible al predecir, cuesta ~1,5 M frente al del mismo mes (R3). Es un costo chico, pero consistente entre semillas.
+  5. **Objetivo 2: la lección de método.** Con una sola semilla, el ruido es de ±3,3 M. Sin las 20 semillas pareadas, el +2,1 M de "por grupo" habría parecido un resultado. Y sin el chequeo con una Optuna propia por brazo, lo habríamos reportado como hallazgo. Las diferencias de unos pocos millones solo se pueden afirmar con semillas pareadas y con un chequeo de robustez.
+  6. **Hallazgos sobre los datos** (D14), que salieron al clasificar las columnas:
+     - Los consumos y pagos en dólares de tarjeta están en USD, mientras que los saldos en dólares están en pesos al tipo de cambio.
+     - Las etiquetas de plazo fijo en pesos y en dólares parecen cruzadas.
+     - No hay préstamos UVA ni montos de mora.
+     - Los montos están multiplicados por 1,173.
+
+     La tabla de deflactores de la hipótesis suponía columnas que el dataset no tiene: los grupos CER y tasa activa quedaron vacíos.
+  7. **Relación con otros trabajos.** El grupo de 2023 (ver Antecedente) deflactó todo por IPC, se encontró con el mismo problema de las variables en dólares y no encontró papers sobre el tema. Este trabajo lo extiende con el brazo por grupo, la medición del ruido entre semillas y el chequeo de robustez. Llega a una conclusión en la misma línea: en churn bancario con ventanas cortas, ajustar por inflación no es una mejora obvia.
+- **Conclusión:** En el churn de 2019, con un modelo LightGBM de lags y deltas, **deflactar las variables monetarias no mejora la ganancia**: el modelo sin deflactar es igual o mejor, en las 20 semillas y con hiperparámetros propios para cada brazo. Deflactar por grupo le ganó a deflactar todo por IPC solo con los hiperparámetros del baseline; con hiperparámetros propios empatan, así que esa ventaja no es robusta. La hipótesis no se confirma en ninguna de sus dos partes. Recomendación práctica: en ventanas cortas como esta, no vale la pena deflactar. Si se hace, usar el índice del mes anterior (el único disponible al predecir) cuesta poco.
 - **Antecedente** (plantilla de referencia, ejemplo de 2023, "Data Drifting"): otro grupo deflactó las 73 variables monetarias por el IPC general. Encontró la misma limitación que nosotros, porque las variables en dólares vienen convertidas a pesos al tipo de cambio oficial. También dejó escrito: "no encontré paper de performance por ajuste por inflación". Nuestro brazo "todo con IPC" replica ese enfoque, y el brazo "por grupo" lo extiende. Sirve para la Discusión (problema ↔ otros problemas).
 - **Futuros Experimentos y Problemas:**
-  - Optuna por brazo, si no entra antes del video.
-  - Confirmar la moneda de las columnas "dólares" de tarjeta y si las de plazo fijo están cruzadas.
+  - **Ventanas largas y con más inflación** (2020–2021), donde el drift podría pesar más que la dispersión entre clientes.
+  - **Varios meses de test**, en lugar de uno solo, para que el resultado no dependa de 201910.
+  - **Alternativas a deflactar:** el ranking o percentil del cliente dentro de su mes, que no depende de ningún índice, o cocientes entre columnas del mismo cliente (como el uso del límite).
+  - **Verificar la explicación del "cero":** ver dónde caen los cortes de los árboles en las variables monetarias y cuántos están cerca de 0.
+  - **Confirmar con la cátedra** si las columnas de plazo fijo en pesos y en dólares están cruzadas.
   - Montos anonimizados: las modas son múltiplos de 1,173 (5.865 = 5.000 × 1,173). Es un factor constante y no afecta, pero vale mencionarlo.
