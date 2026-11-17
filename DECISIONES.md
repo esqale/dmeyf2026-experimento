@@ -215,3 +215,19 @@ Las decisiones 1–5 del Paso 10 se tomaron así para tener el brazo terminado. 
 - **AUC de 201910: nuestro baseline es mejor** (0,9375 contra 0,9361; gana en las 20 semillas, p < 0,0001).
 - Conclusión: en ganancia, nuestro modelo base es igual al de la versión de Manuel; en AUC, de validación y de test, es mejor. El óptimo de hiperparámetros es plano, como se esperaba.
 - Archivos: `reportes/baseline_manuel/` y `reportes/comparacion_baseline_manuel.csv`.
+
+## D17 — Validación adversarial de los montos (criterio fijado ANTES de correrla, 2026-11-17)
+- **Pregunta:** ¿deflactar les saca el drift a las columnas monetarias? La ganancia no lo contesta: un brazo puede perder ganancia y aun así haber hecho bien su trabajo, o al revés. La idea viene de la versión de Manuel (`7_drift.ipynb`), que la corrió con todas las columnas. Ahí las no monetarias (`tmobile_app`, fechas de tarjeta) separan los meses solas, el AUC queda pegado a 1 y no se pueden comparar los brazos.
+- **Diseño** (`src/10_adversarial.py`):
+  - Datasets `fe_base`, `fe_ipc_d1` y `fe_grupo`, ya construidos (mismas columnas; en por grupo, los límites ya son ratios).
+  - Solo columnas monetarias, en dos conjuntos: (a) las 73 del mes y (b) las 73 con sus lags y deltas (365).
+  - Dos pares de meses: 201903 contra 201910 (el de Manuel) y 201908 contra 201910 (último mes de entrenamiento contra el de test).
+  - **Multivariada:** LightGBM (learning_rate 0,05, 31 hojas, hasta 300 rondas, early stopping 30) que predice el mes. Split 70/30 estratificado y AUC en el 30%. Se repite con las 5 primeras de nuestras 20 semillas.
+  - **Univariada:** AUC de cada columna sola para separar los dos meses (los NaN cuentan como el valor más bajo). Drift = |AUC − 0,5|. Se informa la mediana y cuántas columnas superan 0,05.
+- **Criterio:**
+  - Un brazo *reduce el drift* si su AUC multivariado es menor que el del nominal en las 5 semillas y por al menos 0,01 en promedio, o si la mediana del drift univariado baja a la mitad o menos.
+  - Si el AUC multivariado supera 0,99 en los tres brazos, se declara saturado y se decide solo con la univariada.
+  - Se mira primero el conjunto (a) con 201903 contra 201910; los otros tres casos son de apoyo.
+- **Qué significaría cada resultado:**
+  - Si deflactar *reduce* el drift y aun así pierde ganancia, el drift de los montos no le molestaba al modelo.
+  - Si *no lo reduce*, los índices no describen cómo se mueven los montos (coherente con la explicación 3 de la Discusión), y deflactar no podía ayudar.
