@@ -261,3 +261,35 @@ Su versión corre los mismos brazos con 5 semillas y mide con el máximo de la c
 - **Donde sí había drift por inflación, deflactar lo corrige.** En los consumos, saldos y límites de tarjeta, el AUC pasa de 0,55–0,56 a 0,48–0,52. Ejemplos: `mtarjeta_visa_consumo` 0,562 → 0,518; `Visa_msaldopesos` 0,553 → 0,512; `Master_mlimitecompra` 0,549 → 0,478 (IPC) y 0,495 (por grupo). Pero ese drift era chico (|AUC − 0,5| ≈ 0,05) al lado de los cortes de los datos (0,3–0,49).
 - **Lectura:** se cumple la segunda rama de D17, pero por un motivo distinto al previsto. El drift de los montos está dominado por cortes de registro que ningún deflactor puede corregir. La parte que sí es inflación, deflactar la corrige, y es chica. Esto es coherente con que deflactar no mejore la ganancia: corrige un drift que era menor. Confirma con montos lo que la versión de Manuel vio con todas las columnas.
 - Archivos: `reportes/adversarial/` (resumen.csv, multivariada.csv, univariada.csv, log.txt).
+
+## D18 — Dónde cortan los árboles en las variables monetarias (criterio fijado ANTES de mirarlo, 2026-11-17)
+- **Pregunta:** ¿los árboles usan los montos sobre todo como "cero contra no cero"? Es una de las explicaciones no verificadas de la Discusión: "la señal de baja está cerca de cero, y el cero no se deflacta". Si fuera así, dividir por un índice casi no mueve a los clientes de lado en cada corte, y deflactar no podría cambiar mucho.
+- **Diseño** (`src/11_cortes.py`, sin entrenar nada):
+  - Se lee el modelo final del baseline (`modelos/baseline_final.txt`, entrenado con 201903–08) y se listan todos los cortes sobre variables monetarias (las 73 del mes, sus lags y sus deltas), con su ganancia (gain).
+  - **(a) Cortes en cero:** qué porcentaje del gain de los cortes monetarios está en umbrales con |umbral| ≤ 1 peso. Se informa por tipo (mes, lag, delta).
+  - **(b) Clientes que cambian de lado:** para cada corte monetario, qué fracción de los clientes de 201910 queda del otro lado del umbral si el valor viene del dataset deflactado (`fe_ipc_d1`) en vez del nominal (`fe_base`), promediado con peso por gain. Mide directamente cuánto mueve deflactar el recorrido por el árbol. Los NaN quedan siempre del mismo lado.
+- **Criterio, sobre (a):**
+  - Si ≥ 50% del gain monetario está en cortes en cero, la explicación queda **respaldada**.
+  - Si es < 25%, queda **descartada**.
+  - Entre 25% y 50%, **respaldo parcial**.
+  - (b) se informa como apoyo y no decide.
+
+## R11 — Dónde cortan los árboles en las variables monetarias (2026-11-17, criterio en D18, `src/11_cortes.py`)
+- El modelo final del baseline tiene 41.715 cortes. 27.573 son sobre variables monetarias, que suman el 51,5% del gain del modelo (igual que en la Discusión).
+- **(a) Cortes en cero: solo el 6,4% del gain monetario** está en umbrales con |umbral| ≤ 1 peso. Por tipo: 5,2% en las del mes, 5,8% en los lags y 9,6% en los deltas. **Por el criterio D18 (< 25%), la explicación "la señal está en el cero, y el cero no se deflacta" queda descartada.**
+- Contexto (no decide, porque no estaba en el criterio): los cortes caen en montos chicos, no en cero.
+
+  | Umbral | % del gain monetario |
+  |---|---|
+  | \|umbral\| ≤ 1 peso | 6,4% |
+  | \|umbral\| ≤ 100 pesos | 19,7% |
+  | \|umbral\| ≤ 1.000 pesos | 48,2% |
+  | \|umbral\| ≤ 10.000 pesos | 81,9% |
+
+  El modelo separa "cuenta casi vacía" de "cuenta con algo". A diferencia del cero, esos umbrales sí se mueven al deflactar.
+- **(b) Clientes que cambian de lado:** en cada corte monetario, deflactar con IPC cambia de lado en promedio al **2,1%** de los clientes de 201910 (ponderado por gain): 1,6% en las del mes, 2,3% en los lags y 3,1% en los deltas. En `mcaja_ahorro`, la más importante (9,5% del gain del modelo), es el 2,9%.
+- **Lectura:**
+  - Deflactar cambia poco el recorrido por el árbol, pero no porque los cortes estén en cero.
+  - La razón es que un factor de ~1,3 corre a pocos clientes de lado en cada umbral: la densidad de clientes cerca de cualquier umbral es baja.
+  - La explicación de la Discusión se reemplaza por esta, que está medida.
+- Archivos: `reportes/cortes/` (resumen.csv, cortes.csv).

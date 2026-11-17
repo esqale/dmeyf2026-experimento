@@ -47,10 +47,11 @@ Escrita el 17/11 después de revisar el repo de Manuel ([vmanuelmarasco/experime
 | D | Guion y diapositivas del video (plantilla de 15 diapositivas) | Entrega | 1 día | vie 20/11 |
 | E | Grabar y subir el video | Entrega | — | dom 22/11 (margen hasta el lunes 23/11 a las 12) |
 
-**Opcionales**, solo si sobra tiempo antes de D (cada uno lleva unas 2–3 h de cómputo):
-- F. Por grupo + `foto_mes` (el brazo F de la v2).
-- Por grupo con IPC en las 8 columnas de saldos (la decisión más débil del brazo por grupo).
-- Dónde caen los cortes de los árboles en las variables monetarias (apoya la explicación "la señal está cerca de cero").
+**Hecho fuera de la lista:** dónde caen los cortes de los árboles (D18, R11). La explicación "la señal está en el cero" queda descartada: los cortes caen en montos chicos, y deflactar cambia de lado solo al ~2% de los clientes por corte.
+
+**Para más adelante**, en este orden (cada una lleva ~1 h 15 min con los hiperparámetros del baseline, y 2–3 h más con Optuna propia):
+1. Por grupo con IPC en las 8 columnas de saldos, en lugar de la tasa de plazo fijo. Es la decisión más débil del brazo por grupo y la crítica más previsible en clase.
+2. Por grupo + `foto_mes` (el brazo F de la v2). Se espera empate, como con IPC (R6–R7).
 
 **Quedan fuera** (van a "Futuros experimentos" del documento):
 - Otro mes de test.
