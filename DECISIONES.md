@@ -312,3 +312,20 @@ Su versión corre los mismos brazos con 5 semillas y mide con el máximo de la c
 - **Qué significaría cada resultado:**
   - Si G o H le gana al baseline, corregir la inflación sí sirve, pero no dividiendo por un índice.
   - Si empatan o pierden, la conclusión "corregir la inflación no mejora este modelo" se vuelve más fuerte, porque vale para tres formas distintas de corregirla.
+
+## D20 — Resto de la lista de pruebas (criterios fijados ANTES de correrlas, 2026-11-17 19:30)
+Orden y motivos en `docs/hoja_de_ruta_v3.md` (revisado con `docs/investigacion_bibliografica.md`). Para todas vale el protocolo de D19:
+- Hiperparámetros del baseline, las mismas 20 semillas y reentrenamiento con 201903–08.
+- Métrica principal: ganancia con N = 5.000. Con Wilcoxon pareado p < 0,05 contra la referencia, se declara que *mejora* o *empeora*; si no, *empata*.
+- Zona plana, máximo de la curva y AUC se informan como apoyo.
+
+| Prueba | Cómo se arma | Referencia principal | Qué se concluye |
+|---|---|---|---|
+| **G2**, ranking después de lags y deltas (`--brazo ranking_post`) | Las features de `fe_base` (lags y deltas en pesos), con cada una de las 365 monetarias rankeada dentro del mes, con el mismo cero fijo que G | Baseline, y G | Contra G: si gana G2, lo que sirve es rankear los deltas en pesos; si gana G, rankear los niveles antes de calcular los deltas |
+| **M**, nominal + ranking (`--brazo nominal_ranking`) | Las 760 features nominales más las 365 monetarias de G con sufijo `_rk` (1.125 en total) | Baseline | **Información nominal propia:** si M le gana al baseline y a G, las dos versiones aportan. Además, del modelo final se mide qué parte del gain va a las nominales y qué parte a las `_rk`. Si más de la mitad del gain monetario sigue en las nominales teniendo el ranking disponible, hay evidencia de que el monto en pesos informa algo por sí mismo. |
+| **G0**, ranking sin cero fijo (`--brazo ranking_sin_cero`) | Como G, pero `cume_dist` sobre todos los valores del mes, ceros incluidos | G | Si G le gana a G0, fijar el cero importa (antecedente: Rossi, 2019, sin cero fijo, peor que el nominal) |
+| **J**, por grupo con IPC en los saldos (`--brazo grupo_saldos_ipc`) | El brazo por grupo con los 8 saldos de la tasa de plazo fijo pasados a IPC del mes anterior | Por grupo (`grupo`) | Si empata, la elección del índice de los saldos no cambia el resultado |
+| **K**, mediana por columna (`--brazo mediana`) | Cada columna dividida por la mediana de \|x\| entre sus valores distintos de 0 en el mes, normalizada a 201901 = 1 | IPC (`ipc_d1`) | Si empata con IPC, confirma que el deflactor no importa |
+| **L**, por grupo + `foto_mes` (`--brazo grupo --con-mes`) | El brazo por grupo con `foto_mes` como feature | Por grupo | Mismo criterio que D15 y R6 |
+
+- **Cambio de implementación de G, sin cambio de definición:** el ranking por mes se calcula en pandas (`src/rankear.py`) en lugar de con funciones de ventana en DuckDB, que tardaban ~8 min por mes. Se verificó que da idéntico a `cume_dist` de DuckDB.

@@ -74,10 +74,13 @@ def moda_comisiones(con, carpeta, meses):
     return {m: v / modas[BASE] for m, v in modas.items()}
 
 
-def brazo_grupo(columnas_monetarias, con, carpeta, meses):
-    """Brazo 3: {columna: {foto_mes: divisor}} por grupo, o {límite: columna de uso} para los cocientes."""
+def brazo_grupo(columnas_monetarias, con, carpeta, meses, saldos_ipc=False):
+    """Brazo 3: {columna: {foto_mes: divisor}} por grupo, o {límite: columna de uso} para los cocientes.
+    saldos_ipc=True: los 8 saldos del grupo de la tasa de plazo fijo van con IPC del mes anterior (prueba J, D20)."""
     d = {}
     for (serie, desfase), cols in GRUPOS.items():
+        if saldos_ipc and serie == "idx_tasa_pf30":
+            serie, desfase = "ipc", 1
         d |= divisores(cols, serie, desfase)
     com = moda_comisiones(con, carpeta, meses)
     d |= {c: com for c in COMISIONES}
@@ -86,4 +89,23 @@ def brazo_grupo(columnas_monetarias, con, carpeta, meses):
     faltan, sobran = set(columnas_monetarias) - asignadas, asignadas - set(columnas_monetarias)
     if faltan or sobran:
         raise ValueError(f"Clasificación incompleta. Sin grupo: {sorted(faltan)}. Inexistentes: {sorted(sobran)}")
+    return d
+
+
+def brazo_mediana(columnas_monetarias, con, carpeta, meses):
+    """Prueba K (D20): cada columna dividida por la mediana de |x| entre sus valores distintos de 0 en el mes,
+    normalizada a BASE = 1. Si en un mes la columna es toda 0 o NULL, se repite el divisor del mes anterior."""
+    import pyarrow.parquet as pq
+    crudos = {c: {} for c in columnas_monetarias}
+    for m in sorted(meses):
+        df = pq.read_table(f"{carpeta}/{m}.parquet", columns=columnas_monetarias).to_pandas()
+        fila = [df[c].abs()[df[c] != 0].median() for c in columnas_monetarias]
+        for c, v in zip(columnas_monetarias, fila):
+            v = None if pd.isna(v) else v
+            previo = crudos[c][max(crudos[c])] if crudos[c] else None
+            crudos[c][m] = float(v) if v else previo
+    d = {}
+    for c, por_mes in crudos.items():
+        base = por_mes.get(BASE) or next((v for v in por_mes.values() if v), 1.0)
+        d[c] = {m: (v / base if v else 1.0) for m, v in por_mes.items()}
     return d
