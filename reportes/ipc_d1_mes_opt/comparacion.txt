@@ -1,0 +1,18 @@
+Referencia: ipc_d1_opt
+
+         brazo                 metrica  semillas    media  desvio  pareadas  dif_media  dif_desvio  gana  p_wilcoxon    p_t
+    ipc_d1_opt     Ganancia N fijo (M)        20 281.9300  3.1941       NaN        NaN         NaN   NaN         NaN    NaN
+    ipc_d1_opt Ganancia zona plana (M)        20 278.1213  1.9037       NaN        NaN         NaN   NaN         NaN    NaN
+    ipc_d1_opt              AUC 201910        20   0.9360  0.0006       NaN        NaN         NaN   NaN         NaN    NaN
+ipc_d1_mes_opt     Ganancia N fijo (M)        20 281.2150  3.6964      20.0    -0.7150      5.5435  10.0      0.6805 0.5708
+ipc_d1_mes_opt Ganancia zona plana (M)        20 277.8325  2.4219      20.0    -0.2887      3.3801   7.0      0.5502 0.7067
+ipc_d1_mes_opt              AUC 201910        20   0.9365  0.0007      20.0     0.0005      0.0008  16.0      0.0215 0.0097
+Referencia: baseline
+
+         brazo                 metrica  semillas    media  desvio  pareadas  dif_media  dif_desvio  gana  p_wilcoxon    p_t
+      baseline     Ganancia N fijo (M)        20 284.0200  3.3019       NaN        NaN         NaN   NaN         NaN    NaN
+      baseline Ganancia zona plana (M)        20 283.9031  1.9052       NaN        NaN         NaN   NaN         NaN    NaN
+      baseline              AUC 201910        20   0.9375  0.0004       NaN        NaN         NaN   NaN         NaN    NaN
+ipc_d1_mes_opt     Ganancia N fijo (M)        20 281.2150  3.6964      20.0    -2.8050      5.6707   6.0      0.0434 0.0394
+ipc_d1_mes_opt Ganancia zona plana (M)        20 277.8325  2.4219      20.0    -6.0706      3.2701   1.0      0.0001 0.0000
+ipc_d1_mes_opt              AUC 201910        20   0.9365  0.0007      20.0    -0.0010      0.0008   2.0      0.0000 0.0000

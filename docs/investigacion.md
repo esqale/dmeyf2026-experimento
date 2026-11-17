@@ -355,6 +355,7 @@ Controles contra valores publicados: inflación de 2019 = 53,8% (igual que INDEC
     - Es el brazo IPC con una columna más que le dice al modelo de qué mes es cada fila. Prueba si deflactar empeora porque borra la pista del mes que dan los montos nominales.
     - Resultado: **empata con el IPC solo** (+0,7 M con N fijo, p = 0,49; +0,6 M en la zona plana, p = 0,31) y sigue debajo del baseline.
     - Devolverle el mes al modelo no recupera nada: **lo que se pierde al deflactar no es el mes, sino el monto nominal en sí.**
+    - Con su propia Optuna (R7) pasa lo mismo: empata con el IPC optimizado (−0,7 M, p = 0,68) y queda debajo del baseline.
 - **Discusión:**
   1. **Qué se encontró.** Deflactar no mejora la ganancia, ni con IPC ni por grupo. Con los hiperparámetros del baseline, por grupo le gana al IPC por 2,1 M (R4), pero esa ventaja desaparece cuando cada brazo tiene su propia Optuna (R5). Lo robusto es que el baseline gana: los brazos deflactados pierden en la zona plana en las 20 semillas, en las dos configuraciones.
   2. **Los montos sí importan.** Las variables monetarias (crudas, lags y deltas) explican el **51% de la ganancia** (gain) del modelo baseline. `mcaja_ahorro` es la segunda más importante, después de `ctrx_quarter`. Por eso, el resultado no se explica porque el modelo ignore los montos: los usa mucho, y aun así deflactarlos no ayuda.

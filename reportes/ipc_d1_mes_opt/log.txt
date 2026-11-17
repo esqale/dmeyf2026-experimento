@@ -1,0 +1,478 @@
+C:\Users\alejandro\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\lightgbm\basic.py:2515: UserWarning: Overriding the parameters from Reference Dataset.
+  _log_warning("Overriding the parameters from Reference Dataset.")
+Datos: train 506,871 filas · valid 131,775 · 761 features · 13 s
+[I 2026-11-16 16:46:53,717] A new study created in RDB with name: ipc_d1_mes_opt
+      trial 0 · iter   50 · AUC 0.81541 · 56 s
+      trial 0 · iter  100 · AUC 0.82572 · 85 s
+      trial 0 · iter  150 · AUC 0.82782 · 93 s
+  trial   0/50 · AUC 0.84773 (mejor 0.84773) · iter   70 · ganancia 201908 80.8 M con 4,500 · 80 s el trial · faltan ~79 min
+      trial 1 · iter   50 · AUC 0.90544 · 109 s
+      trial 1 · iter  100 · AUC 0.90743 · 120 s
+      trial 1 · iter  150 · AUC 0.90501 · 131 s
+  trial   1/50 · AUC 0.90792 (mejor 0.90792) · iter   68 · ganancia 201908 158.4 M con 4,000 · 40 s el trial · faltan ~54 min
+      trial 2 · iter   50 · AUC 0.91730 · 149 s
+      trial 2 · iter  100 · AUC 0.92074 · 160 s
+      trial 2 · iter  150 · AUC 0.92401 · 171 s
+      trial 2 · iter  200 · AUC 0.92686 · 181 s
+      trial 2 · iter  250 · AUC 0.92782 · 192 s
+      trial 2 · iter  300 · AUC 0.92835 · 203 s
+      trial 2 · iter  350 · AUC 0.92853 · 214 s
+      trial 2 · iter  400 · AUC 0.92877 · 224 s
+      trial 2 · iter  450 · AUC 0.92866 · 235 s
+      trial 2 · iter  500 · AUC 0.92842 · 246 s
+  trial   2/50 · AUC 0.92880 (mejor 0.92880) · iter  432 · ganancia 201908 201.3 M con 4,000 · 120 s el trial · faltan ~67 min
+      trial 3 · iter   50 · AUC 0.89317 · 276 s
+      trial 3 · iter  100 · AUC 0.89710 · 294 s
+      trial 3 · iter  150 · AUC 0.89866 · 310 s
+      trial 3 · iter  200 · AUC 0.89729 · 322 s
+  trial   3/50 · AUC 0.89988 (mejor 0.92880) · iter  125 · ganancia 201908 165.0 M con 4,000 · 73 s el trial · faltan ~63 min
+      trial 4 · iter   50 · AUC 0.92081 · 363 s
+      trial 4 · iter  100 · AUC 0.92437 · 396 s
+      trial 4 · iter  150 · AUC 0.92604 · 434 s
+      trial 4 · iter  200 · AUC 0.92764 · 478 s
+      trial 4 · iter  250 · AUC 0.92835 · 524 s
+      trial 4 · iter  300 · AUC 0.92872 · 572 s
+      trial 4 · iter  350 · AUC 0.92868 · 621 s
+      trial 4 · iter  400 · AUC 0.92844 · 673 s
+  trial   4/50 · AUC 0.92890 (mejor 0.92890) · iter  331 · ganancia 201908 205.2 M con 3,500 · 379 s el trial · faltan ~106 min
+      trial 5 · iter   50 · AUC 0.89452 · 715 s
+      trial 5 · iter  100 · AUC 0.90587 · 720 s
+      trial 5 · iter  150 · AUC 0.91071 · 725 s
+      trial 5 · iter  200 · AUC 0.91498 · 730 s
+      trial 5 · iter  250 · AUC 0.91795 · 734 s
+      trial 5 · iter  300 · AUC 0.91984 · 739 s
+      trial 5 · iter  350 · AUC 0.92114 · 744 s
+      trial 5 · iter  400 · AUC 0.92228 · 748 s
+      trial 5 · iter  450 · AUC 0.92300 · 753 s
+      trial 5 · iter  500 · AUC 0.92354 · 757 s
+      trial 5 · iter  550 · AUC 0.92389 · 762 s
+      trial 5 · iter  600 · AUC 0.92412 · 766 s
+      trial 5 · iter  650 · AUC 0.92447 · 771 s
+      trial 5 · iter  700 · AUC 0.92475 · 775 s
+      trial 5 · iter  750 · AUC 0.92496 · 780 s
+      trial 5 · iter  800 · AUC 0.92515 · 784 s
+      trial 5 · iter  850 · AUC 0.92538 · 788 s
+      trial 5 · iter  900 · AUC 0.92550 · 792 s
+      trial 5 · iter  950 · AUC 0.92551 · 796 s
+      trial 5 · iter 1000 · AUC 0.92570 · 800 s
+      trial 5 · iter 1050 · AUC 0.92589 · 804 s
+      trial 5 · iter 1100 · AUC 0.92603 · 808 s
+      trial 5 · iter 1150 · AUC 0.92606 · 812 s
+      trial 5 · iter 1200 · AUC 0.92611 · 816 s
+      trial 5 · iter 1250 · AUC 0.92621 · 820 s
+      trial 5 · iter 1300 · AUC 0.92626 · 825 s
+      trial 5 · iter 1350 · AUC 0.92621 · 829 s
+      trial 5 · iter 1400 · AUC 0.92618 · 833 s
+  trial   5/50 · AUC 0.92633 (mejor 0.92890) · iter 1326 · ganancia 201908 201.8 M con 3,500 · 129 s el trial · faltan ~102 min
+      trial 6 · iter   50 · AUC 0.80913 · 868 s
+      trial 6 · iter  100 · AUC 0.74416 · 878 s
+  trial   6/50 · AUC 0.84504 (mejor 0.92890) · iter   41 · ganancia 201908 61.6 M con 6,000 · 45 s el trial · faltan ~90 min
+      trial 7 · iter   50 · AUC 0.91793 · 897 s
+      trial 7 · iter  100 · AUC 0.92165 · 912 s
+      trial 7 · iter  150 · AUC 0.92447 · 930 s
+      trial 7 · iter  200 · AUC 0.92624 · 948 s
+      trial 7 · iter  250 · AUC 0.92729 · 970 s
+      trial 7 · iter  300 · AUC 0.92748 · 992 s
+      trial 7 · iter  350 · AUC 0.92772 · 1015 s
+      trial 7 · iter  400 · AUC 0.92758 · 1037 s
+  trial   7/50 · AUC 0.92789 (mejor 0.92890) · iter  322 · ganancia 201908 194.7 M con 3,000 · 167 s el trial · faltan ~92 min
+      trial 8 · iter   50 · AUC 0.92283 · 1067 s
+      trial 8 · iter  100 · AUC 0.92705 · 1080 s
+      trial 8 · iter  150 · AUC 0.92774 · 1093 s
+      trial 8 · iter  200 · AUC 0.92823 · 1105 s
+      trial 8 · iter  250 · AUC 0.92760 · 1118 s
+      trial 8 · iter  300 · AUC 0.92642 · 1131 s
+  trial   8/50 · AUC 0.92858 (mejor 0.92890) · iter  213 · ganancia 201908 199.1 M con 5,000 · 87 s el trial · faltan ~86 min
+      trial 9 · iter   50 · AUC 0.92194 · 1148 s
+      trial 9 · iter  100 · AUC 0.92082 · 1158 s
+  trial   9/50 · AUC 0.92246 (mejor 0.92890) · iter   43 · ganancia 201908 177.7 M con 2,500 · 32 s el trial · faltan ~78 min
+      trial 10 · iter   50 · AUC 0.91245 · 1177 s
+      trial 10 · iter  100 · AUC 0.92205 · 1183 s
+      trial 10 · iter  150 · AUC 0.92441 · 1189 s
+      trial 10 · iter  200 · AUC 0.92518 · 1194 s
+      trial 10 · iter  250 · AUC 0.92560 · 1200 s
+      trial 10 · iter  300 · AUC 0.92594 · 1205 s
+      trial 10 · iter  350 · AUC 0.92600 · 1210 s
+      trial 10 · iter  400 · AUC 0.92614 · 1215 s
+      trial 10 · iter  450 · AUC 0.92585 · 1220 s
+      trial 10 · iter  500 · AUC 0.92621 · 1225 s
+      trial 10 · iter  550 · AUC 0.92662 · 1230 s
+      trial 10 · iter  600 · AUC 0.92615 · 1235 s
+      trial 10 · iter  650 · AUC 0.92623 · 1240 s
+  trial  10/50 · AUC 0.92662 (mejor 0.92890) · iter  550 · ganancia 201908 198.0 M con 4,000 · 73 s el trial · faltan ~73 min
+      trial 11 · iter   50 · AUC 0.90913 · 1246 s
+      trial 11 · iter  100 · AUC 0.91479 · 1249 s
+      trial 11 · iter  150 · AUC 0.91778 · 1252 s
+      trial 11 · iter  200 · AUC 0.92074 · 1255 s
+      trial 11 · iter  250 · AUC 0.92253 · 1257 s
+      trial 11 · iter  300 · AUC 0.92327 · 1260 s
+      trial 11 · iter  350 · AUC 0.92371 · 1263 s
+      trial 11 · iter  400 · AUC 0.92417 · 1265 s
+      trial 11 · iter  450 · AUC 0.92430 · 1268 s
+      trial 11 · iter  500 · AUC 0.92407 · 1270 s
+      trial 11 · iter  550 · AUC 0.92431 · 1273 s
+      trial 11 · iter  600 · AUC 0.92433 · 1275 s
+      trial 11 · iter  650 · AUC 0.92440 · 1278 s
+      trial 11 · iter  700 · AUC 0.92437 · 1280 s
+  trial  11/50 · AUC 0.92444 (mejor 0.92890) · iter  647 · ganancia 201908 198.0 M con 4,000 · 43 s el trial · faltan ~68 min
+      trial 12 · iter   50 · AUC 0.90987 · 1297 s
+      trial 12 · iter  100 · AUC 0.91755 · 1308 s
+      trial 12 · iter  150 · AUC 0.92045 · 1319 s
+      trial 12 · iter  200 · AUC 0.92349 · 1330 s
+      trial 12 · iter  250 · AUC 0.92612 · 1341 s
+      trial 12 · iter  300 · AUC 0.92767 · 1352 s
+      trial 12 · iter  350 · AUC 0.92852 · 1363 s
+      trial 12 · iter  400 · AUC 0.92903 · 1374 s
+      trial 12 · iter  450 · AUC 0.92929 · 1384 s
+      trial 12 · iter  500 · AUC 0.92912 · 1393 s
+  trial  12/50 · AUC 0.92934 (mejor 0.92934) · iter  447 · ganancia 201908 201.8 M con 3,500 · 119 s el trial · faltan ~67 min
+      trial 13 · iter   50 · AUC 0.90864 · 1415 s
+      trial 13 · iter  100 · AUC 0.91414 · 1425 s
+      trial 13 · iter  150 · AUC 0.91822 · 1435 s
+      trial 13 · iter  200 · AUC 0.92193 · 1446 s
+      trial 13 · iter  250 · AUC 0.92453 · 1457 s
+      trial 13 · iter  300 · AUC 0.92638 · 1467 s
+      trial 13 · iter  350 · AUC 0.92763 · 1477 s
+      trial 13 · iter  400 · AUC 0.92824 · 1486 s
+      trial 13 · iter  450 · AUC 0.92884 · 1497 s
+      trial 13 · iter  500 · AUC 0.92912 · 1506 s
+      trial 13 · iter  550 · AUC 0.92942 · 1515 s
+      trial 13 · iter  600 · AUC 0.92936 · 1524 s
+      trial 13 · iter  650 · AUC 0.92941 · 1533 s
+      trial 13 · iter  700 · AUC 0.92934 · 1543 s
+  trial  13/50 · AUC 0.92948 (mejor 0.92948) · iter  626 · ganancia 201908 200.2 M con 3,000 · 146 s el trial · faltan ~66 min
+      trial 14 · iter   50 · AUC 0.90283 · 1560 s
+      trial 14 · iter  100 · AUC 0.91219 · 1569 s
+      trial 14 · iter  150 · AUC 0.91702 · 1578 s
+      trial 14 · iter  200 · AUC 0.92137 · 1587 s
+      trial 14 · iter  250 · AUC 0.92391 · 1597 s
+      trial 14 · iter  300 · AUC 0.92613 · 1606 s
+      trial 14 · iter  350 · AUC 0.92727 · 1615 s
+      trial 14 · iter  400 · AUC 0.92813 · 1625 s
+      trial 14 · iter  450 · AUC 0.92874 · 1633 s
+      trial 14 · iter  500 · AUC 0.92903 · 1642 s
+      trial 14 · iter  550 · AUC 0.92911 · 1650 s
+      trial 14 · iter  600 · AUC 0.92932 · 1658 s
+      trial 14 · iter  650 · AUC 0.92927 · 1666 s
+      trial 14 · iter  700 · AUC 0.92929 · 1674 s
+  trial  14/50 · AUC 0.92945 (mejor 0.92948) · iter  628 · ganancia 201908 201.3 M con 4,000 · 131 s el trial · faltan ~65 min
+      trial 15 · iter   50 · AUC 0.91315 · 1689 s
+      trial 15 · iter  100 · AUC 0.92340 · 1696 s
+      trial 15 · iter  150 · AUC 0.92653 · 1703 s
+      trial 15 · iter  200 · AUC 0.92809 · 1710 s
+      trial 15 · iter  250 · AUC 0.92822 · 1716 s
+      trial 15 · iter  300 · AUC 0.92847 · 1722 s
+      trial 15 · iter  350 · AUC 0.92858 · 1728 s
+      trial 15 · iter  400 · AUC 0.92847 · 1734 s
+      trial 15 · iter  450 · AUC 0.92823 · 1740 s
+  trial  15/50 · AUC 0.92865 (mejor 0.92948) · iter  357 · ganancia 201908 197.4 M con 3,500 · 62 s el trial · faltan ~62 min
+      trial 16 · iter   50 · AUC 0.90804 · 1752 s
+      trial 16 · iter  100 · AUC 0.91362 · 1760 s
+      trial 16 · iter  150 · AUC 0.91800 · 1768 s
+      trial 16 · iter  200 · AUC 0.92054 · 1776 s
+      trial 16 · iter  250 · AUC 0.92401 · 1784 s
+      trial 16 · iter  300 · AUC 0.92563 · 1793 s
+      trial 16 · iter  350 · AUC 0.92677 · 1801 s
+      trial 16 · iter  400 · AUC 0.92756 · 1808 s
+      trial 16 · iter  450 · AUC 0.92843 · 1816 s
+      trial 16 · iter  500 · AUC 0.92892 · 1823 s
+      trial 16 · iter  550 · AUC 0.92909 · 1830 s
+      trial 16 · iter  600 · AUC 0.92894 · 1837 s
+  trial  16/50 · AUC 0.92912 (mejor 0.92948) · iter  549 · ganancia 201908 203.5 M con 3,000 · 103 s el trial · faltan ~60 min
+      trial 17 · iter   50 · AUC 0.91990 · 1861 s
+      trial 17 · iter  100 · AUC 0.92504 · 1875 s
+      trial 17 · iter  150 · AUC 0.92845 · 1890 s
+      trial 17 · iter  200 · AUC 0.93032 · 1905 s
+      trial 17 · iter  250 · AUC 0.93062 · 1920 s
+      trial 17 · iter  300 · AUC 0.93102 · 1934 s
+      trial 17 · iter  350 · AUC 0.93117 · 1949 s
+      trial 17 · iter  400 · AUC 0.93118 · 1964 s
+  trial  17/50 · AUC 0.93125 (mejor 0.93125) · iter  318 · ganancia 201908 199.7 M con 3,500 · 126 s el trial · faltan ~58 min
+      trial 18 · iter   50 · AUC 0.92373 · 1988 s
+      trial 18 · iter  100 · AUC 0.92940 · 2004 s
+      trial 18 · iter  150 · AUC 0.93027 · 2020 s
+      trial 18 · iter  200 · AUC 0.93018 · 2037 s
+      trial 18 · iter  250 · AUC 0.92975 · 2053 s
+  trial  18/50 · AUC 0.93042 (mejor 0.93125) · iter  158 · ganancia 201908 199.7 M con 4,500 · 86 s el trial · faltan ~56 min
+      trial 19 · iter   50 · AUC 0.92341 · 2073 s
+      trial 19 · iter  100 · AUC 0.92961 · 2087 s
+      trial 19 · iter  150 · AUC 0.92965 · 2102 s
+      trial 19 · iter  200 · AUC 0.92891 · 2117 s
+      trial 19 · iter  250 · AUC 0.92890 · 2132 s
+  trial  19/50 · AUC 0.93009 (mejor 0.93125) · iter  163 · ganancia 201908 199.7 M con 3,500 · 80 s el trial · faltan ~53 min
+      trial 20 · iter   50 · AUC 0.92677 · 2167 s
+      trial 20 · iter  100 · AUC 0.92314 · 2196 s
+  trial  20/50 · AUC 0.92836 (mejor 0.93125) · iter   38 · ganancia 201908 195.8 M con 4,000 · 81 s el trial · faltan ~51 min
+      trial 21 · iter   50 · AUC 0.92203 · 2233 s
+      trial 21 · iter  100 · AUC 0.92769 · 2246 s
+      trial 21 · iter  150 · AUC 0.92908 · 2259 s
+      trial 21 · iter  200 · AUC 0.92947 · 2272 s
+      trial 21 · iter  250 · AUC 0.92919 · 2284 s
+  trial  21/50 · AUC 0.92979 (mejor 0.93125) · iter  180 · ganancia 201908 200.8 M con 4,500 · 76 s el trial · faltan ~49 min
+      trial 22 · iter   50 · AUC 0.92412 · 2309 s
+      trial 22 · iter  100 · AUC 0.92889 · 2322 s
+      trial 22 · iter  150 · AUC 0.92921 · 2335 s
+      trial 22 · iter  200 · AUC 0.92926 · 2348 s
+      trial 22 · iter  250 · AUC 0.92872 · 2360 s
+  trial  22/50 · AUC 0.92973 (mejor 0.93125) · iter  187 · ganancia 201908 198.6 M con 3,500 · 77 s el trial · faltan ~46 min
+      trial 23 · iter   50 · AUC 0.92511 · 2387 s
+      trial 23 · iter  100 · AUC 0.92914 · 2402 s
+      trial 23 · iter  150 · AUC 0.93168 · 2417 s
+      trial 23 · iter  200 · AUC 0.93150 · 2434 s
+      trial 23 · iter  250 · AUC 0.93067 · 2451 s
+  trial  23/50 · AUC 0.93191 (mejor 0.93191) · iter  156 · ganancia 201908 209.0 M con 4,000 · 84 s el trial · faltan ~44 min
+      trial 24 · iter   50 · AUC 0.92500 · 2473 s
+      trial 24 · iter  100 · AUC 0.92893 · 2489 s
+      trial 24 · iter  150 · AUC 0.93076 · 2506 s
+      trial 24 · iter  200 · AUC 0.93130 · 2523 s
+      trial 24 · iter  250 · AUC 0.93065 · 2540 s
+  trial  24/50 · AUC 0.93132 (mejor 0.93191) · iter  198 · ganancia 201908 207.9 M con 4,000 · 103 s el trial · faltan ~43 min
+      trial 25 · iter   50 · AUC 0.92467 · 2574 s
+      trial 25 · iter  100 · AUC 0.92869 · 2588 s
+      trial 25 · iter  150 · AUC 0.93043 · 2602 s
+      trial 25 · iter  200 · AUC 0.93018 · 2618 s
+      trial 25 · iter  250 · AUC 0.93033 · 2632 s
+      trial 25 · iter  300 · AUC 0.92981 · 2647 s
+  trial  25/50 · AUC 0.93050 (mejor 0.93191) · iter  237 · ganancia 201908 202.4 M con 4,000 · 103 s el trial · faltan ~41 min
+      trial 26 · iter   50 · AUC 0.92474 · 2677 s
+      trial 26 · iter  100 · AUC 0.92850 · 2690 s
+      trial 26 · iter  150 · AUC 0.93058 · 2703 s
+      trial 26 · iter  200 · AUC 0.93129 · 2717 s
+      trial 26 · iter  250 · AUC 0.93037 · 2730 s
+  trial  26/50 · AUC 0.93148 (mejor 0.93191) · iter  188 · ganancia 201908 212.8 M con 3,500 · 81 s el trial · faltan ~39 min
+      trial 27 · iter   50 · AUC 0.92602 · 2763 s
+      trial 27 · iter  100 · AUC 0.92963 · 2780 s
+      trial 27 · iter  150 · AUC 0.93000 · 2797 s
+      trial 27 · iter  200 · AUC 0.92973 · 2814 s
+  trial  27/50 · AUC 0.93047 (mejor 0.93191) · iter  130 · ganancia 201908 202.4 M con 4,000 · 84 s el trial · faltan ~37 min
+      trial 28 · iter   50 · AUC 0.92263 · 2839 s
+      trial 28 · iter  100 · AUC 0.92626 · 2851 s
+      trial 28 · iter  150 · AUC 0.92805 · 2863 s
+      trial 28 · iter  200 · AUC 0.92897 · 2876 s
+      trial 28 · iter  250 · AUC 0.92920 · 2890 s
+      trial 28 · iter  300 · AUC 0.92933 · 2904 s
+      trial 28 · iter  350 · AUC 0.92911 · 2919 s
+      trial 28 · iter  400 · AUC 0.92869 · 2933 s
+  trial  28/50 · AUC 0.92944 (mejor 0.93191) · iter  306 · ganancia 201908 210.7 M con 4,500 · 111 s el trial · faltan ~35 min
+      trial 29 · iter   50 · AUC 0.92456 · 2953 s
+      trial 29 · iter  100 · AUC 0.92860 · 2968 s
+      trial 29 · iter  150 · AUC 0.93062 · 2983 s
+      trial 29 · iter  200 · AUC 0.92963 · 3000 s
+      trial 29 · iter  250 · AUC 0.92879 · 3015 s
+  trial  29/50 · AUC 0.93081 (mejor 0.93191) · iter  155 · ganancia 201908 202.4 M con 5,000 · 81 s el trial · faltan ~34 min
+      trial 30 · iter   50 · AUC 0.92591 · 3031 s
+      trial 30 · iter  100 · AUC 0.92648 · 3042 s
+      trial 30 · iter  150 · AUC 0.92726 · 3053 s
+      trial 30 · iter  200 · AUC 0.92769 · 3065 s
+      trial 30 · iter  250 · AUC 0.92862 · 3077 s
+      trial 30 · iter  300 · AUC 0.92840 · 3090 s
+  trial  30/50 · AUC 0.92864 (mejor 0.93191) · iter  247 · ganancia 201908 204.1 M con 4,500 · 86 s el trial · faltan ~32 min
+      trial 31 · iter   50 · AUC 0.91537 · 3112 s
+      trial 31 · iter  100 · AUC 0.91976 · 3118 s
+      trial 31 · iter  150 · AUC 0.92323 · 3123 s
+      trial 31 · iter  200 · AUC 0.92638 · 3129 s
+      trial 31 · iter  250 · AUC 0.92812 · 3134 s
+      trial 31 · iter  300 · AUC 0.92910 · 3140 s
+      trial 31 · iter  350 · AUC 0.92917 · 3145 s
+      trial 31 · iter  400 · AUC 0.92924 · 3150 s
+      trial 31 · iter  450 · AUC 0.92945 · 3156 s
+      trial 31 · iter  500 · AUC 0.92944 · 3161 s
+  trial  31/50 · AUC 0.92959 (mejor 0.93191) · iter  425 · ganancia 201908 200.8 M con 4,500 · 63 s el trial · faltan ~30 min
+      trial 32 · iter   50 · AUC 0.92017 · 3182 s
+      trial 32 · iter  100 · AUC 0.92296 · 3196 s
+      trial 32 · iter  150 · AUC 0.92610 · 3209 s
+      trial 32 · iter  200 · AUC 0.92848 · 3223 s
+      trial 32 · iter  250 · AUC 0.93013 · 3238 s
+      trial 32 · iter  300 · AUC 0.93096 · 3251 s
+      trial 32 · iter  350 · AUC 0.93161 · 3265 s
+      trial 32 · iter  400 · AUC 0.93166 · 3278 s
+      trial 32 · iter  450 · AUC 0.93175 · 3291 s
+      trial 32 · iter  500 · AUC 0.93163 · 3303 s
+      trial 32 · iter  550 · AUC 0.93142 · 3317 s
+  trial  32/50 · AUC 0.93187 (mejor 0.93191) · iter  464 · ganancia 201908 202.9 M con 3,500 · 158 s el trial · faltan ~29 min
+      trial 33 · iter   50 · AUC 0.92048 · 3343 s
+      trial 33 · iter  100 · AUC 0.92402 · 3359 s
+      trial 33 · iter  150 · AUC 0.92641 · 3375 s
+      trial 33 · iter  200 · AUC 0.92851 · 3391 s
+      trial 33 · iter  250 · AUC 0.92971 · 3406 s
+      trial 33 · iter  300 · AUC 0.93076 · 3422 s
+      trial 33 · iter  350 · AUC 0.93102 · 3437 s
+      trial 33 · iter  400 · AUC 0.93146 · 3452 s
+      trial 33 · iter  450 · AUC 0.93178 · 3467 s
+      trial 33 · iter  500 · AUC 0.93150 · 3482 s
+      trial 33 · iter  550 · AUC 0.93130 · 3496 s
+  trial  33/50 · AUC 0.93178 (mejor 0.93191) · iter  450 · ganancia 201908 204.1 M con 4,500 · 175 s el trial · faltan ~27 min
+      trial 34 · iter   50 · AUC 0.91715 · 3513 s
+      trial 34 · iter  100 · AUC 0.92029 · 3523 s
+      trial 34 · iter  150 · AUC 0.92298 · 3535 s
+      trial 34 · iter  200 · AUC 0.92587 · 3546 s
+      trial 34 · iter  250 · AUC 0.92831 · 3557 s
+      trial 34 · iter  300 · AUC 0.92977 · 3567 s
+      trial 34 · iter  350 · AUC 0.93057 · 3578 s
+      trial 34 · iter  400 · AUC 0.93082 · 3588 s
+      trial 34 · iter  450 · AUC 0.93092 · 3598 s
+      trial 34 · iter  500 · AUC 0.93105 · 3608 s
+      trial 34 · iter  550 · AUC 0.93103 · 3618 s
+  trial  34/50 · AUC 0.93119 (mejor 0.93191) · iter  485 · ganancia 201908 200.8 M con 3,500 · 128 s el trial · faltan ~26 min
+      trial 35 · iter   50 · AUC 0.92347 · 3644 s
+      trial 35 · iter  100 · AUC 0.92627 · 3657 s
+      trial 35 · iter  150 · AUC 0.92721 · 3670 s
+      trial 35 · iter  200 · AUC 0.92849 · 3683 s
+      trial 35 · iter  250 · AUC 0.92948 · 3698 s
+      trial 35 · iter  300 · AUC 0.92982 · 3711 s
+      trial 35 · iter  350 · AUC 0.92999 · 3725 s
+      trial 35 · iter  400 · AUC 0.93033 · 3740 s
+      trial 35 · iter  450 · AUC 0.93011 · 3754 s
+      trial 35 · iter  500 · AUC 0.92987 · 3769 s
+  trial  35/50 · AUC 0.93042 (mejor 0.93191) · iter  412 · ganancia 201908 198.0 M con 5,000 · 147 s el trial · faltan ~24 min
+      trial 36 · iter   50 · AUC 0.92428 · 3793 s
+      trial 36 · iter  100 · AUC 0.92692 · 3809 s
+      trial 36 · iter  150 · AUC 0.92959 · 3825 s
+      trial 36 · iter  200 · AUC 0.93057 · 3841 s
+      trial 36 · iter  250 · AUC 0.93126 · 3857 s
+      trial 36 · iter  300 · AUC 0.93103 · 3872 s
+      trial 36 · iter  350 · AUC 0.93079 · 3888 s
+  trial  36/50 · AUC 0.93138 (mejor 0.93191) · iter  266 · ganancia 201908 201.3 M con 4,000 · 120 s el trial · faltan ~23 min
+      trial 37 · iter   50 · AUC 0.91590 · 3906 s
+      trial 37 · iter  100 · AUC 0.91957 · 3914 s
+      trial 37 · iter  150 · AUC 0.92217 · 3922 s
+      trial 37 · iter  200 · AUC 0.92509 · 3931 s
+      trial 37 · iter  250 · AUC 0.92720 · 3940 s
+      trial 37 · iter  300 · AUC 0.92799 · 3949 s
+      trial 37 · iter  350 · AUC 0.92918 · 3957 s
+      trial 37 · iter  400 · AUC 0.92969 · 3965 s
+      trial 37 · iter  450 · AUC 0.93008 · 3973 s
+      trial 37 · iter  500 · AUC 0.93001 · 3983 s
+      trial 37 · iter  550 · AUC 0.92985 · 3994 s
+  trial  37/50 · AUC 0.93015 (mejor 0.93191) · iter  461 · ganancia 201908 201.8 M con 3,500 · 104 s el trial · faltan ~21 min
+      trial 38 · iter   50 · AUC 0.91966 · 4013 s
+      trial 38 · iter  100 · AUC 0.92325 · 4025 s
+      trial 38 · iter  150 · AUC 0.92610 · 4037 s
+      trial 38 · iter  200 · AUC 0.92853 · 4049 s
+      trial 38 · iter  250 · AUC 0.92976 · 4064 s
+      trial 38 · iter  300 · AUC 0.93034 · 4076 s
+      trial 38 · iter  350 · AUC 0.93064 · 4089 s
+      trial 38 · iter  400 · AUC 0.93048 · 4101 s
+      trial 38 · iter  450 · AUC 0.93041 · 4114 s
+  trial  38/50 · AUC 0.93065 (mejor 0.93191) · iter  370 · ganancia 201908 200.2 M con 3,000 · 123 s el trial · faltan ~19 min
+      trial 39 · iter   50 · AUC 0.91290 · 4143 s
+      trial 39 · iter  100 · AUC 0.90967 · 4160 s
+  trial  39/50 · AUC 0.91568 (mejor 0.93191) · iter   23 · ganancia 201908 183.2 M con 4,500 · 47 s el trial · faltan ~17 min
+      trial 40 · iter   50 · AUC 0.91892 · 4181 s
+      trial 40 · iter  100 · AUC 0.92244 · 4190 s
+      trial 40 · iter  150 · AUC 0.92453 · 4200 s
+      trial 40 · iter  200 · AUC 0.92617 · 4209 s
+      trial 40 · iter  250 · AUC 0.92794 · 4218 s
+      trial 40 · iter  300 · AUC 0.92901 · 4228 s
+      trial 40 · iter  350 · AUC 0.92956 · 4237 s
+      trial 40 · iter  400 · AUC 0.92981 · 4246 s
+      trial 40 · iter  450 · AUC 0.92970 · 4256 s
+      trial 40 · iter  500 · AUC 0.93002 · 4265 s
+      trial 40 · iter  550 · AUC 0.92989 · 4274 s
+      trial 40 · iter  600 · AUC 0.92959 · 4283 s
+  trial  40/50 · AUC 0.93003 (mejor 0.93191) · iter  501 · ganancia 201908 205.7 M con 4,000 · 118 s el trial · faltan ~16 min
+      trial 41 · iter   50 · AUC 0.92187 · 4304 s
+      trial 41 · iter  100 · AUC 0.92617 · 4317 s
+      trial 41 · iter  150 · AUC 0.92853 · 4330 s
+      trial 41 · iter  200 · AUC 0.93032 · 4342 s
+      trial 41 · iter  250 · AUC 0.93062 · 4355 s
+      trial 41 · iter  300 · AUC 0.93047 · 4368 s
+      trial 41 · iter  350 · AUC 0.93000 · 4380 s
+  trial  41/50 · AUC 0.93079 (mejor 0.93191) · iter  265 · ganancia 201908 200.2 M con 3,000 · 99 s el trial · faltan ~14 min
+      trial 42 · iter   50 · AUC 0.91574 · 4399 s
+      trial 42 · iter  100 · AUC 0.92049 · 4408 s
+      trial 42 · iter  150 · AUC 0.92373 · 4418 s
+      trial 42 · iter  200 · AUC 0.92658 · 4428 s
+      trial 42 · iter  250 · AUC 0.92812 · 4437 s
+      trial 42 · iter  300 · AUC 0.92902 · 4446 s
+      trial 42 · iter  350 · AUC 0.92968 · 4455 s
+      trial 42 · iter  400 · AUC 0.93008 · 4463 s
+      trial 42 · iter  450 · AUC 0.93003 · 4472 s
+      trial 42 · iter  500 · AUC 0.93027 · 4481 s
+      trial 42 · iter  550 · AUC 0.93009 · 4490 s
+      trial 42 · iter  600 · AUC 0.92998 · 4498 s
+      trial 42 · iter  650 · AUC 0.92985 · 4507 s
+  trial  42/50 · AUC 0.93038 (mejor 0.93191) · iter  557 · ganancia 201908 200.8 M con 4,500 · 125 s el trial · faltan ~12 min
+      trial 43 · iter   50 · AUC 0.92108 · 4527 s
+      trial 43 · iter  100 · AUC 0.92495 · 4541 s
+      trial 43 · iter  150 · AUC 0.92788 · 4554 s
+      trial 43 · iter  200 · AUC 0.92985 · 4568 s
+      trial 43 · iter  250 · AUC 0.93091 · 4582 s
+      trial 43 · iter  300 · AUC 0.93116 · 4596 s
+      trial 43 · iter  350 · AUC 0.93095 · 4611 s
+      trial 43 · iter  400 · AUC 0.93123 · 4625 s
+      trial 43 · iter  450 · AUC 0.93100 · 4640 s
+  trial  43/50 · AUC 0.93130 (mejor 0.93191) · iter  395 · ganancia 201908 202.4 M con 4,000 · 144 s el trial · faltan ~11 min
+      trial 44 · iter   50 · AUC 0.92541 · 4674 s
+      trial 44 · iter  100 · AUC 0.92924 · 4691 s
+      trial 44 · iter  150 · AUC 0.92950 · 4707 s
+      trial 44 · iter  200 · AUC 0.92934 · 4723 s
+      trial 44 · iter  250 · AUC 0.92930 · 4740 s
+  trial  44/50 · AUC 0.93028 (mejor 0.93191) · iter  174 · ganancia 201908 209.0 M con 4,000 · 94 s el trial · faltan ~9 min
+      trial 45 · iter   50 · AUC 0.92502 · 4761 s
+      trial 45 · iter  100 · AUC 0.92730 · 4772 s
+      trial 45 · iter  150 · AUC 0.92909 · 4782 s
+      trial 45 · iter  200 · AUC 0.93076 · 4792 s
+      trial 45 · iter  250 · AUC 0.93106 · 4804 s
+      trial 45 · iter  300 · AUC 0.93091 · 4814 s
+      trial 45 · iter  350 · AUC 0.93099 · 4826 s
+  trial  45/50 · AUC 0.93119 (mejor 0.93191) · iter  270 · ganancia 201908 207.3 M con 4,500 · 83 s el trial · faltan ~7 min
+      trial 46 · iter   50 · AUC 0.91394 · 4842 s
+      trial 46 · iter  100 · AUC 0.92026 · 4850 s
+      trial 46 · iter  150 · AUC 0.92461 · 4858 s
+      trial 46 · iter  200 · AUC 0.92683 · 4864 s
+      trial 46 · iter  250 · AUC 0.92804 · 4871 s
+      trial 46 · iter  300 · AUC 0.92856 · 4878 s
+      trial 46 · iter  350 · AUC 0.92863 · 4884 s
+      trial 46 · iter  400 · AUC 0.92906 · 4891 s
+      trial 46 · iter  450 · AUC 0.92920 · 4897 s
+      trial 46 · iter  500 · AUC 0.92940 · 4904 s
+      trial 46 · iter  550 · AUC 0.92945 · 4911 s
+      trial 46 · iter  600 · AUC 0.92931 · 4918 s
+  trial  46/50 · AUC 0.92962 (mejor 0.93191) · iter  545 · ganancia 201908 203.5 M con 5,000 · 94 s el trial · faltan ~5 min
+      trial 47 · iter   50 · AUC 0.92485 · 4942 s
+      trial 47 · iter  100 · AUC 0.92616 · 4956 s
+      trial 47 · iter  150 · AUC 0.92768 · 4970 s
+      trial 47 · iter  200 · AUC 0.92829 · 4984 s
+      trial 47 · iter  250 · AUC 0.92917 · 4998 s
+      trial 47 · iter  300 · AUC 0.92972 · 5013 s
+      trial 47 · iter  350 · AUC 0.92994 · 5031 s
+      trial 47 · iter  400 · AUC 0.92976 · 5047 s
+  trial  47/50 · AUC 0.93010 (mejor 0.93191) · iter  342 · ganancia 201908 206.8 M con 5,000 · 137 s el trial · faltan ~4 min
+      trial 48 · iter   50 · AUC 0.92719 · 5081 s
+      trial 48 · iter  100 · AUC 0.93084 · 5095 s
+      trial 48 · iter  150 · AUC 0.93125 · 5110 s
+      trial 48 · iter  200 · AUC 0.93103 · 5126 s
+  trial  48/50 · AUC 0.93189 (mejor 0.93191) · iter  119 · ganancia 201908 210.7 M con 5,500 · 71 s el trial · faltan ~2 min
+      trial 49 · iter   50 · AUC 0.92686 · 5145 s
+      trial 49 · iter  100 · AUC 0.92860 · 5154 s
+      trial 49 · iter  150 · AUC 0.92686 · 5164 s
+  trial  49/50 · AUC 0.92904 (mejor 0.93191) · iter   65 · ganancia 201908 201.3 M con 4,000 · 33 s el trial · faltan ~0 min
+Mejor trial 23: AUC 0.93191 · 156 iter · N = 4,000
+Modelo final: entrena 0308 · 768,499 filas (156 iter)
+      final · iter  100 · 5230 s
+{
+  "dataset": "datasets/fe_ipc_d1_mes",
+  "semilla": 102191,
+  "entrena_test": "0308",
+  "trials": 50,
+  "mejor_trial": 23,
+  "auc_201908": 0.9319142792004212,
+  "params": {
+    "learning_rate": 0.02816929854278612,
+    "num_leaves": 90,
+    "min_data_in_leaf": 1410,
+    "feature_fraction": 0.6174995274676163,
+    "bagging_fraction": 0.8028526299056774
+  },
+  "iteraciones": 156,
+  "envios": 4000,
+  "ganancia_201908": 209000000.0,
+  "ganancia_201910": 284900000.0,
+  "baja2_201910": 632,
+  "max_201910_informativo": {
+    "envios": 4500,
+    "ganancia": 285450000.0
+  },
+  "segundos": 5256
+}

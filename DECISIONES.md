@@ -185,3 +185,10 @@ Las decisiones 1–5 del Paso 10 se tomaron así para tener el brazo terminado. 
 - E contra el baseline: 282,9 M contra 284,0 M con N fijo (p = 0,14), y 279,6 M contra 283,9 M en la zona plana (gana 1/20, p = 0,0002). Sigue abajo, igual que el IPC solo.
 - **Lectura según D15:** lo que se pierde al deflactar no es "de qué mes es la fila". Devolverle el mes al modelo no recupera la ganancia, así que la pérdida tiene que venir del monto nominal en sí (comisiones de lista, cuotas fijas, ceros). Con un único mes de test no se puede descartar que el mes importe en otros diseños.
 - Archivos: `reportes/ipc_d1_mes/` (semillas.csv, log_semillas.txt, comparacion.txt). La Optuna propia de E (`reportes/ipc_d1_mes_opt/`) quedó corriendo como chequeo.
+
+## R7 — Brazo E con Optuna propia (2026-11-17, 50 trials, 20 semillas)
+- Optuna: mejor AUC de validación en 201908, 0,93191 (trial 23, 156 iteraciones). En 201908 elige N = 4.000; para comparar se sigue usando N = 5.000, como en el resto de los brazos.
+- **E contra `ipc_d1_opt` (los dos con Optuna propia): empate en ganancia.** −0,7 M con N fijo (gana 10/20, p = 0,68) y −0,3 M en la zona plana (7/20, p = 0,55). El AUC de 201910 sube apenas, +0,0005 (16/20, p = 0,02), pero no se traduce en ganancia.
+- E contra el baseline: 281,2 M contra 284,0 M con N fijo (6/20, p = 0,04), y 277,8 M contra 283,9 M en la zona plana (1/20, p = 0,0001).
+- **Confirma R6 con hiperparámetros propios:** agregar `foto_mes` no recupera lo que se pierde al deflactar.
+- Archivos: `reportes/ipc_d1_mes_opt/` y `modelos/ipc_d1_mes_opt_{final.txt,optuna.db}`.
