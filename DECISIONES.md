@@ -192,3 +192,18 @@ Las decisiones 1–5 del Paso 10 se tomaron así para tener el brazo terminado. 
 - E contra el baseline: 281,2 M contra 284,0 M con N fijo (6/20, p = 0,04), y 277,8 M contra 283,9 M en la zona plana (1/20, p = 0,0001).
 - **Confirma R6 con hiperparámetros propios:** agregar `foto_mes` no recupera lo que se pierde al deflactar.
 - Archivos: `reportes/ipc_d1_mes_opt/` y `modelos/ipc_d1_mes_opt_{final.txt,optuna.db}`.
+
+## D16 — Métrica adicional: el máximo de la curva de ganancia en 201910 (2026-11-17)
+- `src/07_comparar.py` ahora informa también el máximo de la curva (cortes de a 500 envíos), con el mismo test pareado. Todas las tablas de `reportes/comparacion*.csv` se regeneraron con esa columna.
+- **Es optimista:** supone conocido de antemano el mejor N del mes de test. La métrica principal sigue siendo la ganancia con N = 5.000, elegido en 201908 sin mirar el test. Se informa porque es la métrica de la versión de Manuel y para mostrar que la conclusión no depende de cómo se mide.
+- Resultado con esta métrica (20 semillas, Wilcoxon pareado): **el orden de los brazos y las conclusiones son los mismos que con N fijo y con la zona plana.**
+
+  | Comparación | Diferencia | Gana | p |
+  |---|---|---|---|
+  | IPC contra sin deflactar | −5,3 M | 0/20 | 0,0001 |
+  | Por grupo contra sin deflactar | −3,6 M | 1/20 | 0,0002 |
+  | Por grupo contra IPC (hiperparámetros del baseline) | +1,7 M | 15/20 | 0,007 |
+  | Por grupo contra IPC (Optuna propia) | +0,6 M | 12/20 | 0,46 |
+  | IPC + `foto_mes` contra IPC | +0,5 M | 9/20 | 0,76 |
+  | IPC con Optuna propia contra sin deflactar | −6,5 M | 0/20 | 0,0001 |
+  | Por grupo con Optuna propia contra sin deflactar | −5,9 M | 1/20 | 0,0001 |

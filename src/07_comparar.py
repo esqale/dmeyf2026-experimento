@@ -13,13 +13,15 @@ import sys
 import pandas as pd
 from scipy import stats
 
+# Máximo de la curva: métrica adicional (D16). Es optimista, porque supone conocido el mejor N del mes de test;
+# se informa porque es la métrica de la versión de Manuel y para ver que la conclusión no depende de la métrica.
 METRICAS = {"ganancia_n_fijo": "Ganancia N fijo (M)", "ganancia_zona_plana": "Ganancia zona plana (M)",
-            "auc_201910": "AUC 201910"}
+            "max_informativo": "Máximo de la curva (M, optimista)", "auc_201910": "AUC 201910"}
 
 
 def leer(nombre):
     r = pd.read_csv(os.path.join("reportes", nombre, "semillas.csv")).set_index("semilla")
-    for m in ("ganancia_n_fijo", "ganancia_zona_plana"):
+    for m in ("ganancia_n_fijo", "ganancia_zona_plana", "max_informativo"):
         r[m] = r[m] / 1e6
     return r
 
