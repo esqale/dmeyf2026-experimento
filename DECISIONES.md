@@ -207,3 +207,11 @@ Las decisiones 1–5 del Paso 10 se tomaron así para tener el brazo terminado. 
   | IPC + `foto_mes` contra IPC | +0,5 M | 9/20 | 0,76 |
   | IPC con Optuna propia contra sin deflactar | −6,5 M | 0/20 | 0,0001 |
   | Por grupo con Optuna propia contra sin deflactar | −5,9 M | 1/20 | 0,0001 |
+
+## R8 — Hiperparámetros de la versión de Manuel en nuestro pipeline (2026-11-17, 20 semillas)
+- Para ver si los dos modelos base son equivalentes: se toman los hiperparámetros que eligió su Optuna (num_leaves 218, learning_rate 0,0182, min_data_in_leaf 1540, feature_fraction 0,887, bagging_fraction 0,657) y se corren en nuestro pipeline, con nuestro dataset `fe_base` y las mismas 20 semillas que el baseline. Así la comparación es pareada y solo cambian los hiperparámetros.
+- Como su notebook no guarda las iteraciones, se sacan igual que en un trial nuestro (`src/09_params_fijos.py`): entrena 201903–06, early stopping de 100 rondas sobre el AUC de 201908, semilla 100129. Resultado: 283 iteraciones (nuestro baseline: 405) y AUC de 201908 = 0,93200 (nuestro baseline: 0,93294).
+- **Ganancia: empate.** Con N fijo, +1,3 M a favor de sus hiperparámetros (gana 13/20, p = 0,12). En la zona plana, −1,1 M (7/20, p = 0,10). Máximo de la curva, −1,2 M (6/20, p = 0,13). Ninguna diferencia es significativa y cambian de signo según la métrica.
+- **AUC de 201910: nuestro baseline es mejor** (0,9375 contra 0,9361; gana en las 20 semillas, p < 0,0001).
+- Conclusión: en ganancia, nuestro modelo base es igual al de la versión de Manuel; en AUC, de validación y de test, es mejor. El óptimo de hiperparámetros es plano, como se esperaba.
+- Archivos: `reportes/baseline_manuel/` y `reportes/comparacion_baseline_manuel.csv`.
