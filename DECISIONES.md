@@ -273,3 +273,23 @@ Su versión corre los mismos brazos con 5 semillas y mide con el máximo de la c
   - Si es < 25%, queda **descartada**.
   - Entre 25% y 50%, **respaldo parcial**.
   - (b) se informa como apoyo y no decide.
+
+## R11 — Dónde cortan los árboles en las variables monetarias (2026-11-17, criterio en D18, `src/11_cortes.py`)
+- El modelo final del baseline tiene 41.715 cortes. 27.573 son sobre variables monetarias, que suman el 51,5% del gain del modelo (igual que en la Discusión).
+- **(a) Cortes en cero: solo el 6,4% del gain monetario** está en umbrales con |umbral| ≤ 1 peso. Por tipo: 5,2% en las del mes, 5,8% en los lags y 9,6% en los deltas. **Por el criterio D18 (< 25%), la explicación "la señal está en el cero, y el cero no se deflacta" queda descartada.**
+- Contexto (no decide, porque no estaba en el criterio): los cortes caen en montos chicos, no en cero.
+
+  | Umbral | % del gain monetario |
+  |---|---|
+  | \|umbral\| ≤ 1 peso | 6,4% |
+  | \|umbral\| ≤ 100 pesos | 19,7% |
+  | \|umbral\| ≤ 1.000 pesos | 48,2% |
+  | \|umbral\| ≤ 10.000 pesos | 81,9% |
+
+  El modelo separa "cuenta casi vacía" de "cuenta con algo". A diferencia del cero, esos umbrales sí se mueven al deflactar.
+- **(b) Clientes que cambian de lado:** en cada corte monetario, deflactar con IPC cambia de lado en promedio al **2,1%** de los clientes de 201910 (ponderado por gain): 1,6% en las del mes, 2,3% en los lags y 3,1% en los deltas. En `mcaja_ahorro`, la más importante (9,5% del gain del modelo), es el 2,9%.
+- **Lectura:**
+  - Deflactar cambia poco el recorrido por el árbol, pero no porque los cortes estén en cero.
+  - La razón es que un factor de ~1,3 corre a pocos clientes de lado en cada umbral: la densidad de clientes cerca de cualquier umbral es baja.
+  - La explicación de la Discusión se reemplaza por esta, que está medida.
+- Archivos: `reportes/cortes/` (resumen.csv, cortes.csv).
