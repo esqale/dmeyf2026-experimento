@@ -247,3 +247,17 @@ Su versión corre los mismos brazos con 5 semillas y mide con el máximo de la c
 - **Limitación que él señala y vale para R6:** `foto_mes` como número deja a 201910 fuera del rango de entrenamiento (201903–08), así que el árbol lo trata como al último mes visto. Como categórica tampoco se resuelve, porque 201910 sería una categoría nueva. El brazo E prueba "devolverle el mes" solo hasta donde un modelo puede usar un mes que nunca vio.
 - Su modelo base y el nuestro empatan en ganancia (R8).
 
+
+## R10 — Validación adversarial de los montos (2026-11-17, criterio en D17, `src/10_adversarial.py`, 6 min)
+- **AUC multivariado: saturado.** Da 1,0000 en los tres brazos, en los dos pares de meses y con los dos conjuntos de columnas. En las 60 corridas la columna que más separa es `mrentabilidad_annual`. Por el criterio D17, se decide con la univariada.
+- **Univariada, caso principal** (73 columnas del mes, 201903 contra 201910): la mediana del drift baja de 0,0114 (nominal) a 0,0083 (IPC) y 0,0077 (por grupo), un 27–32%. Las columnas con drift > 0,05 pasan de 14 a 10. **No llega a la mitad: por el criterio, deflactar no reduce el drift de los montos.**
+- Casos de apoyo:
+  - 201908 contra 201910: la mediana queda igual (0,0040 → 0,0043).
+  - Con lags y deltas, 201903 contra 201910: 0,0136 → 0,0137 (IPC) y 0,0125 (por grupo).
+  - Con lags y deltas, 201908 contra 201910: 0,0063 → 0,0069 y 0,0066.
+- **Por qué no baja: el drift grande no es inflación, son cortes de los datos.** Las seis columnas que más separan los meses tienen el mismo AUC en los tres brazos, porque ningún deflactor les cambia nada:
+  - `mrentabilidad_annual`, `mrentabilidad`, `mpasivos_margen`, `mcomisiones`, `mcomisiones_otras` (AUC de 0,01 a 0,05): valen 0 para todos en 201910 y son distintas de 0 en el 97–99% de los clientes en 201908 y 201909. Ya figuraba como limitación.
+  - `mtransferencias_recibidas` (AUC 0,79 en 201903 contra 201910): **es otro corte nuevo.** En 201901–201905 solo el 0,1% de los clientes la tiene distinta de 0, y desde 201906 pasa al 55–62%. Cae dentro de la ventana de entrenamiento (201903–06).
+- **Donde sí había drift por inflación, deflactar lo corrige.** En los consumos, saldos y límites de tarjeta, el AUC pasa de 0,55–0,56 a 0,48–0,52. Ejemplos: `mtarjeta_visa_consumo` 0,562 → 0,518; `Visa_msaldopesos` 0,553 → 0,512; `Master_mlimitecompra` 0,549 → 0,478 (IPC) y 0,495 (por grupo). Pero ese drift era chico (|AUC − 0,5| ≈ 0,05) al lado de los cortes de los datos (0,3–0,49).
+- **Lectura:** se cumple la segunda rama de D17, pero por un motivo distinto al previsto. El drift de los montos está dominado por cortes de registro que ningún deflactor puede corregir. La parte que sí es inflación, deflactar la corrige, y es chica. Esto es coherente con que deflactar no mejore la ganancia: corrige un drift que era menor. Confirma con montos lo que la versión de Manuel vio con todas las columnas.
+- Archivos: `reportes/adversarial/` (resumen.csv, multivariada.csv, univariada.csv, log.txt).

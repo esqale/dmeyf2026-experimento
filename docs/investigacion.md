@@ -331,6 +331,7 @@ Controles contra valores publicados: inflación de 2019 = 53,8% (igual que INDEC
   - 2019 tiene un quiebre (PASO de agosto y cepo de septiembre). Algunas columnas cambian por comportamiento, no por precios, y ningún deflactor lo corrige.
   - La comparación principal usa los hiperparámetros del baseline. Puede favorecer al brazo sin deflactar, porque esos hiperparámetros se optimizaron para él (el chequeo de robustez es la Optuna por brazo).
   - En el brazo IPC + `foto_mes`, el mes de test (201910) queda fuera del rango de entrenamiento, y el árbol lo trata como al último mes visto. Ese brazo prueba "devolverle el mes" solo hasta donde un modelo puede usar un mes que no vio (R9).
+  - `mtransferencias_recibidas` casi no existe antes de 201906 (0,1% de clientes con valor distinto de 0, contra 55–62% desde junio): es un corte dentro de la ventana de entrenamiento y afecta a todos los brazos por igual (R10).
   - El mes de referencia del índice no es una limitación: cambiarlo multiplica todo el dataset por una constante, y los árboles son invariantes a eso (R9).
 - **Resultados:**
   - *Preliminar, brazo sin deflactar (baseline), una semilla:* AUC 0,9329 en 201908, N = 5.000 elegido en 201908 y **ganancia en 201910 de 281,6 M** (unos 381 de los 632 BAJA+2). La curva de 201910 es plana entre 3.000 y 6.500 envíos (280–290 M).
@@ -363,6 +364,12 @@ Controles contra valores publicados: inflación de 2019 = 53,8% (igual que INDEC
     - Por grupo le gana al IPC solo con los hiperparámetros del baseline (+1,7 M, p = 0,007). Con Optuna propia empatan (p = 0,46).
     - IPC + `foto_mes` empata con IPC (p = 0,76).
     - Las tres métricas (N fijo, zona plana y máximo) dan el mismo orden.
+  - *¿Deflactar les saca el drift a los montos? (R10, validación adversarial, criterio en D17):*
+    - Un modelo distingue 201903 de 201910 a la perfección (AUC 1,0) usando solo las 73 columnas monetarias, con o sin deflactar.
+    - El drift fuerte viene de cortes de los datos, no de la inflación: rentabilidad, márgenes y comisiones valen 0 en 201910, y `mtransferencias_recibidas` casi no existe antes de 201906. Ningún deflactor los toca.
+    - En los consumos, saldos y límites de tarjeta sí había drift por inflación, y deflactar lo corrige (AUC de 0,55 a ~0,51), pero era chico.
+    - Con 201908 contra 201910 no cambia nada.
+    - **Deflactar arregla un drift menor y deja intacto el mayor.**
   - *Réplica independiente (R9):* la versión de Manuel, con 5 semillas, llega a la misma conclusión de fondo. Dos de sus observaciones no se sostienen con 20 semillas:
     - "Deflactar estabiliza": el desvío entre semillas no baja al deflactar.
     - "`foto_mes` recupera un tercio": empata.

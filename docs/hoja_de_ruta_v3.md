@@ -41,8 +41,8 @@ Escrita el 17/11 después de revisar el repo de Manuel ([vmanuelmarasco/experime
 
 | # | Tarea | Tipo | Tiempo | Para cuándo |
 |---|---|---|---|---|
-| **A** | Registrar R9, la comparación con las pruebas de Manuel (tabla de la sección 2), en `DECISIONES.md` y `investigacion.md` | Solo documentación | 30 min | mié 18/11 |
-| **B** | Validación adversarial **solo con las 73 columnas monetarias**: nominal contra IPC contra por grupo, 201903 contra 201910, varias semillas. Responde directamente si deflactar les saca el drift a los montos (Manuel la corrió con todas las columnas, y por eso el AUC queda pegado a 1 y no se puede comparar). Criterio escrito antes (D17). | Prueba nueva, `src/10_adversarial.py` | ~1 h | mié 18/11 |
+| **A ✔** | Registrar R9, la comparación con las pruebas de Manuel (tabla de la sección 2), en `DECISIONES.md` y `investigacion.md` | Solo documentación | 30 min | mié 18/11 |
+| **B ✔** | Validación adversarial **solo con las 73 columnas monetarias**: nominal contra IPC contra por grupo, 201903 contra 201910, varias semillas. Responde directamente si deflactar les saca el drift a los montos (Manuel la corrió con todas las columnas, y por eso el AUC queda pegado a 1 y no se puede comparar). Criterio escrito antes (D17). | Prueba nueva, `src/10_adversarial.py` | ~1 h | mié 18/11 |
 | C | Pasar `nuevas-pruebas` a `main` con A y B | Repo | 10 min | jue 19/11 |
 | D | Guion y diapositivas del video (plantilla de 15 diapositivas) | Entrega | 1 día | vie 20/11 |
 | E | Grabar y subir el video | Entrega | — | dom 22/11 (margen hasta el lunes 23/11 a las 12) |
@@ -59,6 +59,8 @@ Escrita el 17/11 después de revisar el repo de Manuel ([vmanuelmarasco/experime
 - Corrección por comparaciones múltiples.
 
 **Ya no hace falta:** el brazo D de la v2 (nominal + ratios). Nuestro brazo por grupo *reemplaza* los límites por los ratios y no los agrega, así que no tiene features extra que controlar.
+
+**Estado al 17/11:** A y B hechas (R9, D17, R10).
 
 ## 4. Para el grupo
 
