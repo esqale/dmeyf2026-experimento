@@ -1,5 +1,7 @@
 # Hoja de ruta v2 — Inflación 1, rehacer de punta a punta
 
+> **Reemplazada por [hoja_de_ruta_v3.md](hoja_de_ruta_v3.md)** (17/11).
+
 Receta para correr todo de nuevo incorporando lo mejor de la versión de Manuel. No es para hoy: es para tener claros los pasos. Entrega del video: 23/11 antes del mediodía.
 
 ## Idea central
