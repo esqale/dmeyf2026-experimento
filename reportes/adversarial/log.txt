@@ -1,0 +1,27 @@
+mes              201903-201910 fe_base    AUC multi 1.0000 · drift univ mediano 0.0114 · 10 s
+mes              201903-201910 fe_ipc_d1  AUC multi 1.0000 · drift univ mediano 0.0083 · 24 s
+mes              201903-201910 fe_grupo   AUC multi 1.0000 · drift univ mediano 0.0077 · 33 s
+mes              201908-201910 fe_base    AUC multi 1.0000 · drift univ mediano 0.0040 · 40 s
+mes              201908-201910 fe_ipc_d1  AUC multi 1.0000 · drift univ mediano 0.0043 · 52 s
+mes              201908-201910 fe_grupo   AUC multi 1.0000 · drift univ mediano 0.0043 · 62 s
+mes_lags_deltas  201903-201910 fe_base    AUC multi 1.0000 · drift univ mediano 0.0136 · 109 s
+mes_lags_deltas  201903-201910 fe_ipc_d1  AUC multi 1.0000 · drift univ mediano 0.0137 · 160 s
+mes_lags_deltas  201903-201910 fe_grupo   AUC multi 1.0000 · drift univ mediano 0.0125 · 205 s
+mes_lags_deltas  201908-201910 fe_base    AUC multi 1.0000 · drift univ mediano 0.0063 · 246 s
+mes_lags_deltas  201908-201910 fe_ipc_d1  AUC multi 1.0000 · drift univ mediano 0.0069 · 302 s
+mes_lags_deltas  201908-201910 fe_grupo   AUC multi 1.0000 · drift univ mediano 0.0066 · 349 s
+
+                                          auc_multi  auc_multi_desvio  drift_mediano  drift_medio  columnas_drift_05  n_columnas
+columnas        par           brazo                                                                                            
+mes             201903-201910 fe_base          1.0               0.0         0.0114       0.0542                 14          73
+                              fe_ipc_d1        1.0               0.0         0.0083       0.0497                 10          73
+                              fe_grupo         1.0               0.0         0.0077       0.0484                 10          73
+                201908-201910 fe_base          1.0               0.0         0.0040       0.0413                  7          73
+                              fe_ipc_d1        1.0               0.0         0.0043       0.0414                  7          73
+                              fe_grupo         1.0               0.0         0.0043       0.0406                  7          73
+mes_lags_deltas 201903-201910 fe_base          1.0               0.0         0.0136       0.0488                 75         365
+                              fe_ipc_d1        1.0               0.0         0.0137       0.0477                 69         365
+                              fe_grupo         1.0               0.0         0.0125       0.0389                 61         365
+                201908-201910 fe_base          1.0               0.0         0.0063       0.0310                 44         365
+                              fe_ipc_d1        1.0               0.0         0.0069       0.0357                 49         365
+                              fe_grupo         1.0               0.0         0.0066       0.0296                 40         365
