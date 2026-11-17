@@ -231,3 +231,19 @@ Las decisiones 1–5 del Paso 10 se tomaron así para tener el brazo terminado. 
 - **Qué significaría cada resultado:**
   - Si deflactar *reduce* el drift y aun así pierde ganancia, el drift de los montos no le molestaba al modelo.
   - Si *no lo reduce*, los índices no describen cómo se mueven los montos (coherente con la explicación 3 de la Discusión), y deflactar no podía ayudar.
+
+## R9 — Comparación con las pruebas de la versión de Manuel (2026-11-17, repo vmanuelmarasco/experimento-deflactar al 17/11)
+Su versión corre los mismos brazos con 5 semillas y mide con el máximo de la curva. Lo que agrega, contrastado con nuestras 20 semillas:
+
+| Su prueba | Lo que concluye (5 semillas) | Con 20 semillas (nuestro) |
+|---|---|---|
+| Tres brazos | Sin deflactar 289,9 M > IPC 286,4 M > por grupo 284,9 M | Igual de fondo: deflactar no mejora (R3–R5) |
+| "Deflactar estabiliza": el desvío baja de 4,6 M a 1,1–2,1 M | Hallazgo lateral | **No se replica.** Desvío del máximo de la curva: sin deflactar 2,1 M; IPC 2,1 M; por grupo 2,2 M; con Optuna propia 2,7 y 3,2 M. Lo que sí se replica: en el máximo, los brazos deflactados mandan algo más de envíos (4.000 contra 4.400–4.750). |
+| IPC + `foto_mes` | Recupera un tercio (+1,2 M, 5/5 semillas) | Empate: +0,7 M (p = 0,49, R6); con Optuna propia, −0,7 M (p = 0,68, R7). Con 5 semillas, ganar las 5 pasa por azar 1 de cada 32 veces. |
+| Índice del mes anterior | Equivalente al del mes (+1,0 M) | Cuesta 1,7 M (p = 0,04, R3). El signo es opuesto, pero la conclusión práctica es la misma: el costo es chico. |
+| Mes de referencia del índice | No importa | De acuerdo. Cambiar la base multiplica todo el dataset por una constante, y los árboles no cambian. Nosotros normalizamos con 201901 = 1. |
+| Validación adversarial con todas las columnas | El drift lo dominan columnas no monetarias | Verificado en nuestros datos que `tmobile_app` está 100% nula hasta 201906. Se rehace solo con montos (D17). |
+
+- **Limitación que él señala y vale para R6:** `foto_mes` como número deja a 201910 fuera del rango de entrenamiento (201903–08), así que el árbol lo trata como al último mes visto. Como categórica tampoco se resuelve, porque 201910 sería una categoría nueva. El brazo E prueba "devolverle el mes" solo hasta donde un modelo puede usar un mes que nunca vio.
+- Su modelo base y el nuestro empatan en ganancia (R8).
+

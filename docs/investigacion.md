@@ -330,6 +330,8 @@ Controles contra valores publicados: inflación de 2019 = 53,8% (igual que INDEC
   - Hay un solo mes de test (201910). Con 632 BAJA+2, unas decenas de aciertos más o menos mueven la ganancia en decenas de millones.
   - 2019 tiene un quiebre (PASO de agosto y cepo de septiembre). Algunas columnas cambian por comportamiento, no por precios, y ningún deflactor lo corrige.
   - La comparación principal usa los hiperparámetros del baseline. Puede favorecer al brazo sin deflactar, porque esos hiperparámetros se optimizaron para él (el chequeo de robustez es la Optuna por brazo).
+  - En el brazo IPC + `foto_mes`, el mes de test (201910) queda fuera del rango de entrenamiento, y el árbol lo trata como al último mes visto. Ese brazo prueba "devolverle el mes" solo hasta donde un modelo puede usar un mes que no vio (R9).
+  - El mes de referencia del índice no es una limitación: cambiarlo multiplica todo el dataset por una constante, y los árboles son invariantes a eso (R9).
 - **Resultados:**
   - *Preliminar, brazo sin deflactar (baseline), una semilla:* AUC 0,9329 en 201908, N = 5.000 elegido en 201908 y **ganancia en 201910 de 281,6 M** (unos 381 de los 632 BAJA+2). La curva de 201910 es plana entre 3.000 y 6.500 envíos (280–290 M).
   - *Ruido por semilla (objetivo 2), brazo sin deflactar, 20 semillas:* ganancia en 201910 con 5.000 envíos de **284,0 M ± 3,3 M** (rango 279,4–289,3 M). En la zona plana de la curva (3.000–6.500 envíos) el desvío baja a 1,9 M. AUC 0,9375 ± 0,0004. Con 20 semillas pareadas, una diferencia de unos 2–3 M entre brazos ya se distingue del azar.
@@ -361,6 +363,9 @@ Controles contra valores publicados: inflación de 2019 = 53,8% (igual que INDEC
     - Por grupo le gana al IPC solo con los hiperparámetros del baseline (+1,7 M, p = 0,007). Con Optuna propia empatan (p = 0,46).
     - IPC + `foto_mes` empata con IPC (p = 0,76).
     - Las tres métricas (N fijo, zona plana y máximo) dan el mismo orden.
+  - *Réplica independiente (R9):* la versión de Manuel, con 5 semillas, llega a la misma conclusión de fondo. Dos de sus observaciones no se sostienen con 20 semillas:
+    - "Deflactar estabiliza": el desvío entre semillas no baja al deflactar.
+    - "`foto_mes` recupera un tercio": empata.
   - *Chequeo del modelo base (R8):* con los hiperparámetros que eligió la versión de Manuel, corridos en nuestro pipeline con las mismas 20 semillas, la ganancia empata con nuestro baseline en las tres métricas (+1,3 M con N fijo, −1,1 M en la zona plana y −1,2 M en el máximo; p ≥ 0,10). El AUC de 201910 es mejor con los nuestros (0,9375 contra 0,9361, 20/20). Los dos modelos base son equivalentes en ganancia, así que las conclusiones no dependen de cuál se use.
 - **Discusión:**
   1. **Qué se encontró.** Deflactar no mejora la ganancia, ni con IPC ni por grupo. Con los hiperparámetros del baseline, por grupo le gana al IPC por 2,1 M (R4), pero esa ventaja desaparece cuando cada brazo tiene su propia Optuna (R5). Lo robusto es que el baseline gana: los brazos deflactados pierden en la zona plana en las 20 semillas, en las dos configuraciones.
