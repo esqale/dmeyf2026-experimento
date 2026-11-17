@@ -49,9 +49,36 @@ Escrita el 17/11 después de revisar el repo de Manuel ([vmanuelmarasco/experime
 
 **Hecho fuera de la lista:** dónde caen los cortes de los árboles (D18, R11). La explicación "la señal está en el cero" queda descartada: los cortes caen en montos chicos, y deflactar cambia de lado solo al ~2% de los clientes por corte.
 
-**Para más adelante**, en este orden (cada una lleva ~1 h 15 min con los hiperparámetros del baseline, y 2–3 h más con Optuna propia):
-1. Por grupo con IPC en las 8 columnas de saldos, en lugar de la tasa de plazo fijo. Es la decisión más débil del brazo por grupo y la crítica más previsible en clase.
-2. Por grupo + `foto_mes` (el brazo F de la v2). Se espera empate, como con IPC (R6–R7).
+### Otras formas de corregir la inflación (decidido el 17/11)
+
+El tema del experimento es la inflación, así que solo entran pruebas que la corrigen de otra manera. Un dato ordena la lista: **a un árbol no le importa una transformación monótona aplicada igual a todos los meses** (el log de una columna da el mismo modelo). Solo puede cambiar algo una transformación que trate distinto a cada mes o que cambie los lags y deltas.
+
+Todas usan el mismo protocolo: criterio escrito antes, 20 semillas pareadas, hiperparámetros del baseline y la rama `nuevas-pruebas`. Cada una lleva ~1 h 15 min.
+
+| # | Prueba | Qué hace | Cuándo |
+|---|---|---|---|
+| G | **Ranking por mes con cero fijo** | El 0 queda en 0; positivos y negativos se rankean entre sí dentro de cada mes, con su signo. Saca el nivel de precios sin ningún índice. | Antes del video |
+| H | **Deltas relativos** | Montos del mes y lags nominales. Los deltas pasan a ser tasas de crecimiento: diferencia del log con signo. | Antes del video |
+| I | Normalización por cuantiles contra 201901 | Lleva la distribución de cada mes a la de 201901. Es como el ranking, pero conserva los montos en pesos de enero. | Si sobra tiempo |
+| J | Por grupo con IPC en las 8 columnas de saldos | Cambia la decisión más débil del brazo por grupo, que es la crítica más previsible en clase. | Después del video |
+| K | Dividir cada columna por su propia mediana mensual | Un índice por columna sacado del dato. Trampa: la mediana también cambia por quién tiene el producto. | Después del video |
+| L | Por grupo + `foto_mes` | Completa R6–R7. Se espera empate. | Después del video |
+
+**Descartadas, y por qué:**
+- Log con signo en los montos del mes: el árbol da el mismo modelo. Lo que sí cambia, los deltas, es la prueba H.
+- Z-score con media y desvío: corre el cero y lo dominan los extremos. La versión robusta es la K.
+- Índice para clase alta (canasta de la ENGHo por tramo de ingreso): efecto chico en 2019, se mezcla con la señal de baja y no hay tiempo.
+- Ratios entre columnas: no corrigen los montos, agregan variables nuevas.
+- Otra unidad (dólar, RIPTE): es el brazo IPC con otra serie.
+
+**No son inflación; van al pipeline productivo (trabajo B):**
+- Sacar las columnas rotas en 201910: rentabilidad, márgenes y comisiones valen 0 para todos (R10).
+- Pesar las filas de entrenamiento según cuánto se parecen al mes de test.
+- Entrenar con meses más cercanos.
+
+En el experimento, los cortes de los datos entran solo como contexto (R10): el drift grande no es inflación.
+
+**Bibliografía:** se le pide a una investigación profunda el prompt del 17/11, centrado en inflación. Sus resultados pueden reordenar G–L.
 
 **Quedan fuera** (van a "Futuros experimentos" del documento):
 - Otro mes de test.
@@ -61,7 +88,7 @@ Escrita el 17/11 después de revisar el repo de Manuel ([vmanuelmarasco/experime
 
 **Ya no hace falta:** el brazo D de la v2 (nominal + ratios). Nuestro brazo por grupo *reemplaza* los límites por los ratios y no los agrega, así que no tiene features extra que controlar.
 
-**Estado al 17/11:** A, B y C hechas (R9, D17, R10; merge a `main`). La rama `nuevas-pruebas` sigue abierta para las pruebas que vengan.
+**Estado al 17/11:** A, B y C hechas (R9, D17, R10; merge a `main`). También R11. G y H en curso. La rama `nuevas-pruebas` sigue abierta para las pruebas que vengan.
 
 ## 4. Para el grupo
 
