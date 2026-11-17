@@ -293,3 +293,22 @@ Su versión corre los mismos brazos con 5 semillas y mide con el máximo de la c
   - La razón es que un factor de ~1,3 corre a pocos clientes de lado en cada umbral: la densidad de clientes cerca de cualquier umbral es baja.
   - La explicación de la Discusión se reemplaza por esta, que está medida.
 - Archivos: `reportes/cortes/` (resumen.csv, cortes.csv).
+
+## D19 — Otras formas de corregir la inflación: ranking por mes (G) y deltas relativos (H) (criterio fijado ANTES de correrlas, 2026-11-17)
+- **Por qué estas dos:** un árbol es invariante a cualquier transformación monótona aplicada igual a todos los meses, así que solo puede cambiar algo una que trate distinto a cada mes (G) o que cambie los lags y deltas (H). La lista completa y lo descartado está en `docs/hoja_de_ruta_v3.md`.
+- **G, ranking por mes con cero fijo** (`--brazo ranking` → `datasets/fe_ranking`):
+  - En cada mes y cada una de las 73 columnas monetarias: el 0 queda en 0, cada positivo pasa a su `cume_dist` entre los positivos del mes (de 1/n a 1), y cada negativo a menos su `cume_dist` entre los negativos, ordenados desde el cero (de −1/n a −1). NULL sigue NULL.
+  - Se aplica antes de los lags y deltas, como deflactar: el lag es el ranking del cliente en su mes, y el delta es el cambio de posición.
+  - No usa ningún índice externo, así que no tiene el problema del objetivo 1.
+- **H, deltas relativos** (`--brazo delta_log` → `datasets/fe_delta_log`):
+  - Montos del mes y lags, nominales como en el baseline.
+  - Los deltas de las 73 monetarias pasan a ser `slog(x_t) − slog(x_{t−k})`, con `slog(x) = signo(x)·ln(1 + |x|)`: es una tasa de crecimiento, que no depende del nivel de precios. Conserva el 0 y funciona con negativos.
+  - Los deltas de las columnas no monetarias no cambian.
+- **Protocolo:** el de R3–R4. Hiperparámetros del baseline, las mismas 20 semillas, reentrenando con 201903–08 y test en 201910.
+- **Criterio:**
+  - Métrica principal: ganancia con N = 5.000. Con Wilcoxon pareado p < 0,05 contra el baseline, se declara que *mejora* o *empeora*; si no, *empata*.
+  - Zona plana, máximo de la curva y AUC se informan como apoyo.
+  - También se comparan contra `ipc_d1`, deflactar del modo clásico.
+- **Qué significaría cada resultado:**
+  - Si G o H le gana al baseline, corregir la inflación sí sirve, pero no dividiendo por un índice.
+  - Si empatan o pierden, la conclusión "corregir la inflación no mejora este modelo" se vuelve más fuerte, porque vale para tres formas distintas de corregirla.
