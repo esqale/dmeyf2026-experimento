@@ -24,6 +24,7 @@ Escrita el 17/11 después de revisar el repo de Manuel ([vmanuelmarasco/experime
 | IPC + `foto_mes` | Empata con el IPC solo (R6, y R7 con Optuna propia). Devolverle el mes al modelo no recupera nada. |
 | Métrica | Con el máximo de la curva (D16) el orden de los brazos es el mismo. |
 | Otras formas de corregir la inflación (R12–R19) | **Deltas relativos (H) le gana al baseline en las tres métricas** (+5,0 M N fijo, +2,1 M zona plana). Ranking por mes (G) gana con N = 5.000 pero empata en la zona plana. Ninguna variante que divide por un índice le gana al baseline. |
+| H en un segundo mes de test (D21, R20) | **Se confirma en 201909:** +5,2 M N fijo (18/20) y +3,2 M zona plana (20/20). |
 | Modelo base nuestro contra el de Manuel | Los hiperparámetros de Manuel en nuestro pipeline empatan en ganancia, y nuestro AUC es mejor (R8). **Por eso el repo principal es este.** |
 
 ## 2. Qué aporta el repo de Manuel y cómo queda
