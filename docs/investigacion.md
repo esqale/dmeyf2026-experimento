@@ -70,9 +70,7 @@ Las marcadas con * se conocen solo por resumen o por fragmentos, y hay que verif
 
 ## 03 · Sesgos cognitivos
 
-*Cada integrante escribe los suyos. Los de Alejandro son una propuesta para revisar en la reunión.*
-
-**Alejandro Esquivel** (propuesta)
+**Alejandro Esquivel** (propuesta) ---> invento... *Cada integrante escribe los suyos. Los de Alejandro son una propuesta para revisar en la reunión.* 
 - Planteé la hipótesis por grupo y dediqué varios días a clasificar las 73 columnas. Me convenía que ese trabajo se notara en la ganancia.
 - Creía que una inflación del 54% anual tenía que molestarle al modelo, y que corregirla iba a mejorarlo.
 - Después del primer resultado negativo, me interesaba encontrar alguna corrección que sí funcionara, para que el trabajo no terminara en "no funcionó". Por eso las pruebas de la familia 4 tienen su criterio escrito antes de correrlas.
@@ -181,8 +179,6 @@ Un árbol no cambia si a todos los meses se les aplica la misma transformación 
 - **El mes de referencia del índice no es una limitación:** cambiarlo multiplica todo el dataset por una constante, y los árboles son invariantes a eso.
 
 **Problemas en las corridas**
-- La prueba H se cortó después de la semilla 5 y se retomó desde la 6, con el mismo dataset y las mismas semillas.
-- El ranking por mes se pasó de DuckDB a pandas por velocidad; se verificó que da idéntico.
 - La Optuna de cada brazo tiene 50 intentos. Los mejores intentos quedan a menos de 0,0005 de AUC entre sí, y su ganancia en 201908 no sigue el orden del AUC.
 
 ---
