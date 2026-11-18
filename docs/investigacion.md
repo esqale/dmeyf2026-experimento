@@ -414,6 +414,20 @@ Controles contra valores publicados: inflación de 2019 = 53,8% (igual que INDEC
      La tabla de deflactores de la hipótesis suponía columnas que el dataset no tiene: los grupos CER y tasa activa quedaron vacíos.
   7. **Relación con otros trabajos.** El grupo de 2023 (ver Antecedente) deflactó todo por IPC, se encontró con el mismo problema de las variables en dólares y no encontró papers sobre el tema. Este trabajo lo extiende con el brazo por grupo, la medición del ruido entre semillas y el chequeo de robustez. Llega a una conclusión en la misma línea: en churn bancario con ventanas cortas, ajustar por inflación no es una mejora obvia.
 - **Conclusión:** En el churn de 2019, con un modelo LightGBM de lags y deltas, **deflactar las variables monetarias no mejora la ganancia**: el modelo sin deflactar es igual o mejor, en las 20 semillas y con hiperparámetros propios para cada brazo. Deflactar por grupo le ganó a deflactar todo por IPC solo con los hiperparámetros del baseline; con hiperparámetros propios empatan, así que esa ventaja no es robusta. La hipótesis no se confirma en ninguna de sus dos partes. Recomendación práctica: en ventanas cortas como esta, no vale la pena deflactar. Si se hace, usar el índice del mes anterior (el único disponible al predecir) cuesta poco.
+- **Conclusión alternativa (en discusión):** _Incorpora R12–R20. Reemplazaría a la conclusión de arriba si el grupo la aprueba._ En el churn de 2019, con un modelo LightGBM de lags y deltas, **dividir las variables monetarias por un índice no mejora la ganancia**, se use el índice que se use: IPC, un índice por grupo de variables o la mediana de cada columna en el mes. El modelo sin deflactar es igual o mejor en las 20 semillas, también con hiperparámetros propios para cada brazo.
+  - Deflactar por grupo le ganó a deflactar todo por IPC solo con los hiperparámetros del baseline. Con hiperparámetros propios empatan, así que esa ventaja no es robusta. La hipótesis original no se confirma en ninguna de sus dos partes.
+  - **Corregir la inflación sin dividir los montos sí mejora la ganancia.** Lo que funciona es medir los *cambios* de cada monto sin que dependan del nivel de precios:
+    - Con deltas relativos (tasa de crecimiento en lugar de diferencia en pesos, con los montos del mes nominales), la ganancia sube +5,0 M con N fijo y +2,1 M en la zona plana en 201910. En un segundo mes de test, 201909, se repite: +5,2 M con N fijo y +3,2 M en la zona plana, a favor en las 20 semillas (R20).
+    - El ranking del cliente dentro de su mes, con el cero fijo, mejora con el N del esquema pero no en la zona plana.
+  - **Recomendación práctica:**
+    - No dividir los montos por un índice.
+    - Usar los deltas relativos: mejoran la ganancia en los dos meses de test y no requieren ningún índice.
+    - Si igual se deflacta, usar el índice del mes anterior, el único disponible al predecir. Cuesta poco.
+  - **Futuros experimentos, versión alternativa (en discusión):**
+    - **Ventanas largas y con más inflación** (2020–2021), donde el drift por precios podría pesar más.
+    - **Más meses de test** para los deltas relativos (ya probados en 201910 y 201909; faltan meses de otros años).
+    - **Combinar deltas relativos con ranking** en los niveles, y probar ratios entre columnas del mismo cliente (uso del límite, consumo sobre saldo).
+    - Montos anonimizados: las modas son múltiplos de 1,173 (5.865 = 5.000 × 1,173). Es un factor constante y no afecta, pero vale mencionarlo.
 - **Antecedente** (plantilla de referencia, ejemplo de 2023, "Data Drifting"): otro grupo deflactó las 73 variables monetarias por el IPC general. Encontró la misma limitación que nosotros, porque las variables en dólares vienen convertidas a pesos al tipo de cambio oficial. También dejó escrito: "no encontré paper de performance por ajuste por inflación". Nuestro brazo "todo con IPC" replica ese enfoque, y el brazo "por grupo" lo extiende. Sirve para la Discusión (problema ↔ otros problemas).
 - **Futuros Experimentos y Problemas:**
   - **Ventanas largas y con más inflación** (2020–2021), donde el drift podría pesar más que la dispersión entre clientes.
