@@ -374,6 +374,12 @@ Controles contra valores publicados: inflación de 2019 = 53,8% (igual que INDEC
     - "Deflactar estabiliza": el desvío entre semillas no baja al deflactar.
     - "`foto_mes` recupera un tercio": empata.
   - *Chequeo del modelo base (R8):* con los hiperparámetros que eligió la versión de Manuel, corridos en nuestro pipeline con las mismas 20 semillas, la ganancia empata con nuestro baseline en las tres métricas (+1,3 M con N fijo, −1,1 M en la zona plana y −1,2 M en el máximo; p ≥ 0,10). El AUC de 201910 es mejor con los nuestros (0,9375 contra 0,9361, 20/20). Los dos modelos base son equivalentes en ganancia, así que las conclusiones no dependen de cuál se use.
+  - *Otras formas de corregir la inflación, sin índice (R12–R13; criterios en D19–D20; el resto de la lista está corriendo):*
+    - **Ranking por mes con cero fijo, antes de lags y deltas (G, R12):** cada monto pasa a su posición entre los clientes del mes.
+      - Con N = 5.000 le gana al baseline por +4,7 M (16/20, p = 0,001) y al IPC por +6,5 M (20/20).
+      - Pero en la zona plana empata (+0,7 M, p = 0,13), el AUC baja un poco (−0,0003) y pierde entre 1.000 y 3.500 envíos (~−4 M).
+      - Reordena la lista más de lo que la mejora: la ventaja depende del N elegido.
+    - **Ranking después de lags y deltas (G2, R13):** empata con el baseline y pierde contra G (−5,1 M, 2/20). Lo que aporta es que el delta mida el cambio de posición del cliente en su mes, no el cambio en pesos.
 - **Discusión:**
   1. **Qué se encontró.** Deflactar no mejora la ganancia, ni con IPC ni por grupo. Con los hiperparámetros del baseline, por grupo le gana al IPC por 2,1 M (R4), pero esa ventaja desaparece cuando cada brazo tiene su propia Optuna (R5). Lo robusto es que el baseline gana: los brazos deflactados pierden en la zona plana en las 20 semillas, en las dos configuraciones.
   2. **Los montos sí importan.** Las variables monetarias (crudas, lags y deltas) explican el **51% de la ganancia** (gain) del modelo baseline. `mcaja_ahorro` es la segunda más importante, después de `ctrx_quarter`. Por eso, el resultado no se explica porque el modelo ignore los montos: los usa mucho, y aun así deflactarlos no ayuda.

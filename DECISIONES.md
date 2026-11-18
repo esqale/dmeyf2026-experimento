@@ -329,3 +329,37 @@ Orden y motivos en `docs/hoja_de_ruta_v3.md` (revisado con `docs/investigacion_b
 | **L**, por grupo + `foto_mes` (`--brazo grupo --con-mes`) | El brazo por grupo con `foto_mes` como feature | Por grupo | Mismo criterio que D15 y R6 |
 
 - **Cambio de implementación de G, sin cambio de definición:** el ranking por mes se calcula en pandas (`src/rankear.py`) en lugar de con funciones de ventana en DuckDB, que tardaban ~8 min por mes. Se verificó que da idéntico a `cume_dist` de DuckDB.
+
+## R12 — G, ranking por mes con cero fijo (2026-11-17, 20 semillas, criterio en D19)
+- **Contra el baseline, por el criterio D19: mejora.** Con N = 5.000, +4,7 M (288,8 contra 284,0 M), gana 16/20, p = 0,001.
+- **Métricas de apoyo:**
+
+  | Métrica | Diferencia | Gana | p (Wilcoxon) |
+  |---|---|---|---|
+  | Zona plana | +0,7 M | 14/20 | 0,13 (empate) |
+  | Máximo de la curva | +1,0 M | 13/20 | 0,04 |
+  | AUC 201910 | −0,0003 | 6/20 | 0,04 |
+
+- **Contra `ipc_d1`:** +6,5 M con N fijo y +5,6 M en la zona plana, 20/20 en las dos.
+- **La mejora depende de N** (curva por N en `reportes/ranking/curva_por_n.csv`, mismas 20 semillas):
+  - G **pierde** entre 1.000 y 3.500 envíos: de −3,4 a −4,6 M, gana 2–4/20, p < 0,005. La excepción es 2.000, donde empata.
+  - Empata en 4.000–4.500.
+  - **Gana** desde 5.000: de +2,3 a +4,7 M entre 5.000 y 6.500, y de +3,6 a +5,8 M entre 9.000 y 10.000.
+  - El baseline tiene su pico en 4.000 (289,2 M) y cae 5,2 M hasta 5.000. G tiene su pico en 4.500 (290,3 M) y cae menos. Buena parte de los +4,7 M viene de que N = 5.000 queda pasado el pico del baseline.
+  - En clientes: con 5.000 envíos, G encuentra en promedio 387,5 BAJA+2 contra 383,2 del baseline, unos 4 más.
+- **Lectura:** el ranking no ordena mejor a todos los clientes, porque el AUC y la parte alta de la lista empeoran. Lo que hace es reordenar: pone peor a los primeros clientes y mejor a los que vienen después del 4.000. Con la regla de corte fija del esquema (N = 5.000, elegido en 201908 con el baseline), eso da +4,7 M. Mirando el pico de cada curva, la ventaja es de ~1 M. **Es la primera corrección de la inflación que no pierde contra el baseline**, pero la ganancia no es robusta al N elegido.
+
+## R13 — G2, ranking después de lags y deltas (2026-11-17, 20 semillas, criterio en D20)
+- **Contra el baseline: empata.**
+
+  | Métrica | Diferencia | Gana | p (Wilcoxon) |
+  |---|---|---|---|
+  | N fijo | −0,3 M | 10/20 | 0,76 |
+  | Zona plana | −0,7 M | 9/20 | 0,15 |
+  | Máximo de la curva | −1,3 M | 7/20 | 0,05 |
+  | AUC | igual | — | 0,65 |
+
+- **Contra G: pierde.**
+  - N fijo: −5,1 M, gana 2/20, p < 0,001.
+  - Zona plana: −1,4 M, gana 5/20, p = 0,004.
+- **Lectura, por el criterio D20:** lo que aporta en G es rankear los niveles *antes* de calcular lags y deltas. Así, el delta mide cuánto cambió la posición del cliente dentro de su mes. Rankear los deltas en pesos no aporta.
