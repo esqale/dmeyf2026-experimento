@@ -420,5 +420,4 @@ Controles contra valores publicados: inflación de 2019 = 53,8% (igual que INDEC
   - **Varios meses de test**, en lugar de uno solo, para que el resultado no dependa de 201910.
   - **Alternativas a deflactar:** el ranking o percentil del cliente dentro de su mes, que no depende de ningún índice, o cocientes entre columnas del mismo cliente (como el uso del límite).
   - **Verificar la explicación del "cero":** ver dónde caen los cortes de los árboles en las variables monetarias y cuántos están cerca de 0.
-  - **Confirmar con la cátedra** si las columnas de plazo fijo en pesos y en dólares están cruzadas.
   - Montos anonimizados: las modas son múltiplos de 1,173 (5.865 = 5.000 × 1,173). Es un factor constante y no afecta, pero vale mencionarlo.
