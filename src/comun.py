@@ -16,7 +16,8 @@ VALIDA = 201908
 # Test en 201910: se reentrena sumando 201907–08 (ENTRENA_EXTENDIDO), como fija el esquema de referencia.
 # Usar el modelo entrenado solo en ENTRENA queda como análisis de sensibilidad.
 ENTRENA_EXTENDIDO = [201903, 201904, 201905, 201906, 201907, 201908]
-MESES_TEST = {"0306": ENTRENA, "0308": ENTRENA_EXTENDIDO}
+# "0307": entrenamiento para testear en 201909 (D21), con la misma regla: desde 201903 hasta t-2.
+MESES_TEST = {"0306": ENTRENA, "0307": ENTRENA_EXTENDIDO[:-1], "0308": ENTRENA_EXTENDIDO}
 TEST = 201910
 NO_FEATURES = ("numero_de_cliente", "foto_mes", "clase_ternaria")
 

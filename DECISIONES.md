@@ -431,3 +431,31 @@ Orden y motivos en `docs/hoja_de_ruta_v3.md` (revisado con `docs/investigacion_b
   | Máximo | −2,1 M | 2/20 | 0,002 |
 
 - **Lectura:** como en R6 con el IPC, devolverle el mes al modelo no recupera lo que se pierde al deflactar. Si algo, empeora un poco.
+
+## D21 — Confirmar H en un segundo mes de test, 201909 (criterio fijado ANTES de correrlo, 2026-11-18)
+- **Por qué:** R15 se apoya en un solo mes de test (201910). Una ventaja de ~2 M en la zona plana necesita repetirse en otro mes antes de ser el resultado central del video.
+- **Esquema:**
+  - Test en 201909, que tiene clase porque existen 201910 y 201911.
+  - Se entrena con 201903–07, con la misma regla que para 201910: todos los meses desde 201903 hasta t−2. 201908 queda afuera porque su clase usa 201910.
+  - Mismos hiperparámetros e iteraciones del baseline (`reportes/baseline/resultado.json`, elegidos validando en 201908), mismas 20 semillas, N = 5.000 y zona plana 3.000–6.500. No se ajusta nada para 201909.
+  - Brazos: baseline (`fe_base`) y H (`fe_delta_log`), con los datasets que ya existen. Salidas en `reportes/baseline_t201909` y `reportes/delta_log_t201909`.
+- **Criterio** (H contra el baseline, pareado, Wilcoxon):
+  - **Se confirma** si H gana con p < 0,05 con N = 5.000 **y** en la zona plana.
+  - **Se confirma en parte** si gana con p < 0,05 en una de las dos y en la otra no pierde.
+  - **No se confirma** en cualquier otro caso. Entonces R15 se presenta como un hallazgo de un solo mes, no como conclusión.
+- **Limitación conocida:** 201909 es el mes siguiente a las PASO (agosto 2019) y el del cepo. Si no se confirma, puede ser por el mes y no por la técnica, y no hay un tercer mes para desempatar.
+
+## R20 — H confirmado en 201909 (2026-11-18, 20 semillas, criterio en D21)
+- **Por el criterio D21: se confirma.** H le gana al baseline con p < 0,05 con N = 5.000 y en la zona plana.
+
+  | Métrica (test 201909, entrena 201903–07) | Baseline | H | Diferencia | Gana | p (Wilcoxon) |
+  |---|---|---|---|---|---|
+  | N fijo | 252,4 M | 257,6 M | **+5,2 M** | 18/20 | 0,0005 |
+  | Zona plana | 251,7 M | 255,0 M | **+3,2 M** | **20/20** | 0,0001 |
+  | Máximo de la curva | 256,0 M | 259,8 M | +3,8 M | 18/20 | 0,0002 |
+  | AUC 201909 | 0,9343 | 0,9340 | −0,0003 | 6/20 | 0,03 |
+
+- **Igual que en 201910** (R15: +5,0 M y +2,1 M). En la zona plana, la ventaja es mayor en 201909.
+- El AUC baja apenas en los dos meses: H no ordena mejor a todos los clientes, sino la parte de la lista donde se corta.
+- **Lectura:** la mejora de los deltas relativos se repite en dos meses de test, con un entrenamiento distinto y sin ajustar nada. Pasa a ser el resultado central del experimento.
+- Implementación: `04_semillas.py --test 201909 --entrena-test 0307`. La columna `auc_201910` de esas salidas es el AUC de 201909. Salidas en `reportes/baseline_t201909`, `reportes/delta_log_t201909` y `reportes/delta_log_t201909/comparacion.csv`.

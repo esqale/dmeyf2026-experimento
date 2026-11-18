@@ -11,7 +11,9 @@ Uso:
 - Métricas por semilla: ganancia con N fijo (--envios, elegido en 201908 por el baseline), promedio de la zona
   plana de la curva, máximo de la curva (solo informativo) y AUC de 201910.
 - Reanudable: si reportes/<nombre>/semillas.csv ya tiene una semilla, la saltea.
-Salidas en reportes/<nombre>/: semillas.csv, probs_201910.parquet (probabilidad por cliente y semilla), log.
+- Otro mes de test (D21): --test 201909 --entrena-test 0307 (entrena 201903-07). La columna del AUC sigue
+  llamándose auc_201910 para que 07_comparar no cambie, pero es el AUC del mes de --test.
+Salidas en reportes/<nombre>/: semillas.csv, probs_<test>.parquet (probabilidad por cliente y semilla), log.
 """
 import argparse
 import json
@@ -39,18 +41,20 @@ def main(a):
     semillas = np.random.default_rng(SEMILLA_MADRE).integers(1, 2**31 - 1, size=a.semillas).tolist()
     archivo = os.path.join(salida, "semillas.csv")
     hechas = pd.read_csv(archivo) if os.path.exists(archivo) else pd.DataFrame()
-    archivo_probs = os.path.join(salida, "probs_201910.parquet")
+    test = a.test
+    assert max(MESES_TEST[a.entrena_test]) <= test - 2, "el entrenamiento tiene que terminar en t-2 o antes"
+    archivo_probs = os.path.join(salida, f"probs_{test}.parquet")
     probs = pd.read_parquet(archivo_probs) if os.path.exists(archivo_probs) else None
 
     t0 = time.time()
     Xf, yf, _ = cargar(a.dataset, MESES_TEST[a.entrena_test])
     dtr = lgb.Dataset(Xf, yf, params={"feature_pre_filter": False}, free_raw_data=False).construct()
-    df_te = pd.read_parquet(os.path.join(a.dataset, f"{TEST}.parquet"), columns=["numero_de_cliente"])
-    Xte, yte, b2te = cargar(a.dataset, [TEST])
+    df_te = pd.read_parquet(os.path.join(a.dataset, f"{test}.parquet"), columns=["numero_de_cliente"])
+    Xte, yte, b2te = cargar(a.dataset, [test])
     if probs is None:
         probs = df_te.copy()
     print(f"{a.nombre}: {len(yf):,} filas de train · params de {a.params} · {base['iteraciones']} iter · "
-          f"N = {a.envios:,} · {time.time() - t0:.0f} s", flush=True)
+          f"N = {a.envios:,} · test {test} · {time.time() - t0:.0f} s", flush=True)
 
     filas = hechas.to_dict("records")
     corridas = 0  # semillas corridas en esta ejecución (para estimar lo que falta al retomar)
@@ -81,7 +85,7 @@ def main(a):
     print("\nResumen (M):")
     print((r[["ganancia_n_fijo", "ganancia_zona_plana", "max_informativo"]] / 1e6)
           .describe().round(1).to_string(), flush=True)
-    print(f"AUC 201910: media {r.auc_201910.mean():.5f} · desvío {r.auc_201910.std():.5f}")
+    print(f"AUC {test}: media {r.auc_201910.mean():.5f} · desvío {r.auc_201910.std():.5f}")
 
 
 if __name__ == "__main__":
@@ -92,4 +96,5 @@ if __name__ == "__main__":
     p.add_argument("--semillas", type=int, default=20)
     p.add_argument("--envios", type=int, default=5000)
     p.add_argument("--entrena-test", choices=sorted(MESES_TEST), default="0308")
+    p.add_argument("--test", type=int, default=TEST)
     main(p.parse_args())
