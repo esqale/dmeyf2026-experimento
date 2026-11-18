@@ -1,0 +1,123 @@
+Historia rankeada en historia/mensual_ranking_sin_cero
+Brazo ranking_sin_cero · 0 columnas transformadas -> datasets/fe_ranking_sin_cero
+201903: 125,622 filas · 763 columnas · 7 s
+201904: 126,116 filas · 763 columnas · 15 s
+201905: 126,763 filas · 763 columnas · 22 s
+201906: 128,370 filas · 763 columnas · 29 s
+201907: 129,853 filas · 763 columnas · 36 s
+201908: 131,775 filas · 763 columnas · 42 s
+201909: 133,419 filas · 763 columnas · 50 s
+201910: 135,633 filas · 763 columnas · 58 s
+ranking_sin_cero: 768,499 filas de train · params de reportes/baseline/resultado.json · 405 iter · N = 5,000 · 15 s
+      semilla 1 · iter  100 · 62 s
+      semilla 1 · iter  200 · 100 s
+      semilla 1 · iter  300 · 142 s
+      semilla 1 · iter  400 · 184 s
+  semilla  1/20 · 280.5 M con 5,000 · media 280.5 M · desvío nan M · 173 s · faltan ~60 min
+      semilla 2 · iter  100 · 234 s
+      semilla 2 · iter  200 · 273 s
+      semilla 2 · iter  300 · 313 s
+      semilla 2 · iter  400 · 356 s
+  semilla  2/20 · 290.4 M con 5,000 · media 285.4 M · desvío 7.0 M · 171 s · faltan ~54 min
+      semilla 3 · iter  100 · 404 s
+      semilla 3 · iter  200 · 444 s
+      semilla 3 · iter  300 · 485 s
+      semilla 3 · iter  400 · 528 s
+  semilla  3/20 · 279.4 M con 5,000 · media 283.4 M · desvío 6.1 M · 172 s · faltan ~50 min
+      semilla 4 · iter  100 · 584 s
+      semilla 4 · iter  200 · 628 s
+      semilla 4 · iter  300 · 673 s
+      semilla 4 · iter  400 · 719 s
+  semilla  4/20 · 275.0 M con 5,000 · media 281.3 M · desvío 6.5 M · 191 s · faltan ~48 min
+      semilla 5 · iter  100 · 768 s
+      semilla 5 · iter  200 · 807 s
+      semilla 5 · iter  300 · 848 s
+      semilla 5 · iter  400 · 890 s
+  semilla  5/20 · 284.9 M con 5,000 · media 282.0 M · desvío 5.9 M · 171 s · faltan ~45 min
+      semilla 6 · iter  100 · 938 s
+      semilla 6 · iter  200 · 978 s
+      semilla 6 · iter  300 · 1019 s
+      semilla 6 · iter  400 · 1061 s
+  semilla  6/20 · 279.4 M con 5,000 · media 281.6 M · desvío 5.3 M · 172 s · faltan ~41 min
+      semilla 7 · iter  100 · 1110 s
+      semilla 7 · iter  200 · 1149 s
+      semilla 7 · iter  300 · 1190 s
+      semilla 7 · iter  400 · 1232 s
+  semilla  7/20 · 284.9 M con 5,000 · media 282.1 M · desvío 5.0 M · 170 s · faltan ~38 min
+      semilla 8 · iter  100 · 1280 s
+      semilla 8 · iter  200 · 1318 s
+      semilla 8 · iter  300 · 1360 s
+      semilla 8 · iter  400 · 1402 s
+  semilla  8/20 · 280.5 M con 5,000 · media 281.9 M · desvío 4.7 M · 170 s · faltan ~35 min
+      semilla 9 · iter  100 · 1450 s
+      semilla 9 · iter  200 · 1490 s
+      semilla 9 · iter  300 · 1532 s
+      semilla 9 · iter  400 · 1574 s
+  semilla  9/20 · 289.3 M con 5,000 · media 282.7 M · desvío 5.0 M · 171 s · faltan ~32 min
+      semilla 10 · iter  100 · 1622 s
+      semilla 10 · iter  200 · 1661 s
+      semilla 10 · iter  300 · 1701 s
+      semilla 10 · iter  400 · 1743 s
+  semilla 10/20 · 282.7 M con 5,000 · media 282.7 M · desvío 4.8 M · 170 s · faltan ~29 min
+      semilla 11 · iter  100 · 1792 s
+      semilla 11 · iter  200 · 1830 s
+      semilla 11 · iter  300 · 1871 s
+      semilla 11 · iter  400 · 1913 s
+  semilla 11/20 · 281.6 M con 5,000 · media 282.6 M · desvío 4.5 M · 170 s · faltan ~26 min
+      semilla 12 · iter  100 · 1962 s
+      semilla 12 · iter  200 · 2001 s
+      semilla 12 · iter  300 · 2042 s
+      semilla 12 · iter  400 · 2084 s
+  semilla 12/20 · 283.8 M con 5,000 · media 282.7 M · desvío 4.3 M · 171 s · faltan ~23 min
+      semilla 13 · iter  100 · 2133 s
+      semilla 13 · iter  200 · 2171 s
+      semilla 13 · iter  300 · 2212 s
+      semilla 13 · iter  400 · 2254 s
+  semilla 13/20 · 280.5 M con 5,000 · media 282.5 M · desvío 4.2 M · 170 s · faltan ~20 min
+      semilla 14 · iter  100 · 2303 s
+      semilla 14 · iter  200 · 2341 s
+      semilla 14 · iter  300 · 2383 s
+      semilla 14 · iter  400 · 2426 s
+  semilla 14/20 · 283.8 M con 5,000 · media 282.6 M · desvío 4.0 M · 172 s · faltan ~17 min
+      semilla 15 · iter  100 · 2474 s
+      semilla 15 · iter  200 · 2513 s
+      semilla 15 · iter  300 · 2553 s
+      semilla 15 · iter  400 · 2595 s
+  semilla 15/20 · 280.5 M con 5,000 · media 282.5 M · desvío 3.9 M · 170 s · faltan ~14 min
+      semilla 16 · iter  100 · 2644 s
+      semilla 16 · iter  200 · 2682 s
+      semilla 16 · iter  300 · 2723 s
+      semilla 16 · iter  400 · 2765 s
+  semilla 16/20 · 288.2 M con 5,000 · media 282.8 M · desvío 4.1 M · 170 s · faltan ~12 min
+      semilla 17 · iter  100 · 2814 s
+      semilla 17 · iter  200 · 2852 s
+      semilla 17 · iter  300 · 2894 s
+      semilla 17 · iter  400 · 2936 s
+  semilla 17/20 · 283.8 M con 5,000 · media 282.9 M · desvío 3.9 M · 171 s · faltan ~9 min
+      semilla 18 · iter  100 · 2985 s
+      semilla 18 · iter  200 · 3023 s
+      semilla 18 · iter  300 · 3067 s
+      semilla 18 · iter  400 · 3109 s
+  semilla 18/20 · 280.5 M con 5,000 · media 282.8 M · desvío 3.9 M · 173 s · faltan ~6 min
+      semilla 19 · iter  100 · 3158 s
+      semilla 19 · iter  200 · 3196 s
+      semilla 19 · iter  300 · 3237 s
+      semilla 19 · iter  400 · 3278 s
+  semilla 19/20 · 276.1 M con 5,000 · media 282.4 M · desvío 4.0 M · 170 s · faltan ~3 min
+      semilla 20 · iter  100 · 3328 s
+      semilla 20 · iter  200 · 3366 s
+      semilla 20 · iter  300 · 3410 s
+      semilla 20 · iter  400 · 3453 s
+  semilla 20/20 · 282.7 M con 5,000 · media 282.4 M · desvío 3.9 M · 174 s · faltan ~0 min
+
+Resumen (M):
+       ganancia_n_fijo  ganancia_zona_plana  max_informativo
+count             20.0                 20.0             20.0
+mean             282.4                279.4            286.2
+std                3.9                  1.9              3.3
+min              275.0                275.1            281.0
+25%              280.5                278.8            284.2
+50%              282.2                279.6            286.0
+75%              284.1                280.5            287.4
+max              290.4                283.2            295.9
+AUC 201910: media 0.93325 · desvío 0.00057

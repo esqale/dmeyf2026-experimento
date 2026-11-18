@@ -1,0 +1,37 @@
+Brazo delta_log · 73 columnas transformadas -> datasets/fe_delta_log
+201903: 125,622 filas · 763 columnas · 8 s
+201904: 126,116 filas · 763 columnas · 16 s
+201905: 126,763 filas · 763 columnas · 24 s
+201906: 128,370 filas · 763 columnas · 30 s
+201907: 129,853 filas · 763 columnas · 35 s
+201908: 131,775 filas · 763 columnas · 42 s
+201909: 133,419 filas · 763 columnas · 49 s
+201910: 135,633 filas · 763 columnas · 56 s
+delta_log: 768,499 filas de train · params de reportes/baseline/resultado.json · 405 iter · N = 5,000 · 17 s
+      semilla 1 · iter  100 · 55 s
+      semilla 1 · iter  200 · 90 s
+      semilla 1 · iter  300 · 125 s
+      semilla 1 · iter  400 · 166 s
+  semilla  1/20 · 290.4 M con 5,000 · media 290.4 M · desvío nan M · 153 s · faltan ~54 min
+      semilla 2 · iter  100 · 218 s
+      semilla 2 · iter  200 · 266 s
+      semilla 2 · iter  300 · 308 s
+      semilla 2 · iter  400 · 357 s
+  semilla  2/20 · 287.1 M con 5,000 · media 288.8 M · desvío 2.3 M · 192 s · faltan ~54 min
+      semilla 3 · iter  100 · 400 s
+      semilla 3 · iter  200 · 434 s
+      semilla 3 · iter  300 · 470 s
+      semilla 3 · iter  400 · 506 s
+  semilla  3/20 · 292.6 M con 5,000 · media 290.0 M · desvío 2.8 M · 149 s · faltan ~48 min
+      semilla 4 · iter  100 · 560 s
+      semilla 4 · iter  200 · 602 s
+      semilla 4 · iter  300 · 650 s
+      semilla 4 · iter  400 · 694 s
+  semilla  4/20 · 286.0 M con 5,000 · media 289.0 M · desvío 3.0 M · 188 s · faltan ~47 min
+      semilla 5 · iter  100 · 737 s
+      semilla 5 · iter  200 · 772 s
+      semilla 5 · iter  300 · 810 s
+      semilla 5 · iter  400 · 848 s
+  semilla  5/20 · 291.5 M con 5,000 · media 289.5 M · desvío 2.8 M · 154 s · faltan ~43 min
+      semilla 6 · iter  100 · 891 s
+      semilla 6 · iter  200 · 926 s

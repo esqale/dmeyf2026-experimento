@@ -363,3 +363,71 @@ Orden y motivos en `docs/hoja_de_ruta_v3.md` (revisado con `docs/investigacion_b
   - N fijo: −5,1 M, gana 2/20, p < 0,001.
   - Zona plana: −1,4 M, gana 5/20, p = 0,004.
 - **Lectura, por el criterio D20:** lo que aporta en G es rankear los niveles *antes* de calcular lags y deltas. Así, el delta mide cuánto cambió la posición del cliente dentro de su mes. Rankear los deltas en pesos no aporta.
+
+## R14 — M, nominal + ranking (2026-11-17, 20 semillas, criterio en D20)
+- **Contra el baseline: mejora.** +3,4 M con N fijo (287,4 contra 284,0), gana 15/20, p = 0,007. En la zona plana, +1,0 M (15/20, p = 0,038). En el máximo empata (+0,9 M, p = 0,22). El AUC empata (−0,0002, p = 0,07).
+- **Contra G: empata en todo.** −1,3 M con N fijo (p = 0,17), +0,4 M en la zona plana (p = 0,32).
+- **Curva por N** (`reportes/nominal_ranking/curva_por_n.csv`): parecida a la de G, pero con diferencias más chicas. Pierde en 3.000 (−2,0 M, p = 0,004), gana entre 5.000 y 6.000 (+2,4 a +3,4 M) y entre 9.000 y 10.000.
+- **Reparto del gain**, con 3 modelos finales (semillas 1–3, 201903–08, hiperparámetros del baseline; `src/12_gain_nominal_rk.py`, salidas en `reportes/nominal_ranking/gain_*.csv`):
+  - Las monetarias se llevan el 56% del gain total.
+  - Dentro de las monetarias, **las nominales se llevan el 50%** (46%, 50% y 54% según la semilla) y las `_rk` el otro 50%.
+  - `mcaja_ahorro` (nominal) es la 2.ª más importante y `mcaja_ahorro_rk` la 3.ª.
+- **Lectura, por el criterio D20:**
+  - Con el ranking disponible, el árbol sigue usando el monto en pesos tanto como el ranking. Que las nominales queden por encima de la mitad depende de la semilla, así que el criterio queda en el límite y no da evidencia clara a favor de "el monto nominal informa por sí mismo".
+  - Lo que sí muestra es que el modelo no descarta el monto en pesos cuando tiene una versión corregida.
+  - Como M no le gana a G, tener las dos versiones no agrega ganancia.
+
+## R15 — H, deltas relativos (2026-11-17/18, 20 semillas, criterio en D19)
+- **Contra el baseline, por el criterio D19: mejora.** Es la única prueba que le gana en las tres métricas de ganancia:
+
+  | Métrica | Diferencia | Gana | p (Wilcoxon) |
+  |---|---|---|---|
+  | N fijo (principal) | **+5,0 M** (289,0 contra 284,0) | 17/20 | **0,0008** |
+  | Zona plana | **+2,1 M** | 18/20 | **0,002** |
+  | Máximo de la curva | +2,1 M | 16/20 | 0,012 |
+  | AUC 201910 | −0,0002 | 8/20 | 0,22 (empate) |
+
+- **Contra `ipc_d1`:** +6,8 M con N fijo y +7,0 M en la zona plana (diferencia de medias pareadas).
+- **Contra G (ranking):** empatan con N fijo (+0,3 M, p = 0,65). H le gana en la zona plana (+1,4 M, G gana 3/20, p = 0,001).
+- **Contra M (nominal + ranking):** H gana con N fijo (+1,6 M, p = 0,04) y en la zona plana (+1,0 M, p = 0,011).
+- **Curva por N** (`reportes/delta_log/curva_por_n.csv`):
+  - A diferencia de G, H no pierde en la parte alta de la lista. Entre 1.000 y 4.000 envíos queda parejo con el baseline: alterna diferencias chicas a favor y en contra, y solo pierde en 3.000 (−2,1 M, p = 0,007).
+  - Gana con claridad entre 4.500 y 6.000 (+2,4 a +5,0 M, p ≤ 0,024).
+  - Desde 6.500 empata.
+  - El pico de H está en 4.500 (291,1 M) y el del baseline en 4.000 (289,2 M).
+- **Lectura:** medir el cambio de cada monto como tasa (`slog(x_t) − slog(x_{t−k})`), en lugar de en pesos, mejora la ganancia sin usar ningún índice. La mejora vale con el N del esquema, en la zona plana y en el pico de la curva, así que es más robusta que la de G. Montos y lags quedan nominales, de modo que no se pierde la información del monto en pesos. Es la forma de corregir la inflación que mejor funcionó.
+- **Nota de ejecución:** se cortó después de la semilla 5 para pasar al ranking en pandas y se retomó desde la semilla 6, con el mismo dataset y las mismas semillas. `reportes/delta_log/log_parte1.txt` tiene la primera parte.
+
+## R16 — G0, ranking sin cero fijo (2026-11-18, 20 semillas, criterio en D20)
+- **Contra G: pierde en todo.**
+
+  | Métrica | Diferencia | Gana | p (Wilcoxon) |
+  |---|---|---|---|
+  | N fijo | −6,3 M | 1/20 | 0,0003 |
+  | Zona plana | −5,2 M | 0/20 | 0,0001 |
+  | AUC | −0,004 | 0/20 | — |
+
+- **Contra el baseline:** empata con N fijo (−1,6 M, p = 0,17) y pierde en la zona plana (−4,6 M, 1/20).
+- **Lectura, por el criterio D20:** fijar el cero importa. Coincide con el antecedente (Rossi, 2019), que usó ranking sin cero fijo y obtuvo un resultado peor que el nominal. Sin cero fijo, un 0 cae en una posición distinta cada mes según cuántos ceros haya. Con cero fijo, "no tiene" sigue siendo exactamente 0 en todos los meses.
+
+## R17 — J, por grupo con IPC en los 8 saldos (2026-11-18, 20 semillas, criterio en D20)
+- **Contra `grupo`: empata.** −0,2 M con N fijo (8/20, p = 0,94) y +0,5 M en la zona plana (14/20, p = 0,20).
+- **Contra el baseline:** pierde en la zona plana (−3,0 M, 1/20), igual que `grupo`.
+- **Lectura:** usar la tasa de plazo fijo o el IPC para los saldos no cambia el resultado del brazo por grupo.
+
+## R18 — K, mediana por columna (2026-11-18, 20 semillas, criterio en D20)
+- **Contra `ipc_d1`, por el criterio D20: empata en la métrica principal**, con +1,5 M (10/20, p = 0,13).
+- **Pero gana en las de apoyo:** +3,1 M en la zona plana (17/20, p = 0,0003) y +3,8 M en el máximo (p = 0,0008).
+- **Contra el baseline:** empata con N fijo (−0,3 M) y pierde en la zona plana (−1,8 M, 5/20, p = 0,008).
+- **Lectura:** sigue debajo de no deflactar. Un deflactor sacado de los propios datos, columna por columna, pierde menos que el IPC, pero sigue siendo dividir por un índice y no le gana al baseline.
+
+## R19 — L, por grupo + `foto_mes` (2026-11-18, 20 semillas, criterio en D20 / D15)
+- **Contra `grupo`: no mejora** (criterio D15: p < 0,05 y al menos 15/20).
+
+  | Métrica | Diferencia | Gana | p (Wilcoxon) |
+  |---|---|---|---|
+  | N fijo | −1,5 M | 4/20 | 0,10 |
+  | Zona plana | −0,9 M | 7/20 | 0,046 |
+  | Máximo | −2,1 M | 2/20 | 0,002 |
+
+- **Lectura:** como en R6 con el IPC, devolverle el mes al modelo no recupera lo que se pierde al deflactar. Si algo, empeora un poco.

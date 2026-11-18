@@ -374,12 +374,20 @@ Controles contra valores publicados: inflación de 2019 = 53,8% (igual que INDEC
     - "Deflactar estabiliza": el desvío entre semillas no baja al deflactar.
     - "`foto_mes` recupera un tercio": empata.
   - *Chequeo del modelo base (R8):* con los hiperparámetros que eligió la versión de Manuel, corridos en nuestro pipeline con las mismas 20 semillas, la ganancia empata con nuestro baseline en las tres métricas (+1,3 M con N fijo, −1,1 M en la zona plana y −1,2 M en el máximo; p ≥ 0,10). El AUC de 201910 es mejor con los nuestros (0,9375 contra 0,9361, 20/20). Los dos modelos base son equivalentes en ganancia, así que las conclusiones no dependen de cuál se use.
-  - *Otras formas de corregir la inflación, sin índice (R12–R13; criterios en D19–D20; el resto de la lista está corriendo):*
+  - *Otras formas de corregir la inflación (R12–R19; criterios fijados antes en D19–D20; tabla en `reportes/comparacion_d19_d20.csv`):*
+    - **Deltas relativos (H, R15): la mejor.** Montos y lags quedan nominales y los deltas pasan a ser tasas, `slog(x_t) − slog(x_{t−k})`. Le gana al baseline en las tres métricas: +5,0 M con N fijo (17/20, p = 0,0008), +2,1 M en la zona plana (18/20, p = 0,002) y +2,1 M en el máximo (p = 0,01). No pierde en la parte alta de la lista.
     - **Ranking por mes con cero fijo, antes de lags y deltas (G, R12):** cada monto pasa a su posición entre los clientes del mes.
-      - Con N = 5.000 le gana al baseline por +4,7 M (16/20, p = 0,001) y al IPC por +6,5 M (20/20).
-      - Pero en la zona plana empata (+0,7 M, p = 0,13), el AUC baja un poco (−0,0003) y pierde entre 1.000 y 3.500 envíos (~−4 M).
-      - Reordena la lista más de lo que la mejora: la ventaja depende del N elegido.
-    - **Ranking después de lags y deltas (G2, R13):** empata con el baseline y pierde contra G (−5,1 M, 2/20). Lo que aporta es que el delta mida el cambio de posición del cliente en su mes, no el cambio en pesos.
+      - Con N = 5.000 le gana al baseline por +4,7 M (16/20, p = 0,001), pero en la zona plana empata (+0,7 M, p = 0,13).
+      - Pierde entre 1.000 y 3.500 envíos (~−4 M): reordena la lista más de lo que la mejora.
+    - **Variantes del ranking:**
+      - Rankear después de calcular lags y deltas (G2, R13) empata con el baseline.
+      - Rankear sin cero fijo (G0, R16) pierde contra G en todo (−6,3 M, 1/20): fijar el cero importa.
+      - Nominal + ranking juntos (M, R14) mejora contra el baseline (+3,4 M, p = 0,007), pero empata con G. El árbol reparte el gain monetario mitad y mitad entre las dos versiones.
+    - **Variantes de deflactar por índice:** ninguna le gana al baseline en la zona plana.
+      - Por grupo con IPC en los saldos (J, R17) empata con por grupo.
+      - Mediana de cada columna por mes (K, R18) empata con IPC con N fijo y lo supera en la zona plana (+3,1 M), pero sigue debajo del baseline (−1,8 M).
+      - Por grupo + `foto_mes` (L, R19) no mejora a por grupo.
+    - **En resumen:** dividir por un índice nunca ayuda, se use el índice que se use. Lo que sí ayuda es medir los *cambios* de cada monto de forma que no dependa del nivel de precios: como tasa (H) o como cambio de posición en el mes (G).
 - **Discusión:**
   1. **Qué se encontró.** Deflactar no mejora la ganancia, ni con IPC ni por grupo. Con los hiperparámetros del baseline, por grupo le gana al IPC por 2,1 M (R4), pero esa ventaja desaparece cuando cada brazo tiene su propia Optuna (R5). Lo robusto es que el baseline gana: los brazos deflactados pierden en la zona plana en las 20 semillas, en las dos configuraciones.
   2. **Los montos sí importan.** Las variables monetarias (crudas, lags y deltas) explican el **51% de la ganancia** (gain) del modelo baseline. `mcaja_ahorro` es la segunda más importante, después de `ctrx_quarter`. Por eso, el resultado no se explica porque el modelo ignore los montos: los usa mucho, y aun así deflactarlos no ayuda.
@@ -390,6 +398,11 @@ Controles contra valores publicados: inflación de 2019 = 53,8% (igual que INDEC
      - *Los índices no describen bien a las columnas.* Los saldos crecen 1,36–1,43 en el año, y ni la tasa (1,53) ni el IPC (1,50) los siguen. Dividir por un índice que no corresponde puede agregar ruido en lugar de quitarlo.
      - *El monto nominal también tiene información.* Un sueldo que no se actualiza o una cuota fija pueden ser una señal en sí mismos, y al deflactarlos esa señal se pierde.
      - *2019 tiene un quiebre de comportamiento.* Las PASO de agosto y el cepo de septiembre no son precios, y ningún deflactor los corrige.
+  3b. **Corregir la inflación sin dividir por un índice sí mejora (R12–R19).** Las dos transformaciones que ganan, deltas relativos (H) y ranking por mes (G), tienen algo en común: cambian cómo se mide el *cambio* del cliente entre meses. El monto del mes se sigue pudiendo leer en pesos en H, o en su posición en G.
+     - Coincide con R11: los cortes en los montos del mes se mueven poco al deflactar, así que lo que queda por mejorar está en los deltas.
+     - Un delta en pesos mezcla dos cosas: lo que cambió el cliente y lo que cambiaron los precios. Además, crece con el nivel del cliente: 10.000 pesos menos no significan lo mismo con un saldo de 20.000 que con uno de 2 millones. La tasa y el cambio de posición separan esas dos cosas.
+     - Deflactar con IPC también corrige el delta, pero divide todos los montos y pierde el nivel nominal. H, en cambio, se queda con los montos en pesos y corrige solo el cambio.
+     - **Limitación:** es un solo mes de test (201910). La ventaja de H es de ~2 M en la zona plana, del orden del ruido de una semilla. Se sostiene porque es pareada en 20 semillas, pero conviene confirmarla en otro mes antes de adoptarla.
   4. **Objetivo 1.** Usar el índice del mes anterior, que es lo único disponible al predecir, cuesta ~1,5 M frente al del mismo mes (R3). Es un costo chico, pero consistente entre semillas.
   5. **Objetivo 2: la lección de método.** Con una sola semilla, el ruido es de ±3,3 M. Sin las 20 semillas pareadas, el +2,1 M de "por grupo" habría parecido un resultado. Y sin el chequeo con una Optuna propia por brazo, lo habríamos reportado como hallazgo. Las diferencias de unos pocos millones solo se pueden afirmar con semillas pareadas y con un chequeo de robustez.
   6. **Hallazgos sobre los datos** (D14), que salieron al clasificar las columnas:
