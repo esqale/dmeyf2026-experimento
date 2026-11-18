@@ -293,3 +293,141 @@ Su versión corre los mismos brazos con 5 semillas y mide con el máximo de la c
   - La razón es que un factor de ~1,3 corre a pocos clientes de lado en cada umbral: la densidad de clientes cerca de cualquier umbral es baja.
   - La explicación de la Discusión se reemplaza por esta, que está medida.
 - Archivos: `reportes/cortes/` (resumen.csv, cortes.csv).
+
+## D19 — Otras formas de corregir la inflación: ranking por mes (G) y deltas relativos (H) (criterio fijado ANTES de correrlas, 2026-11-17)
+- **Por qué estas dos:** un árbol es invariante a cualquier transformación monótona aplicada igual a todos los meses, así que solo puede cambiar algo una que trate distinto a cada mes (G) o que cambie los lags y deltas (H). La lista completa y lo descartado está en `docs/hoja_de_ruta_v3.md`.
+- **G, ranking por mes con cero fijo** (`--brazo ranking` → `datasets/fe_ranking`):
+  - En cada mes y cada una de las 73 columnas monetarias: el 0 queda en 0, cada positivo pasa a su `cume_dist` entre los positivos del mes (de 1/n a 1), y cada negativo a menos su `cume_dist` entre los negativos, ordenados desde el cero (de −1/n a −1). NULL sigue NULL.
+  - Se aplica antes de los lags y deltas, como deflactar: el lag es el ranking del cliente en su mes, y el delta es el cambio de posición.
+  - No usa ningún índice externo, así que no tiene el problema del objetivo 1.
+- **H, deltas relativos** (`--brazo delta_log` → `datasets/fe_delta_log`):
+  - Montos del mes y lags, nominales como en el baseline.
+  - Los deltas de las 73 monetarias pasan a ser `slog(x_t) − slog(x_{t−k})`, con `slog(x) = signo(x)·ln(1 + |x|)`: es una tasa de crecimiento, que no depende del nivel de precios. Conserva el 0 y funciona con negativos.
+  - Los deltas de las columnas no monetarias no cambian.
+- **Protocolo:** el de R3–R4. Hiperparámetros del baseline, las mismas 20 semillas, reentrenando con 201903–08 y test en 201910.
+- **Criterio:**
+  - Métrica principal: ganancia con N = 5.000. Con Wilcoxon pareado p < 0,05 contra el baseline, se declara que *mejora* o *empeora*; si no, *empata*.
+  - Zona plana, máximo de la curva y AUC se informan como apoyo.
+  - También se comparan contra `ipc_d1`, deflactar del modo clásico.
+- **Qué significaría cada resultado:**
+  - Si G o H le gana al baseline, corregir la inflación sí sirve, pero no dividiendo por un índice.
+  - Si empatan o pierden, la conclusión "corregir la inflación no mejora este modelo" se vuelve más fuerte, porque vale para tres formas distintas de corregirla.
+
+## D20 — Resto de la lista de pruebas (criterios fijados ANTES de correrlas, 2026-11-17 19:30)
+Orden y motivos en `docs/hoja_de_ruta_v3.md` (revisado con `docs/investigacion_bibliografica.md`). Para todas vale el protocolo de D19:
+- Hiperparámetros del baseline, las mismas 20 semillas y reentrenamiento con 201903–08.
+- Métrica principal: ganancia con N = 5.000. Con Wilcoxon pareado p < 0,05 contra la referencia, se declara que *mejora* o *empeora*; si no, *empata*.
+- Zona plana, máximo de la curva y AUC se informan como apoyo.
+
+| Prueba | Cómo se arma | Referencia principal | Qué se concluye |
+|---|---|---|---|
+| **G2**, ranking después de lags y deltas (`--brazo ranking_post`) | Las features de `fe_base` (lags y deltas en pesos), con cada una de las 365 monetarias rankeada dentro del mes, con el mismo cero fijo que G | Baseline, y G | Contra G: si gana G2, lo que sirve es rankear los deltas en pesos; si gana G, rankear los niveles antes de calcular los deltas |
+| **M**, nominal + ranking (`--brazo nominal_ranking`) | Las 760 features nominales más las 365 monetarias de G con sufijo `_rk` (1.125 en total) | Baseline | **Información nominal propia:** si M le gana al baseline y a G, las dos versiones aportan. Además, del modelo final se mide qué parte del gain va a las nominales y qué parte a las `_rk`. Si más de la mitad del gain monetario sigue en las nominales teniendo el ranking disponible, hay evidencia de que el monto en pesos informa algo por sí mismo. |
+| **G0**, ranking sin cero fijo (`--brazo ranking_sin_cero`) | Como G, pero `cume_dist` sobre todos los valores del mes, ceros incluidos | G | Si G le gana a G0, fijar el cero importa (antecedente: Rossi, 2019, sin cero fijo, peor que el nominal) |
+| **J**, por grupo con IPC en los saldos (`--brazo grupo_saldos_ipc`) | El brazo por grupo con los 8 saldos de la tasa de plazo fijo pasados a IPC del mes anterior | Por grupo (`grupo`) | Si empata, la elección del índice de los saldos no cambia el resultado |
+| **K**, mediana por columna (`--brazo mediana`) | Cada columna dividida por la mediana de \|x\| entre sus valores distintos de 0 en el mes, normalizada a 201901 = 1 | IPC (`ipc_d1`) | Si empata con IPC, confirma que el deflactor no importa |
+| **L**, por grupo + `foto_mes` (`--brazo grupo --con-mes`) | El brazo por grupo con `foto_mes` como feature | Por grupo | Mismo criterio que D15 y R6 |
+
+- **Cambio de implementación de G, sin cambio de definición:** el ranking por mes se calcula en pandas (`src/rankear.py`) en lugar de con funciones de ventana en DuckDB, que tardaban ~8 min por mes. Se verificó que da idéntico a `cume_dist` de DuckDB.
+
+## R12 — G, ranking por mes con cero fijo (2026-11-17, 20 semillas, criterio en D19)
+- **Contra el baseline, por el criterio D19: mejora.** Con N = 5.000, +4,7 M (288,8 contra 284,0 M), gana 16/20, p = 0,001.
+- **Métricas de apoyo:**
+
+  | Métrica | Diferencia | Gana | p (Wilcoxon) |
+  |---|---|---|---|
+  | Zona plana | +0,7 M | 14/20 | 0,13 (empate) |
+  | Máximo de la curva | +1,0 M | 13/20 | 0,04 |
+  | AUC 201910 | −0,0003 | 6/20 | 0,04 |
+
+- **Contra `ipc_d1`:** +6,5 M con N fijo y +5,6 M en la zona plana, 20/20 en las dos.
+- **La mejora depende de N** (curva por N en `reportes/ranking/curva_por_n.csv`, mismas 20 semillas):
+  - G **pierde** entre 1.000 y 3.500 envíos: de −3,4 a −4,6 M, gana 2–4/20, p < 0,005. La excepción es 2.000, donde empata.
+  - Empata en 4.000–4.500.
+  - **Gana** desde 5.000: de +2,3 a +4,7 M entre 5.000 y 6.500, y de +3,6 a +5,8 M entre 9.000 y 10.000.
+  - El baseline tiene su pico en 4.000 (289,2 M) y cae 5,2 M hasta 5.000. G tiene su pico en 4.500 (290,3 M) y cae menos. Buena parte de los +4,7 M viene de que N = 5.000 queda pasado el pico del baseline.
+  - En clientes: con 5.000 envíos, G encuentra en promedio 387,5 BAJA+2 contra 383,2 del baseline, unos 4 más.
+- **Lectura:** el ranking no ordena mejor a todos los clientes, porque el AUC y la parte alta de la lista empeoran. Lo que hace es reordenar: pone peor a los primeros clientes y mejor a los que vienen después del 4.000. Con la regla de corte fija del esquema (N = 5.000, elegido en 201908 con el baseline), eso da +4,7 M. Mirando el pico de cada curva, la ventaja es de ~1 M. **Es la primera corrección de la inflación que no pierde contra el baseline**, pero la ganancia no es robusta al N elegido.
+
+## R13 — G2, ranking después de lags y deltas (2026-11-17, 20 semillas, criterio en D20)
+- **Contra el baseline: empata.**
+
+  | Métrica | Diferencia | Gana | p (Wilcoxon) |
+  |---|---|---|---|
+  | N fijo | −0,3 M | 10/20 | 0,76 |
+  | Zona plana | −0,7 M | 9/20 | 0,15 |
+  | Máximo de la curva | −1,3 M | 7/20 | 0,05 |
+  | AUC | igual | — | 0,65 |
+
+- **Contra G: pierde.**
+  - N fijo: −5,1 M, gana 2/20, p < 0,001.
+  - Zona plana: −1,4 M, gana 5/20, p = 0,004.
+- **Lectura, por el criterio D20:** lo que aporta en G es rankear los niveles *antes* de calcular lags y deltas. Así, el delta mide cuánto cambió la posición del cliente dentro de su mes. Rankear los deltas en pesos no aporta.
+
+## R14 — M, nominal + ranking (2026-11-17, 20 semillas, criterio en D20)
+- **Contra el baseline: mejora.** +3,4 M con N fijo (287,4 contra 284,0), gana 15/20, p = 0,007. En la zona plana, +1,0 M (15/20, p = 0,038). En el máximo empata (+0,9 M, p = 0,22). El AUC empata (−0,0002, p = 0,07).
+- **Contra G: empata en todo.** −1,3 M con N fijo (p = 0,17), +0,4 M en la zona plana (p = 0,32).
+- **Curva por N** (`reportes/nominal_ranking/curva_por_n.csv`): parecida a la de G, pero con diferencias más chicas. Pierde en 3.000 (−2,0 M, p = 0,004), gana entre 5.000 y 6.000 (+2,4 a +3,4 M) y entre 9.000 y 10.000.
+- **Reparto del gain**, con 3 modelos finales (semillas 1–3, 201903–08, hiperparámetros del baseline; `src/12_gain_nominal_rk.py`, salidas en `reportes/nominal_ranking/gain_*.csv`):
+  - Las monetarias se llevan el 56% del gain total.
+  - Dentro de las monetarias, **las nominales se llevan el 50%** (46%, 50% y 54% según la semilla) y las `_rk` el otro 50%.
+  - `mcaja_ahorro` (nominal) es la 2.ª más importante y `mcaja_ahorro_rk` la 3.ª.
+- **Lectura, por el criterio D20:**
+  - Con el ranking disponible, el árbol sigue usando el monto en pesos tanto como el ranking. Que las nominales queden por encima de la mitad depende de la semilla, así que el criterio queda en el límite y no da evidencia clara a favor de "el monto nominal informa por sí mismo".
+  - Lo que sí muestra es que el modelo no descarta el monto en pesos cuando tiene una versión corregida.
+  - Como M no le gana a G, tener las dos versiones no agrega ganancia.
+
+## R15 — H, deltas relativos (2026-11-17/18, 20 semillas, criterio en D19)
+- **Contra el baseline, por el criterio D19: mejora.** Es la única prueba que le gana en las tres métricas de ganancia:
+
+  | Métrica | Diferencia | Gana | p (Wilcoxon) |
+  |---|---|---|---|
+  | N fijo (principal) | **+5,0 M** (289,0 contra 284,0) | 17/20 | **0,0008** |
+  | Zona plana | **+2,1 M** | 18/20 | **0,002** |
+  | Máximo de la curva | +2,1 M | 16/20 | 0,012 |
+  | AUC 201910 | −0,0002 | 8/20 | 0,22 (empate) |
+
+- **Contra `ipc_d1`:** +6,8 M con N fijo y +7,0 M en la zona plana (diferencia de medias pareadas).
+- **Contra G (ranking):** empatan con N fijo (+0,3 M, p = 0,65). H le gana en la zona plana (+1,4 M, G gana 3/20, p = 0,001).
+- **Contra M (nominal + ranking):** H gana con N fijo (+1,6 M, p = 0,04) y en la zona plana (+1,0 M, p = 0,011).
+- **Curva por N** (`reportes/delta_log/curva_por_n.csv`):
+  - A diferencia de G, H no pierde en la parte alta de la lista. Entre 1.000 y 4.000 envíos queda parejo con el baseline: alterna diferencias chicas a favor y en contra, y solo pierde en 3.000 (−2,1 M, p = 0,007).
+  - Gana con claridad entre 4.500 y 6.000 (+2,4 a +5,0 M, p ≤ 0,024).
+  - Desde 6.500 empata.
+  - El pico de H está en 4.500 (291,1 M) y el del baseline en 4.000 (289,2 M).
+- **Lectura:** medir el cambio de cada monto como tasa (`slog(x_t) − slog(x_{t−k})`), en lugar de en pesos, mejora la ganancia sin usar ningún índice. La mejora vale con el N del esquema, en la zona plana y en el pico de la curva, así que es más robusta que la de G. Montos y lags quedan nominales, de modo que no se pierde la información del monto en pesos. Es la forma de corregir la inflación que mejor funcionó.
+- **Nota de ejecución:** se cortó después de la semilla 5 para pasar al ranking en pandas y se retomó desde la semilla 6, con el mismo dataset y las mismas semillas. `reportes/delta_log/log_parte1.txt` tiene la primera parte.
+
+## R16 — G0, ranking sin cero fijo (2026-11-18, 20 semillas, criterio en D20)
+- **Contra G: pierde en todo.**
+
+  | Métrica | Diferencia | Gana | p (Wilcoxon) |
+  |---|---|---|---|
+  | N fijo | −6,3 M | 1/20 | 0,0003 |
+  | Zona plana | −5,2 M | 0/20 | 0,0001 |
+  | AUC | −0,004 | 0/20 | — |
+
+- **Contra el baseline:** empata con N fijo (−1,6 M, p = 0,17) y pierde en la zona plana (−4,6 M, 1/20).
+- **Lectura, por el criterio D20:** fijar el cero importa. Coincide con el antecedente (Rossi, 2019), que usó ranking sin cero fijo y obtuvo un resultado peor que el nominal. Sin cero fijo, un 0 cae en una posición distinta cada mes según cuántos ceros haya. Con cero fijo, "no tiene" sigue siendo exactamente 0 en todos los meses.
+
+## R17 — J, por grupo con IPC en los 8 saldos (2026-11-18, 20 semillas, criterio en D20)
+- **Contra `grupo`: empata.** −0,2 M con N fijo (8/20, p = 0,94) y +0,5 M en la zona plana (14/20, p = 0,20).
+- **Contra el baseline:** pierde en la zona plana (−3,0 M, 1/20), igual que `grupo`.
+- **Lectura:** usar la tasa de plazo fijo o el IPC para los saldos no cambia el resultado del brazo por grupo.
+
+## R18 — K, mediana por columna (2026-11-18, 20 semillas, criterio en D20)
+- **Contra `ipc_d1`, por el criterio D20: empata en la métrica principal**, con +1,5 M (10/20, p = 0,13).
+- **Pero gana en las de apoyo:** +3,1 M en la zona plana (17/20, p = 0,0003) y +3,8 M en el máximo (p = 0,0008).
+- **Contra el baseline:** empata con N fijo (−0,3 M) y pierde en la zona plana (−1,8 M, 5/20, p = 0,008).
+- **Lectura:** sigue debajo de no deflactar. Un deflactor sacado de los propios datos, columna por columna, pierde menos que el IPC, pero sigue siendo dividir por un índice y no le gana al baseline.
+
+## R19 — L, por grupo + `foto_mes` (2026-11-18, 20 semillas, criterio en D20 / D15)
+- **Contra `grupo`: no mejora** (criterio D15: p < 0,05 y al menos 15/20).
+
+  | Métrica | Diferencia | Gana | p (Wilcoxon) |
+  |---|---|---|---|
+  | N fijo | −1,5 M | 4/20 | 0,10 |
+  | Zona plana | −0,9 M | 7/20 | 0,046 |
+  | Máximo | −2,1 M | 2/20 | 0,002 |
+
+- **Lectura:** como en R6 con el IPC, devolverle el mes al modelo no recupera lo que se pierde al deflactar. Si algo, empeora un poco.

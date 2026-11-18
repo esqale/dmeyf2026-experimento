@@ -51,6 +51,23 @@ python src/04_semillas.py --dataset datasets/fe_grupo --nombre grupo
 # 10. Comparación pareada por semilla (el primero es la referencia)
 python src/07_comparar.py baseline ipc_d1 ipc_d0 grupo
 python src/07_comparar.py ipc_d1 grupo
+
+# 11. Diagnósticos (D17, D18): validación adversarial de los montos y dónde cortan los árboles
+python src/10_adversarial.py
+python src/11_cortes.py
+
+# 12. Otras formas de corregir la inflación (D19, D20). Cada una: armar el dataset y correr las 20 semillas
+#     --brazo ranking          G:  ranking por mes con cero fijo, antes de lags y deltas  -> datasets/fe_ranking
+#     --brazo ranking_post     G2: ranking después de lags y deltas (necesita fe_base)
+#     --brazo nominal_ranking  M:  fe_base + las monetarias de fe_ranking con sufijo _rk (necesita las dos)
+#     --brazo delta_log        H:  deltas relativos, slog(x_t) - slog(x_t-k)
+#     --brazo ranking_sin_cero G0: ranking sin cero fijo
+#     --brazo grupo_saldos_ipc J:  por grupo con IPC en los 8 saldos
+#     --brazo mediana          K:  cada columna / su mediana del mes
+#     --brazo grupo --con-mes  L:  por grupo + foto_mes -> datasets/fe_grupo_mes
+python src/02_dataset.py --brazo delta_log
+python src/04_semillas.py --dataset datasets/fe_delta_log --nombre delta_log
+python src/07_comparar.py baseline ranking ranking_post nominal_ranking delta_log ranking_sin_cero grupo_saldos_ipc mediana grupo_mes ipc_d1 grupo --salida reportes/comparacion_d19_d20.csv
 ```
 
 Para seguir una corrida larga desde otra terminal (PowerShell):

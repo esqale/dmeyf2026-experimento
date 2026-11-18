@@ -8,6 +8,9 @@ features_mes(): para la foto t devuelve las columnas crudas + lag1, lag2, delta1
     Si en vez del dict hay un nombre de columna ({columna: "otra"}), la columna se reemplaza por el cociente
     otra / columna del mismo cliente y mes (límites de tarjeta en el brazo "por grupo"; 0 en el divisor da NULL).
     Sin deflactor, el resultado es exactamente el del baseline.
+    Opcional `transformacion="delta_log"` (prueba H, D19), solo sobre las columnas monetarias: valores y lags
+        nominales; los deltas son slog(x_t) - slog(x_t-k), slog = signo·ln(1+|x|).
+    Los rankings por mes (pruebas G, G0, G2) no pasan por acá: los arma src/rankear.py.
 clase_ternaria(): CONTINUA / BAJA+1 / BAJA+2 desde la presencia del cliente en t+1 y t+2. Solo entrenamiento.
 
 Las dos funciones reciben la carpeta con un <yyyymm>.parquet por mes y trabajan sobre duckdb,
@@ -39,10 +42,15 @@ def columnas_crudas(con, carpeta, mes):
             if c not in NO_FEATURES]
 
 
-def features_mes(con, carpeta, mes, deflactor=None):
+def _slog(x):
+    return f"(sign({x}) * ln(1 + abs({x})))"
+
+
+def features_mes(con, carpeta, mes, deflactor=None, transformacion=None):
     """Relación duckdb con numero_de_cliente, foto_mes y las features de la foto `mes`."""
     cols = columnas_crudas(con, carpeta, mes)
     deflactor = deflactor or {}
+    assert transformacion in (None, "delta_log")
 
     def v(alias, c, m):  # valor de la columna c en el mes m, deflactado si corresponde
         if c not in deflactor:
@@ -60,7 +68,11 @@ def features_mes(con, carpeta, mes, deflactor=None):
         if os.path.exists(previo):
             joins.append(f"LEFT JOIN read_parquet('{previo}') l{k} USING (numero_de_cliente)")
             sel += [f'CAST({v(f"l{k}", c, mes_k)} AS FLOAT) AS "{c}_lag{k}"' for c in cols]
-            sel += [f'CAST({v("t", c, mes)} - {v(f"l{k}", c, mes_k)} AS FLOAT) AS "{c}_delta{k}"' for c in cols]
+            for c in cols:
+                a, b = v("t", c, mes), v(f"l{k}", c, mes_k)
+                if transformacion == "delta_log" and es_monetaria(c):
+                    a, b = _slog(a), _slog(b)
+                sel.append(f'CAST({a} - {b} AS FLOAT) AS "{c}_delta{k}"')
         else:  # sin historia: mismas columnas, todo NULL
             sel += [f'CAST(NULL AS FLOAT) AS "{c}_lag{k}"' for c in cols]
             sel += [f'CAST(NULL AS FLOAT) AS "{c}_delta{k}"' for c in cols]

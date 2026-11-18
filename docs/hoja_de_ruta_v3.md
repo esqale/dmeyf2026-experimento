@@ -23,6 +23,7 @@ Escrita el 17/11 después de revisar el repo de Manuel ([vmanuelmarasco/experime
 | Objetivo 2 (ruido) | Desvío de ±3,3 M con N fijo. Sin las 20 semillas y el chequeo de Optuna, el +2,1 M habría parecido un hallazgo. |
 | IPC + `foto_mes` | Empata con el IPC solo (R6, y R7 con Optuna propia). Devolverle el mes al modelo no recupera nada. |
 | Métrica | Con el máximo de la curva (D16) el orden de los brazos es el mismo. |
+| Otras formas de corregir la inflación (R12–R19) | **Deltas relativos (H) le gana al baseline en las tres métricas** (+5,0 M N fijo, +2,1 M zona plana). Ranking por mes (G) gana con N = 5.000 pero empata en la zona plana. Ninguna variante que divide por un índice le gana al baseline. |
 | Modelo base nuestro contra el de Manuel | Los hiperparámetros de Manuel en nuestro pipeline empatan en ganancia, y nuestro AUC es mejor (R8). **Por eso el repo principal es este.** |
 
 ## 2. Qué aporta el repo de Manuel y cómo queda
@@ -49,9 +50,43 @@ Escrita el 17/11 después de revisar el repo de Manuel ([vmanuelmarasco/experime
 
 **Hecho fuera de la lista:** dónde caen los cortes de los árboles (D18, R11). La explicación "la señal está en el cero" queda descartada: los cortes caen en montos chicos, y deflactar cambia de lado solo al ~2% de los clientes por corte.
 
-**Para más adelante**, en este orden (cada una lleva ~1 h 15 min con los hiperparámetros del baseline, y 2–3 h más con Optuna propia):
-1. Por grupo con IPC en las 8 columnas de saldos, en lugar de la tasa de plazo fijo. Es la decisión más débil del brazo por grupo y la crítica más previsible en clase.
-2. Por grupo + `foto_mes` (el brazo F de la v2). Se espera empate, como con IPC (R6–R7).
+### Otras formas de corregir la inflación (decidido el 17/11)
+
+El tema del experimento es la inflación, así que solo entran pruebas que la corrigen de otra manera. Un dato ordena la lista: **a un árbol no le importa una transformación monótona aplicada igual a todos los meses** (el log de una columna da el mismo modelo). Solo puede cambiar algo una transformación que trate distinto a cada mes o que cambie los lags y deltas.
+
+Todas usan el mismo protocolo: criterio escrito antes, 20 semillas pareadas, hiperparámetros del baseline y la rama `nuevas-pruebas`. Cada una lleva ~1 h 15 min. Orden revisado el 17/11 con la investigación bibliográfica (`docs/investigacion_bibliografica.md`): arriba, las que más chance tienen de mostrar algo.
+
+| # | Prueba | Qué hace | Por qué en este lugar | Estado / cuándo |
+|---|---|---|---|---|
+| 1 · G | **Ranking por mes con cero fijo, antes de lags y deltas** | En cada mes, el 0 queda en 0 y positivos y negativos se rankean entre sí, con su signo. Después se calculan lags y deltas sobre los rankings. | Es la única técnica con evidencia favorable (informal) en este mismo banco. Saca inflación, aguinaldo y estacionalidad sin ningún índice. | ✔ R12: con N = 5.000 gana +4,7 M; empata en la zona plana y pierde entre 1.000 y 3.500 envíos |
+| 2 · G2 | **Ranking por mes con cero fijo, después de lags y deltas** | Lags y deltas en pesos, y después se rankea todo dentro del mes. | Separa si lo que importa es el ranking de los niveles o el de los deltas. | ✔ R13: empata con el baseline, pierde contra G |
+| 3 · M | **Nominal + ranking juntos** | El modelo tiene las dos versiones y elige cuál cortar. | Prueba la hipótesis de la Discusión "el monto nominal tiene información propia". Si el árbol sigue cortando la nominal teniendo el ranking, el monto en pesos informa algo por sí mismo. | ✔ R14 |
+| 4 · H | **Deltas relativos** | Montos del mes y lags nominales; deltas como diferencia del log con signo (tasa de crecimiento). | Invariante a cualquier deflactor común salvo una constante por mes. Afecta solo a los deltas (12% del gain), así que el efecto esperado es menor. | ✔ R15: **gana en las tres métricas** (+5,0 M N fijo, +2,1 M zona plana, +2,1 M máximo) |
+| 5 · G0 | Ranking por mes **sin** cero fijo | Control de G. | Muestra si lo que importa es fijar el cero. Hay un antecedente sin cero fijo que salió peor que el nominal (Rossi, 2019). | ✔ R16: pierde contra G en todo; fijar el cero importa |
+| 6 · J | Por grupo con IPC en las 8 columnas de saldos | Cambia la decisión más débil del brazo por grupo. | Es la crítica más previsible en clase, pero no se espera que cambie la conclusión. | ✔ R17: empata con `grupo` |
+| 7 · K | Dividir cada columna por su mediana del mes | Un deflactor sacado del propio dato. | Control barato: si empata con IPC, confirma que la escala por mes no les importa a los árboles. | ✔ R18: empata con IPC con N fijo, mejor en la zona plana; sigue debajo del baseline |
+| 8 · L | Por grupo + `foto_mes` | Completa R6–R7. | Se espera empate. | ✔ R19: no mejora (algo peor) |
+
+Hasta el guion del 20/11 entran 1 a 4 (≈ 5 h de cómputo), y la 5 si sobra tiempo. H sigue corriendo: pararla ahora no adelanta mucho, y G arranca ni bien H termina.
+
+**Sale de la lista:** la normalización por cuantiles contra 201901 (antes I). En los niveles es el mismo modelo que el ranking: llevar cada percentil al cuantil de enero es una sola función monótona, igual para todos los meses.
+
+**Descartadas, y por qué:**
+- Log con signo en los montos del mes: el árbol da el mismo modelo. Lo que sí cambia, los deltas, es la prueba H.
+- Z-score con media y desvío: corre el cero y lo dominan los extremos. La versión robusta es la K.
+- Índice para clase alta (canasta de la ENGHo por tramo de ingreso): efecto chico en 2019, se mezcla con la señal de baja y no hay tiempo.
+- Ratios entre columnas, y sumar deltas relativos a los nominales en lugar de reemplazarlos: agregan variables nuevas y mezclan dos efectos (corregir la inflación y tener más variables). La investigación los recomienda, pero se dejan para el pipeline.
+- Evaluar en más de un mes de test: rompe el esquema de referencia; va a Futuros experimentos.
+- Otra unidad (dólar, RIPTE): es el brazo IPC con otra serie.
+
+**No son inflación; van al pipeline productivo (trabajo B):**
+- Sacar las columnas rotas en 201910: rentabilidad, márgenes y comisiones valen 0 para todos (R10).
+- Pesar las filas de entrenamiento según cuánto se parecen al mes de test.
+- Entrenar con meses más cercanos.
+
+En el experimento, los cortes de los datos entran solo como contexto (R10): el drift grande no es inflación.
+
+**Bibliografía:** `docs/investigacion_bibliografica.md`, una investigación profunda del 17/11. Las citas marcadas "[resumen]" (NIC 29, RT 6, Siddiqi) hay que verificarlas antes de usarlas. Para la Discusión aporta dos puntos: la NIC 29 y la RT 6 piden un único índice general, así que no respaldan deflactores por grupo; y no hay literatura publicada que compare deflactar contra no deflactar en estos modelos.
 
 **Quedan fuera** (van a "Futuros experimentos" del documento):
 - Otro mes de test.
@@ -61,7 +96,7 @@ Escrita el 17/11 después de revisar el repo de Manuel ([vmanuelmarasco/experime
 
 **Ya no hace falta:** el brazo D de la v2 (nominal + ratios). Nuestro brazo por grupo *reemplaza* los límites por los ratios y no los agrega, así que no tiene features extra que controlar.
 
-**Estado al 17/11:** A, B y C hechas (R9, D17, R10; merge a `main`). La rama `nuevas-pruebas` sigue abierta para las pruebas que vengan.
+**Estado al 17/11:** A, B y C hechas (R9, D17, R10; merge a `main`). También R11. H corriendo; G en cola. La rama `nuevas-pruebas` sigue abierta para las pruebas que vengan.
 
 ## 4. Para el grupo
 
