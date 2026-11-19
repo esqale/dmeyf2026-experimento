@@ -1,0 +1,19 @@
+Zona de validación: 3,000–6,000 envíos (máximo de 201908 en 4,000, 207.0 M)
+            brazo       referencia  mes_test  dif_vieja  gana_vieja  p_vieja veredicto_vieja  dif_validacion  gana_validacion  p_validacion veredicto_validacion  cambia
+           ipc_d1         baseline    201910    -4.8881           0   0.0001         empeora         -5.0521                0        0.0001              empeora   False
+           ipc_d0         baseline    201910    -3.4994           2   0.0000         empeora         -3.6221                1        0.0000              empeora   False
+            grupo         baseline    201910    -3.4650           1   0.0001         empeora         -3.3550                1        0.0000              empeora   False
+       ipc_d1_opt         baseline    201910    -5.7819           0   0.0001         empeora         -6.1836                0        0.0001              empeora   False
+        grupo_opt         baseline    201910    -5.1838           0   0.0001         empeora         -5.1150                1        0.0001              empeora   False
+       ipc_d1_mes         baseline    201910    -4.3175           1   0.0002         empeora         -4.5179                1        0.0000              empeora   False
+   ipc_d1_mes_opt         baseline    201910    -6.0706           1   0.0001         empeora         -6.1207                1        0.0001              empeora   False
+ grupo_saldos_ipc         baseline    201910    -2.9906           1   0.0003         empeora         -3.1507                1        0.0000              empeora   False
+          mediana         baseline    201910    -1.7806           5   0.0076         empeora         -1.9407                5        0.0036              empeora   False
+        grupo_mes         baseline    201910    -4.3863           1   0.0001         empeora         -4.5257                0        0.0001              empeora   False
+          ranking         baseline    201910     0.6806          14   0.1256          empata          0.4557               13        0.1974               empata   False
+     ranking_post         baseline    201910    -0.7425           9   0.1451          empata         -0.9507                6        0.0616               empata   False
+ ranking_sin_cero         baseline    201910    -4.5513           1   0.0001         empeora         -3.9600                1        0.0001              empeora   False
+  nominal_ranking         baseline    201910     1.0450          15   0.0382          mejora          1.0921               14        0.0317               mejora   False
+        delta_log         baseline    201910     2.0900          18   0.0019          mejora          2.0743               17        0.0019               mejora   False
+    delta_log_opt         baseline    201910     1.7050          14   0.0130          mejora          1.6500               14        0.0242               mejora   False
+delta_log_t201909 baseline_t201909    201909     3.2450          20   0.0001          mejora          3.5436               19        0.0001               mejora   False

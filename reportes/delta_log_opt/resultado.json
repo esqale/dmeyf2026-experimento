@@ -1,0 +1,25 @@
+{
+  "dataset": "datasets/fe_delta_log",
+  "semilla": 102191,
+  "entrena_test": "0308",
+  "trials": 50,
+  "mejor_trial": 27,
+  "auc_201908": 0.9326300702013892,
+  "params": {
+    "learning_rate": 0.01325299691083959,
+    "num_leaves": 110,
+    "min_data_in_leaf": 2459,
+    "feature_fraction": 0.7366205782637523,
+    "bagging_fraction": 0.8259277239430511
+  },
+  "iteraciones": 489,
+  "envios": 4000,
+  "ganancia_201908": 207900000.0,
+  "ganancia_201910": 290400000.0,
+  "baja2_201910": 632,
+  "max_201910_informativo": {
+    "envios": 4000,
+    "ganancia": 290400000.0
+  },
+  "segundos": 8506
+}
