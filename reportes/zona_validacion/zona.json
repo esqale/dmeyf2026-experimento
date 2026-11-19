@@ -1,0 +1,7 @@
+{
+  "desde": 3000,
+  "hasta": 6000,
+  "umbral": 0.95,
+  "max_envios": 4000,
+  "max_ganancia_media": 207020000.0
+}

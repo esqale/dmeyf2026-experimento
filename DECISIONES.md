@@ -459,3 +459,48 @@ Orden y motivos en `docs/hoja_de_ruta_v3.md` (revisado con `docs/investigacion_b
 - El AUC baja apenas en los dos meses: H no ordena mejor a todos los clientes, sino la parte de la lista donde se corta.
 - **Lectura:** la mejora de los deltas relativos se repite en dos meses de test, con un entrenamiento distinto y sin ajustar nada. Pasa a ser el resultado central del experimento.
 - Implementación: `04_semillas.py --test 201909 --entrena-test 0307`. La columna `auc_201910` de esas salidas es el AUC de 201909. Salidas en `reportes/baseline_t201909`, `reportes/delta_log_t201909` y `reportes/delta_log_t201909/comparacion.csv`.
+
+## D22 — Zona plana definida en validación (201908), no en test (criterio fijado ANTES de calcularla, 2026-11-18)
+- **Por qué:** la zona plana 3.000–6.500 (R1) se definió mirando la curva del baseline en 201910, el mes de test. Es una métrica de apoyo, pero conviene que no dependa del test.
+- **Cómo:**
+  - Se entrena el baseline con 201903–06 y sus hiperparámetros (405 iteraciones), con las mismas 20 semillas, y se predice 201908.
+  - Se promedian las 20 curvas de ganancia de 201908.
+  - **Regla:** la zona plana es el tramo continuo de cortes (de a 500 envíos) alrededor del máximo de esa curva promedio donde la ganancia es al menos el 95% del máximo.
+- Con esa zona se recalcula la métrica de todas las pruebas, usando las probabilidades ya guardadas (sin reentrenar), y se repiten las comparaciones pareadas contra el baseline.
+- **Qué se informa:** la zona nueva y, para cada prueba, si la conclusión en la zona plana (mejora / empata / empeora, p < 0,05) cambia respecto de la zona 3.000–6.500. Si alguna cambia, se dice cuál y se usa la zona de validación de ahí en adelante.
+- Código: `src/14_zona_validacion.py`. Salidas en `reportes/zona_validacion/`.
+
+## D23 — H con Optuna propia (criterio fijado ANTES de correrlo, 2026-11-18)
+- **Por qué:** H (R15, R20) usa los hiperparámetros elegidos para el baseline. Es el mismo chequeo que hizo caer la ventaja de "por grupo" sobre IPC (R5).
+- **Cómo:** Optuna de 50 intentos sobre `datasets/fe_delta_log`, con el mismo espacio, semilla del sampler y esquema que el baseline (`03_baseline.py --nombre delta_log_opt`). Después, sus 20 semillas con esos hiperparámetros (`04_semillas.py --params reportes/delta_log_opt/resultado.json`). Test en 201910 con N = 5.000, como en R5 y R7, aunque su Optuna elija otro N en 201908.
+- **Criterio** (H con Optuna propia contra el baseline, que tiene la suya; Wilcoxon pareado):
+  - **Se sostiene** si gana con p < 0,05 con N = 5.000 **y** en la zona plana.
+  - **Se sostiene en parte** si gana con p < 0,05 en una de las dos y en la otra no pierde.
+  - **No se sostiene** en cualquier otro caso. Entonces la recomendación de usar deltas relativos se limita a "con los hiperparámetros del baseline".
+- La zona plana es la de D22 si cambia alguna conclusión; si no, la de siempre. Se informan las dos.
+
+## R21 — Zona plana de validación (2026-11-18, 20 semillas, criterio en D22)
+- **Zona de validación: 3.000–6.000 envíos.** El máximo de la curva promedio del baseline en 201908 está en 4.000 envíos (207,0 M) y la ganancia queda ≥ 95% del máximo entre 3.000 y 6.000. La zona que usábamos (3.000–6.500) era casi la misma.
+- **Por el criterio D22: ninguna conclusión cambia.** Se recalcularon los 17 brazos con las probabilidades guardadas:
+  - Los 10 brazos que dividen por un índice siguen perdiendo (p ≤ 0,004), y G0 también.
+  - G y G2 siguen empatando: G da +0,5 M (13/20, p 0,20) y G2 da −1,0 M (p 0,06).
+  - M sigue ganando: +1,1 M (14/20, p 0,03).
+  - H sigue ganando: +2,1 M en 201910 (17/20, p 0,002) y +3,5 M en 201909 (19/20, p 0,0001).
+- **Lectura:** la zona plana no dependía de haber mirado el test. Se sigue informando la 3.000–6.500 para no cambiar las tablas; la de validación queda como chequeo.
+- Salidas: `reportes/zona_validacion/` (`curvas_201908.csv`, `zona.json`, `comparacion.csv`).
+
+## R22 — H con Optuna propia (2026-11-18/19, 20 semillas, criterio en D23)
+- Optuna sobre `fe_delta_log`: mejor intento 27, AUC 201908 0,9326 (el baseline tenía 0,9329), 489 iteraciones, `num_leaves` 110 y `min_data_in_leaf` 2.459. Su N óptimo en 201908 fue 4.000; en el test se usa N = 5.000, como en D23.
+- **Por el criterio D23: se sostiene.** H con su propia Optuna le gana al baseline, que también tiene la suya, con p < 0,05 con N = 5.000 y en las dos zonas planas.
+
+  | Métrica (test 201910) | Baseline | H con Optuna propia | Diferencia | Gana | p (Wilcoxon) |
+  |---|---|---|---|---|---|
+  | N fijo | 284,0 M | 287,9 M | **+3,9 M** | 16/20 | 0,003 |
+  | Zona plana 3.000–6.500 | 283,9 M | 285,6 M | **+1,7 M** | 14/20 | 0,013 |
+  | Zona de validación 3.000–6.000 | | | +1,7 M | 14/20 | 0,024 |
+  | Máximo de la curva | 290,5 M | 293,5 M | +3,0 M | 17/20 | 0,006 |
+  | AUC 201910 | 0,9375 | 0,9371 | −0,0004 | 5/20 | 0,02 |
+
+- **Contra H con los hiperparámetros del baseline empata:** −1,2 M con N fijo (5/20, p 0,14) y −0,4 M en la zona plana (8/20, p 0,34).
+- **Lectura:** a diferencia de "por grupo" (R5), la ventaja de H no depende de los hiperparámetros: sobrevive a una Optuna propia. La recomendación de usar deltas relativos queda sin la salvedad de "con los hiperparámetros del baseline".
+- Salidas: `reportes/delta_log_opt/`, `modelos/delta_log_opt_final.txt` y `modelos/delta_log_opt_optuna.db`.

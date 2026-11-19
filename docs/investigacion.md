@@ -172,8 +172,8 @@ Un árbol no cambia si a todos los meses se les aplica la misma transformación 
 - **Columnas rotas en el mes de test.** En 201910 las comisiones y la rentabilidad valen 0 para todos, así que ningún deflactor puede cambiar algo en esas columnas ese mes. Además, `mtransferencias_recibidas` casi no existe antes de 201906 (0,1% de clientes, contra 55–62% desde junio). Afecta a todos los brazos por igual.
 
 **Problemas posibles del diseño**
-- **Hiperparámetros del baseline.** La comparación principal y todas las pruebas de la familia 4 usan los hiperparámetros elegidos para el modelo sin deflactar. La familia 2 se chequeó con Optuna propia; **H no tiene Optuna propia todavía**.
-- **N y zona plana se fijaron con el baseline.** N = 5.000 se eligió en 201908, sin mirar el test. La zona plana (3.000–6.500) se definió mirando la curva del baseline en 201910; se usa solo como métrica de apoyo.
+- **Hiperparámetros del baseline.** La comparación principal y todas las pruebas de la familia 4 usan los hiperparámetros elegidos para el modelo sin deflactar. La familia 2 y H se chequearon con Optuna propia. G, G2, G0 y M no.
+- **N y zona plana se fijaron con el baseline.** N = 5.000 se eligió en 201908, sin mirar el test. La zona plana (3.000–6.500) se definió mirando la curva del baseline en 201910. Al definirla después en validación (201908, regla del 95% del máximo) da 3.000–6.000, y ninguna conclusión cambia (R21).
 - **Clasificación propia.** Los grupos de deflactores son una decisión nuestra (D14). Que las etiquetas de plazo fijo estén cruzadas se dedujo de los datos, no está confirmado por la fuente.
 - **`foto_mes` fuera de rango.** En los brazos con `foto_mes`, el mes de test queda fuera del rango de entrenamiento y el árbol lo trata como el último mes visto. Esos brazos prueban "devolverle el mes" solo hasta donde un modelo puede usar un mes que no vio.
 - **El mes de referencia del índice no es una limitación:** cambiarlo multiplica todo el dataset por una constante, y los árboles son invariantes a eso.
@@ -266,6 +266,7 @@ AUC de validación (201908) del mejor intento de cada Optuna: baseline 0,93294 �
 | M · Pesos + ranking | +3,4 | 15 | 0,007 | +1,0 | 15 | 0,04 | +0,9 | −0,0002 |
 | **H · Deltas relativos** | **+5,0** | **17** | **0,0008** | **+2,1** | **18** | **0,002** | **+2,1** | −0,0002 |
 | **H · test 201909** (contra el baseline de 201909) | **+5,2** | **18** | **0,0005** | **+3,2** | **20** | **0,0001** | **+3,8** | −0,0003 |
+| **H · Optuna propia** (contra el baseline, que tiene la suya) | **+3,9** | **16** | **0,003** | **+1,7** | **14** | **0,013** | **+3,0** | −0,0004 |
 
 **Comparaciones entre pruebas**
 
@@ -277,6 +278,7 @@ AUC de validación (201908) del mejor intento de cada Optuna: baseline 0,93294 �
 | H contra G | +0,3 | 10 | 0,65 | +1,4 | 17 | 0,001 |
 | H contra M | +1,6 | 16 | 0,04 | +1,0 | 15 | 0,011 |
 | H contra IPC | +6,8 | — | — | +7,0 | — | — |
+| H con Optuna propia contra H | −1,2 | 5 | 0,14 | −0,4 | 8 | 0,34 |
 
 **Reparto del gain en M** (3 modelos finales): las monetarias se llevan el 56% del gain total. Dentro de las monetarias, las versiones en pesos se llevan el 50% (46%, 50% y 54% según la semilla) y las rankeadas el otro 50%. `mcaja_ahorro` es la 2.ª variable más importante y `mcaja_ahorro_rk` la 3.ª.
 
@@ -288,6 +290,8 @@ AUC de validación (201908) del mejor intento de cada Optuna: baseline 0,93294 �
 | H | parejo: gana en 1.000 y 2.000 (+2,1 y +2,8), pierde en 3.000 (−2,1; p = 0,007) | gana en 4.500 (+2,4) | gana (+3,9 a +5,0) | empata | empata |
 
 El pico de la curva del baseline está en 4.000 envíos (289,2 M), el de G en 4.500 (290,3 M) y el de H en 4.500 (291,1 M).
+
+**Zona plana definida en validación** (R21): con la curva del baseline en 201908, la zona con ganancia ≥ 95% del máximo va de 3.000 a 6.000 envíos. Recalculada para todas las pruebas, ningún veredicto cambia: H +2,1 M (17/20, p 0,002), M +1,1 M (p 0,03), G +0,5 M (p 0,20) y todos los brazos que dividen por un índice pierden. Detalle en `reportes/zona_validacion/comparacion.csv`.
 
 ![Diferencias contra el baseline](figuras/diferencias_vs_baseline.png)
 
@@ -316,6 +320,7 @@ El pico de la curva del baseline está en 4.000 envíos (289,2 M), el de G en 4.
   - Un delta en pesos mezcla lo que cambió el cliente con lo que cambiaron los precios, y además crece con el nivel del cliente: 10.000 pesos menos no significan lo mismo con un saldo de 20.000 que con uno de 2 millones. La tasa (H) y el cambio de posición (G) separan esas dos cosas.
   - Deflactar con IPC también corrige el delta, pero divide todos los montos y pierde el nivel nominal. H se queda con los montos en pesos y corrige solo el cambio. Que M reparta el gain mitad y mitad entre pesos y ranking apunta en la misma dirección: el modelo no descarta el monto en pesos aunque tenga una versión corregida.
   - En el ranking importan dos detalles: rankear **antes** de calcular los deltas (G2 empata) y **fijar el cero** (G0 pierde en todo). Sin cero fijo, "no tiene el producto" queda pegado a "tiene muy poco".
+- **La ventaja de H no es un efecto de los hiperparámetros.** Con su propia Optuna sigue ganándole al baseline (+3,9 M con N fijo, +1,7 M en la zona plana) y empata con H con los hiperparámetros del baseline. Es el chequeo que hizo caer la ventaja de "por grupo" sobre IPC, y H lo pasa.
 - **H y G mejoran la parte de la lista donde cortamos, no el orden de todos los clientes.** El AUC no mejora en ninguna prueba. G empeora a los primeros clientes de la lista y mejora a los siguientes; H casi no pierde en ningún tramo. Por eso la ventaja de H es más robusta al N elegido.
 
 ### Problema ↔ otros problemas
@@ -333,11 +338,11 @@ En el churn de 2019, con un modelo LightGBM de lags y deltas, **dividir las vari
 
 - Deflactar por grupo le ganó a deflactar todo por IPC solo con los hiperparámetros del baseline. Con hiperparámetros propios empatan, así que esa ventaja no es robusta. La hipótesis original no se confirma en ninguna de sus dos partes.
 - **Corregir la inflación sin dividir los montos sí mejora la ganancia.** Lo que funciona es medir los *cambios* de cada monto sin que dependan del nivel de precios:
-  - Con deltas relativos (tasa de crecimiento en lugar de diferencia en pesos, con los montos del mes nominales), la ganancia sube +5,0 M con N fijo y +2,1 M en la zona plana en 201910. En un segundo mes de test, 201909, se repite: +5,2 M con N fijo y +3,2 M en la zona plana, a favor en las 20 semillas.
+  - Con deltas relativos (tasa de crecimiento en lugar de diferencia en pesos, con los montos del mes nominales), la ganancia sube +5,0 M con N fijo y +2,1 M en la zona plana en 201910. En un segundo mes de test, 201909, se repite: +5,2 M con N fijo y +3,2 M en la zona plana, a favor en las 20 semillas. Y se sostiene con hiperparámetros propios: +3,9 M con N fijo y +1,7 M en la zona plana.
   - El ranking del cliente dentro de su mes, con el cero fijo, mejora con el N del esquema pero no en la zona plana.
 - **Recomendación práctica:**
   - No dividir los montos por un índice.
-  - Usar los deltas relativos: mejoran la ganancia en los dos meses de test y no requieren ningún índice.
+  - Usar los deltas relativos: mejoran la ganancia en los dos meses de test, también con hiperparámetros propios, y no requieren ningún índice.
   - Si igual se deflacta, usar el índice del mes anterior, el único disponible al predecir. Cuesta poco.
 
 ---
@@ -350,7 +355,7 @@ En el churn de 2019, con un modelo LightGBM de lags y deltas, **dividir las vari
 - ¿El monto en pesos tiene información propia? M quedó en el límite (el modelo reparte mitad y mitad). Hace falta una prueba más directa, por ejemplo sacar los montos del mes y dejar solo lags y deltas.
 
 **Extensiones**
-- **H con Optuna propia**, el mismo chequeo que hizo caer la ventaja de "por grupo".
+- **Optuna propia para G y M**, que todavía usan los hiperparámetros del baseline.
 - **Más meses de test y otros años**, en particular 2020–2021, con más inflación, donde el drift por precios podría pesar más que la dispersión entre clientes.
 - **Combinar** deltas relativos con el ranking en los niveles, y probar cocientes entre columnas del mismo cliente y mes (uso del límite, consumo sobre saldo), que no dependen de ningún deflactor.
 
@@ -373,9 +378,10 @@ python src/07_comparar.py <referencia> <brazo> [...] --salida <archivo.csv>     
 | 1 · Ruido | `04_semillas.py` | `python src/04_semillas.py --dataset datasets/fe_base --nombre baseline` · test en 201909: `--test 201909 --entrena-test 0307 --nombre baseline_t201909` · sin reentrenar: `--entrena-test 0306` | `reportes/baseline/`, `reportes/baseline_t201909/`, `reportes/sensibilidad_sin_reentreno/` |
 | 2 · Dividir por un índice | `05_indices.py`, `06_monetarias.py`, `08_monedas.py`, `deflactar.py`, `02_dataset.py`, `04_semillas.py`, `03_baseline.py` (Optuna propia) | `python src/02_dataset.py --brazo ipc --desfase 1` (y `--desfase 0`, `--brazo grupo`, `grupo_saldos_ipc`, `mediana`; `--con-mes` agrega `foto_mes`) y luego `04_semillas.py --dataset datasets/fe_<brazo> --nombre <brazo>`. Optuna propia: `03_baseline.py --dataset datasets/fe_<brazo> --nombre <brazo>_opt` y `04_semillas.py --params reportes/<brazo>_opt/resultado.json` | `reportes/{ipc_d1,ipc_d0,grupo,ipc_d1_opt,grupo_opt,ipc_d1_mes,ipc_d1_mes_opt,grupo_saldos_ipc,mediana,grupo_mes}/`, `reportes/paso10/`, `datos_externos/` |
 | 3 · Diagnóstico | `10_adversarial.py`, `11_cortes.py` | `python src/10_adversarial.py` · `python src/11_cortes.py` | `reportes/adversarial/`, `reportes/cortes/` |
-| 4 · Corregir sin dividir | `rankear.py`, `fe.py`, `02_dataset.py`, `04_semillas.py`, `12_gain_nominal_rk.py` | `python src/02_dataset.py --brazo <ranking \| ranking_post \| ranking_sin_cero \| nominal_ranking \| delta_log>` y luego `04_semillas.py`. H en 201909: `04_semillas.py --dataset datasets/fe_delta_log --nombre delta_log_t201909 --test 201909 --entrena-test 0307` | `reportes/{ranking,ranking_post,ranking_sin_cero,nominal_ranking,delta_log,delta_log_t201909}/` |
+| 4 · Corregir sin dividir | `rankear.py`, `fe.py`, `02_dataset.py`, `04_semillas.py`, `12_gain_nominal_rk.py` | `python src/02_dataset.py --brazo <ranking \| ranking_post \| ranking_sin_cero \| nominal_ranking \| delta_log>` y luego `04_semillas.py`. H en 201909: `04_semillas.py --dataset datasets/fe_delta_log --nombre delta_log_t201909 --test 201909 --entrena-test 0307`. H con Optuna propia: `03_baseline.py --dataset datasets/fe_delta_log --nombre delta_log_opt` y `04_semillas.py --params reportes/delta_log_opt/resultado.json` | `reportes/{ranking,ranking_post,ranking_sin_cero,nominal_ranking,delta_log,delta_log_t201909,delta_log_opt}/` |
 
 - Tablas de comparación: `reportes/comparacion_todas.csv` (todas contra el baseline) y `comparacion*.csv` dentro de cada carpeta.
+- Zona plana definida en validación: `python src/14_zona_validacion.py` → `reportes/zona_validacion/`.
 - Figuras de Resultados: `python src/13_figuras.py` → `docs/figuras/`.
 - Las probabilidades por cliente y semilla (`probs_*.parquet`) y los datasets no están en git por tamaño: se regeneran con los scripts.
 - Detalle de cada decisión y resultado: `DECISIONES.md`. Clasificación de columnas: `docs/paso10_clasificacion.md`. Búsqueda bibliográfica: `docs/investigacion_bibliografica.md`.

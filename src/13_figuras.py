@@ -32,6 +32,7 @@ FILAS = [
     ("Pesos + ranking (M)", "nominal_ranking", "baseline", 4),
     ("Ranking por mes (G)", "ranking", "baseline", 4),
     ("Deltas relativos (H)", "delta_log", "baseline", 4),
+    ("Deltas relativos (H), Optuna propia", "delta_log_opt", "baseline", 4),
     ("Deltas relativos (H), test 201909", "delta_log_t201909", "baseline_t201909", 4),
 ]
 COLOR = {2: "#b23a2e", 4: "#0f6e78"}
