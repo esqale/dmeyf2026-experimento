@@ -1,8 +1,9 @@
 """Figuras de docs/investigacion.md (Resultados).
 
 Uso (desde la raíz del repo): python src/13_figuras.py
-Necesita reportes/<brazo>/semillas.csv y reportes/{ranking,delta_log}/curva_por_n.csv.
-Salidas en docs/figuras/: diferencias_vs_baseline.png y curva_por_n.png
+Necesita reportes/<brazo>/semillas.csv, reportes/{ranking,delta_log}/curva_por_n.csv y reportes/adversarial/univariada.csv.
+Salidas en docs/figuras/: diferencias_vs_baseline.png, curva_por_n.png, ruido_semillas.png,
+comparacion_principal.png y adversarial_columnas.png
 """
 import os
 
@@ -86,8 +87,75 @@ def curva():
     fig.savefig(f"{SALIDA}/curva_por_n.png", dpi=150)
 
 
+def ruido():
+    b = pd.read_csv("reportes/baseline/semillas.csv")
+    fig, ejes = plt.subplots(1, 2, figsize=(11, 3.6), sharey=False)
+    for ax, (metrica, titulo) in zip(ejes, [("ganancia_n_fijo", "Ganancia con N = 5.000"),
+                                            ("ganancia_zona_plana", "Ganancia en la zona plana (3.000–6.500)")]):
+        v = b[metrica] / 1e6
+        m, s = v.mean(), v.std()
+        ax.axhspan(m - s, m + s, color="#b23a2e", alpha=.1, label="±1 desvío")
+        ax.axhline(m, color="#b23a2e", lw=1.5, label=f"media {m:.1f} M")
+        ax.plot(range(1, len(v) + 1), v, "o", color="#b23a2e")
+        ax.set_title(f"{titulo} · desvío {s:.1f} M", fontsize=11)
+        ax.set_xlabel("Semilla", fontsize=9)
+        ax.set_xticks(range(1, len(v) + 1, 2))
+        ax.grid(axis="y", alpha=.3)
+    ejes[0].set_ylabel("Millones, test 201910")
+    fig.suptitle("Baseline sin deflactar con 20 semillas distintas. Línea: media; banda: ±1 desvío.", fontsize=10)
+    fig.tight_layout()
+    fig.savefig(f"{SALIDA}/ruido_semillas.png", dpi=150)
+
+
+def comparacion_principal():
+    brazos = [("Sin deflactar", "baseline"), ("Todo con IPC", "ipc_d1"), ("Por grupo", "grupo")]
+    fig, ax = plt.subplots(figsize=(8, 3.6))
+    y = np.arange(len(brazos))[::-1]
+    for k, (metrica, etiqueta, color) in enumerate([("ganancia_n_fijo", "N = 5.000", "#b23a2e"),
+                                                     ("ganancia_zona_plana", "Zona plana", "#2b2f38")]):
+        medias = [pd.read_csv(f"reportes/{br}/semillas.csv")[metrica].mean() / 1e6 for _, br in brazos]
+        desvios = [pd.read_csv(f"reportes/{br}/semillas.csv")[metrica].std() / 1e6 for _, br in brazos]
+        ax.barh(y + (.2 if k == 0 else -.2), medias, height=.38, xerr=desvios, color=color, alpha=.85,
+                label=etiqueta, capsize=3)
+        for yi, m in zip(y, medias):
+            ax.text(272.4, yi + (.2 if k == 0 else -.2), f"{m:.1f}", va="center", fontsize=8, color="white",
+                    fontweight="bold")
+    ax.set_yticks(y, [b[0] for b in brazos])
+    ax.set_xlim(272, 292)
+    ax.set_xlabel("Ganancia media en 201910 (millones, 20 semillas; barra = ±1 desvío)", fontsize=9)
+    ax.grid(axis="x", alpha=.3)
+    ax.legend(frameon=False, fontsize=9, loc="lower right")
+    ax.set_title("Comparación principal, con los hiperparámetros del baseline", fontsize=11)
+    fig.tight_layout()
+    fig.savefig(f"{SALIDA}/comparacion_principal.png", dpi=150)
+
+
+def adversarial():
+    u = pd.read_csv("reportes/adversarial/univariada.csv")
+    u = u[(u.par == "201903-201910") & (u.columnas == "mes")]
+    t = u.pivot_table(index="columna", columns="brazo", values="drift").sort_values("fe_base", ascending=False)
+    t = t.head(16)[::-1]
+    fig, ax = plt.subplots(figsize=(9, 6))
+    y = np.arange(len(t))
+    for k, (brazo, etiqueta, color) in enumerate([("fe_base", "Sin deflactar", "#2b2f38"),
+                                                   ("fe_ipc_d1", "Todo con IPC", "#b23a2e"),
+                                                   ("fe_grupo", "Por grupo", "#c98a1b")]):
+        ax.barh(y + (1 - k) * .27, t[brazo], height=.26, color=color, label=etiqueta)
+    ax.set_yticks(y, t.index, fontsize=8)
+    ax.set_xlabel("Cuánto distingue 201903 de 201910 la columna sola (|AUC − 0,5|; 0 = nada, 0,5 = perfecto)",
+                  fontsize=9)
+    ax.grid(axis="x", alpha=.3)
+    ax.legend(frameon=False, fontsize=9, loc="lower right")
+    ax.set_title("Las 16 columnas monetarias que más cambian entre 201903 y 201910", fontsize=11)
+    fig.tight_layout()
+    fig.savefig(f"{SALIDA}/adversarial_columnas.png", dpi=150)
+
+
 if __name__ == "__main__":
     os.makedirs(SALIDA, exist_ok=True)
     diferencias()
     curva()
+    ruido()
+    comparacion_principal()
+    adversarial()
     print("ok")
