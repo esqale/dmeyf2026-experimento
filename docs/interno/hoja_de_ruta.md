@@ -46,7 +46,7 @@ Estado: ✅ hecho · 🔄 en curso · 🟡 esperando una decisión del grupo · 
   4. **Resultados.**
   5. **Conclusiones** y qué seguiríamos experimentando.
 
-  La bibliografía se comparte por Zulip junto con el video. La plantilla de referencia, `docs/experimentos_colaborativos_2026_google_slides.pptx`, tiene 10 secciones: Hipótesis, Bibliografía, Sesgos, Diseño, Limitaciones, Resultados (sin interpretar), Discusión (resultados ↔ hipótesis y ↔ otros problemas), Conclusiones, Futuros y Anexo. El Anexo es el link al repo con los scripts, cómo correrlos desde el dataset y las salidas: este repo ya lo cubre.
+  La bibliografía se comparte por Zulip junto con el video. La plantilla de referencia, la plantilla de la cátedra (`experimentos_colaborativos_2026_google_slides.pptx`, no versionada), tiene 10 secciones: Hipótesis, Bibliografía, Sesgos, Diseño, Limitaciones, Resultados (sin interpretar), Discusión (resultados ↔ hipótesis y ↔ otros problemas), Conclusiones, Futuros y Anexo. El Anexo es el link al repo con los scripts, cómo correrlos desde el dataset y las salidas: este repo ya lo cubre.
 
 ## Decisiones a hablar entre los tres
 - Las 5 preguntas de `docs/paso10_clasificacion.md`.
