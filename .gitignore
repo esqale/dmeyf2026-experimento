@@ -16,3 +16,15 @@ __pycache__/
 !datos_externos/crudo/*.csv
 # los reportes son tablas chicas de resultados
 !reportes/**/*.csv
+# material local que no va al repo público
+presentacion/
+manuel_experimento-deflactar/
+.tmp/
+reportes/cola.log
+reportes/baseline_manuel/
+reportes/comparacion_baseline_manuel.csv
+docs/interno/experimentos_colaborativos_2026_google_slides.pptx
+docs/inflacion1_presentacion.pptx
+docs/inflacion1_presentacion_v3.pptx
+docs/inflacion1_presentacion_v4.pptx
+~$*

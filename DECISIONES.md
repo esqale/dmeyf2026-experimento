@@ -214,7 +214,7 @@ Las decisiones 1–5 del Paso 10 se tomaron así para tener el brazo terminado. 
 - **Ganancia: empate.** Con N fijo, +1,3 M a favor de sus hiperparámetros (gana 13/20, p = 0,12). En la zona plana, −1,1 M (7/20, p = 0,10). Máximo de la curva, −1,2 M (6/20, p = 0,13). Ninguna diferencia es significativa y cambian de signo según la métrica.
 - **AUC de 201910: nuestro baseline es mejor** (0,9375 contra 0,9361; gana en las 20 semillas, p < 0,0001).
 - Conclusión: en ganancia, nuestro modelo base es igual al de la versión de Manuel; en AUC, de validación y de test, es mejor. El óptimo de hiperparámetros es plano, como se esperaba.
-- Archivos: `reportes/baseline_manuel/` y `reportes/comparacion_baseline_manuel.csv`.
+- Archivos: `reportes/baseline_manuel/` y `reportes/comparacion_baseline_manuel.csv` (solo locales, no se versionan).
 
 ## D17 — Validación adversarial de los montos (criterio fijado ANTES de correrla, 2026-11-17)
 - **Pregunta:** ¿deflactar les saca el drift a las columnas monetarias? La ganancia no lo contesta: un brazo puede perder ganancia y aun así haber hecho bien su trabajo, o al revés. La idea viene de la versión de Manuel (`7_drift.ipynb`), que la corrió con todas las columnas. Ahí las no monetarias (`tmobile_app`, fechas de tarjeta) separan los meses solas, el AUC queda pegado a 1 y no se pueden comparar los brazos.
@@ -295,7 +295,7 @@ Su versión corre los mismos brazos con 5 semillas y mide con el máximo de la c
 - Archivos: `reportes/cortes/` (resumen.csv, cortes.csv).
 
 ## D19 — Otras formas de corregir la inflación: ranking por mes (G) y deltas relativos (H) (criterio fijado ANTES de correrlas, 2026-11-17)
-- **Por qué estas dos:** un árbol es invariante a cualquier transformación monótona aplicada igual a todos los meses, así que solo puede cambiar algo una que trate distinto a cada mes (G) o que cambie los lags y deltas (H). La lista completa y lo descartado está en `docs/hoja_de_ruta_v3.md`.
+- **Por qué estas dos:** un árbol es invariante a cualquier transformación monótona aplicada igual a todos los meses, así que solo puede cambiar algo una que trate distinto a cada mes (G) o que cambie los lags y deltas (H). La lista completa y lo descartado está en `docs/interno/hoja_de_ruta_v3.md`.
 - **G, ranking por mes con cero fijo** (`--brazo ranking` → `datasets/fe_ranking`):
   - En cada mes y cada una de las 73 columnas monetarias: el 0 queda en 0, cada positivo pasa a su `cume_dist` entre los positivos del mes (de 1/n a 1), y cada negativo a menos su `cume_dist` entre los negativos, ordenados desde el cero (de −1/n a −1). NULL sigue NULL.
   - Se aplica antes de los lags y deltas, como deflactar: el lag es el ranking del cliente en su mes, y el delta es el cambio de posición.
@@ -314,7 +314,7 @@ Su versión corre los mismos brazos con 5 semillas y mide con el máximo de la c
   - Si empatan o pierden, la conclusión "corregir la inflación no mejora este modelo" se vuelve más fuerte, porque vale para tres formas distintas de corregirla.
 
 ## D20 — Resto de la lista de pruebas (criterios fijados ANTES de correrlas, 2026-11-17 19:30)
-Orden y motivos en `docs/hoja_de_ruta_v3.md` (revisado con `docs/investigacion_bibliografica.md`). Para todas vale el protocolo de D19:
+Orden y motivos en `docs/interno/hoja_de_ruta_v3.md` (revisado con `docs/investigacion_bibliografica.md`). Para todas vale el protocolo de D19:
 - Hiperparámetros del baseline, las mismas 20 semillas y reentrenamiento con 201903–08.
 - Métrica principal: ganancia con N = 5.000. Con Wilcoxon pareado p < 0,05 contra la referencia, se declara que *mejora* o *empeora*; si no, *empata*.
 - Zona plana, máximo de la curva y AUC se informan como apoyo.
