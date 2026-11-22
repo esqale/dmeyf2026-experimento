@@ -29,7 +29,9 @@ Por ejemplo, si el IPC de enero de 2019 es 100 y el de enero de 2020 es 200, un 
 2. **Ruido.** Medir cuánto se mueve la ganancia por azar (semilla), para saber qué diferencias son reales.
 3. **Clasificación.** Asignar cada una de las 73 columnas monetarias a un grupo y a un deflactor, con la justificación de cada asignación.
 4. **Comparación principal.** Sin deflactar, todo dividido por el IPC, y cada grupo con su deflactor.
-5. **Otras formas de corregir la inflación.** Agregado después de ver los resultados de 4: probar correcciones que no dividen los montos por un índice (ranking dentro del mes, deltas relativos) y variantes de la deflactación (otro índice para los saldos, un deflactor sacado del propio dato).
+5. **Deflactar contra no deflactar.** La pregunta previa a la del deflactor por grupo: determinar si deflactar mejora la ganancia frente a no deflactar.
+
+**Pruebas agregadas después.** Al ver los resultados de la comparación principal agregamos variantes de la deflactación (otro índice para los saldos, un deflactor sacado del propio dato, devolverle el mes al modelo), un diagnóstico de por qué deflactar no ayuda, y correcciones de la inflación que no dividen los montos por un índice (ranking dentro del mes, deltas relativos). Cada una tiene su criterio escrito en `DECISIONES.md` antes de correrla.
 
 ---
 
@@ -70,18 +72,12 @@ Las marcadas con * se conocen solo por resumen o por fragmentos, y hay que verif
 
 ## 03 · Sesgos cognitivos
 
-**Alejandro Esquivel** (propuesta) ---> invento... *Cada integrante escribe los suyos. Los de Alejandro son una propuesta para revisar en la reunión.* 
-- Planteé la hipótesis por grupo y dediqué varios días a clasificar las 73 columnas. Me convenía que ese trabajo se notara en la ganancia.
-- Creía que una inflación del 54% anual tenía que molestarle al modelo, y que corregirla iba a mejorarlo.
-- Después del primer resultado negativo, me interesaba encontrar alguna corrección que sí funcionara, para que el trabajo no terminara en "no funcionó". Por eso las pruebas de la familia 4 tienen su criterio escrito antes de correrlas.
+Lo que creíamos antes de correr los experimentos, y lo que podía jugar en contra de una lectura honesta:
+- **La hipótesis es nuestra.** Planteamos el brazo por grupo y dedicamos varios días a clasificar las 73 columnas. Nos convenía que ese trabajo se notara en la ganancia.
+- **La inflación molesta.** Creíamos que una inflación del 54% anual tenía que molestarle al modelo, y que corregirla iba a mejorarlo.
+- **Querer un resultado.** Después del primer resultado negativo, nos interesaba encontrar alguna corrección que sí funcionara, para que el trabajo no terminara en "no funcionó". Por eso las pruebas agregadas después tienen su criterio escrito antes de correrlas.
 
-**Manuel Marasco**
-- *(a completar)*
-
-**Alexander Arias**
-- *(a completar)*
-
-**Cómo nos cuidamos de estos sesgos:** el criterio de cada prueba se escribió antes de correrla (D15, D17–D21), todas las comparaciones usan las mismas 20 semillas y un test pareado, y el resultado que más nos convenía ("por grupo gana") se volvió a probar con hiperparámetros propios.
+**Cómo nos cuidamos de estos sesgos:** el criterio de cada prueba agregada después se escribió antes de correrla (D15, D17–D23), todas las comparaciones usan las mismas 20 semillas y un test pareado, y los dos resultados que más nos convenían ("por grupo gana" y después los deltas relativos) se volvieron a probar con hiperparámetros propios.
 
 ---
 
@@ -117,7 +113,7 @@ Las marcadas con * se conocen solo por resumen o por fragmentos, y hay que verif
 ### Familia 1 · Medir el ruido (objetivo 2)
 El modelo base, sin cambiar nada, con las 20 semillas. Sirve de vara para todas las demás diferencias. Como sensibilidad, se mide también el modelo sin reentrenar (solo 201903–06).
 
-### Familia 2 · Dividir los montos por un índice (objetivos 1, 3 y 4)
+### Familia 2 · Dividir los montos por un índice (objetivos 1, 3, 4 y 5)
 La deflactación se aplica **antes** de calcular lags y deltas: cada valor se divide por el índice de su propio mes (el lag 1 por el de t−1, y así). Índices normalizados a 201901 = 1.
 
 **Brazos principales**
@@ -138,18 +134,20 @@ La deflactación se aplica **antes** de calcular lags y deltas: cada valor se di
 
 Series concretas: IPC nacional (INDEC, `148.3_INIVELNAL_DICI_M_26`), RIPTE (`158.1_REPTE_0_0_5`), tasa de depósitos a 30 días (BCRA, id 12), tipo de cambio Com. "A" 3500 (BCRA, id 5). Controles: inflación 2019 = 53,8%, igual que INDEC (`datos_externos/FUENTES.md`).
 
-**Chequeos y variantes**
+**Chequeo de robustez**
 - **Optuna propia por brazo:** los brazos IPC y por grupo con su propia búsqueda de 50 intentos, para descartar que el baseline gane solo porque los hiperparámetros se eligieron para él.
+
+**Variantes agregadas después**
 - **IPC + `foto_mes`** (con hiperparámetros del baseline y con Optuna propia): prueba si deflactar empeora porque le saca al modelo la pista de qué mes es cada fila.
 - **Por grupo con IPC en los saldos:** cambia la decisión más discutible de la clasificación.
 - **Mediana del mes:** cada columna dividida por la mediana de sus valores distintos de 0 en el mes. Es un deflactor sacado del propio dato, sin índice externo.
 - **Por grupo + `foto_mes`:** completa el chequeo del mes para el brazo por grupo.
 
-### Familia 3 · Por qué deflactar no ayuda (diagnóstico)
+### Familia 3 · Por qué deflactar no ayuda (diagnóstico, agregada después)
 - **Validación adversarial de los montos (D17):** un LightGBM intenta distinguir 201903 de 201910 usando solo las 73 columnas monetarias, nominales, con IPC y por grupo (5 semillas). También el AUC de cada columna sola. Pregunta: ¿deflactar les saca el drift a los montos?
 - **Dónde cortan los árboles (D18):** sobre el modelo final del baseline se miran todos los cortes en variables monetarias: cuánto gain está en cortes en 0, a qué montos cortan, y cuántos clientes de 201910 cambian de lado de cada corte si se deflacta con IPC.
 
-### Familia 4 · Corregir la inflación sin dividir los montos (objetivo 5)
+### Familia 4 · Corregir la inflación sin dividir los montos (agregada después, fuera de la hipótesis)
 Un árbol no cambia si a todos los meses se les aplica la misma transformación monótona. Por eso solo puede cambiar algo una corrección que trate distinto a cada mes, o que cambie cómo se calculan los lags y deltas (D19–D20).
 
 - **G · Ranking por mes con cero fijo, antes de lags y deltas.** En cada mes, cada monto pasa a la posición del cliente entre todos los clientes del mes: el 0 queda en 0, los positivos van de 0 a 1 y los negativos de 0 a −1. Lags y deltas se calculan después, sobre las posiciones.
@@ -157,18 +155,19 @@ Un árbol no cambia si a todos los meses se les aplica la misma transformación 
 - **G0 · Ranking sin cero fijo.** Como G, pero los ceros entran al ranking como cualquier otro valor. Control: Rossi (2019) usó esta versión.
 - **M · Pesos + ranking.** Las 760 variables en pesos más las 365 monetarias de G (1.125 en total). El modelo elige cuál usar. Prueba si el monto en pesos tiene información propia: además de la ganancia, se mide qué parte del gain va a cada versión.
 - **H · Deltas relativos.** Montos del mes y lags en pesos, sin tocar. Solo los deltas de las 73 monetarias pasan a ser una tasa de crecimiento: `slog(x_t) − slog(x_{t−k})`, con `slog(x) = signo(x) · ln(1 + |x|)`. Funciona con ceros y negativos, y no depende del nivel de precios.
+  - *Ejemplo:* un cliente con un saldo que pasa de 20.000 a 10.000 y otro que pasa de 2.000.000 a 1.990.000 tienen el mismo delta en pesos (−10.000). Como tasa, el primero vació media cuenta (−50%) y el segundo casi no cambió (−0,5%). Además, una inflación del 4% mensual le suma ~4% a la tasa de todos los clientes por igual, así que no cambia el orden entre ellos; en pesos, en cambio, agranda los deltas de los clientes con montos grandes y mezcla "el cliente cambió" con "subieron los precios".
 - **H en un segundo mes de test (D21).** Para confirmar H: test en **201909**, entrenando con 201903–07 (misma regla, hasta t−2), con los mismos hiperparámetros, semillas, N y zona plana, sin ajustar nada. Baseline y H.
 
-**Por qué este diseño.** Las 20 semillas pareadas permiten separar diferencias de 2–3 M del azar. La Optuna propia por brazo separa el efecto de deflactar del efecto de los hiperparámetros. Las variantes de la familia 2 descartan que el problema sea un índice mal elegido. La familia 3 busca el mecanismo. La familia 4 prueba la otra mitad del problema de la plantilla: corregir el drift con rankings.
+**Por qué este diseño.** Con 20 semillas, la diferencia media entre dos brazos tiene un error de ~1 M, así que una diferencia de 2–3 M se distingue del azar (comparar de a pares no reduce el ruido: la misma semilla no da resultados parecidos en dos brazos distintos). La Optuna propia por brazo separa el efecto de deflactar del efecto de los hiperparámetros. Las variantes de la familia 2 descartan que el problema sea un índice mal elegido. La familia 3 busca el mecanismo. La familia 4, agregada después, prueba la otra mitad del problema de la plantilla: corregir el drift con rankings.
 
 ---
 
 ## 05 · Limitaciones
 
 **Por qué los experimentos podrían no responder la pregunta**
-- **Casi todo se mide en un solo mes de test (201910).** Solo baseline y H se repitieron en 201909. Con ~600 BAJA+2 por mes, unas decenas de aciertos más o menos mueven la ganancia en decenas de millones.
+- **Casi todo se mide en un solo mes de test (201910).** Solo baseline y H se repitieron en 201909. Con 632 BAJA+2 en 201910, unas decenas de aciertos más o menos mueven la ganancia en decenas de millones.
 - **La ventana es corta y de un solo año.** Entre 201903 y 201910 el IPC sube ~27%. Con más inflación o ventanas más largas el resultado podría cambiar.
-- **2019 tiene un quiebre de comportamiento** (PASO de agosto, cepo de septiembre) que ningún deflactor corrige.
+- **El mes de test cae en un período atípico:** justo después de las PASO de agosto y del cepo de septiembre, con un dólar que salta 35% en agosto (tipo de cambio de fin de mes, 1,347). No sabemos si el resultado vale igual en un período normal.
 - **Columnas rotas en el mes de test.** En 201910 las comisiones y la rentabilidad valen 0 para todos, así que ningún deflactor puede cambiar algo en esas columnas ese mes. Además, `mtransferencias_recibidas` casi no existe antes de 201906 (0,1% de clientes, contra 55–62% desde junio). Afecta a todos los brazos por igual.
 
 **Problemas posibles del diseño**
@@ -187,6 +186,10 @@ Un árbol no cambia si a todos los meses se les aplica la misma transformación 
 
 Diferencias contra el baseline en millones de pesos. "Gana" = semillas, de 20, en las que la prueba supera a su referencia. p = Wilcoxon pareado.
 
+**Vista general:** todas las pruebas contra el baseline, en las dos métricas.
+
+![Diferencias contra el baseline](figuras/diferencias_vs_baseline.png)
+
 ### Familia 1 · Ruido
 
 | Métrica (baseline, 20 semillas, test 201910) | Media | Desvío | Rango |
@@ -199,6 +202,8 @@ Diferencias contra el baseline en millones de pesos. "Gana" = semillas, de 20, e
 - El intervalo de confianza del 95% de la media con N fijo es ±1,5 M.
 - Sin reentrenar (solo 201903–06), con la misma semilla: 281,6 M, igual que reentrenando.
 - En 201909 (entrenando con 201903–07): 252,4 ± 3,6 M con N fijo y 251,7 ± 1,7 M en la zona plana.
+
+![Ruido por semilla](figuras/ruido_semillas.png)
 
 ### Familia 2 · Dividir por un índice
 
@@ -215,6 +220,8 @@ Diferencias contra el baseline en millones de pesos. "Gana" = semillas, de 20, e
 | Por grupo, saldos con IPC | baseline | +0,2 | 8 | 0,78 | −3,0 | 1 | 0,0003 | −3,8 | 0,9372 |
 | Mediana del mes | baseline | −0,3 | 8 | 0,66 | −1,8 | 5 | 0,008 | −1,5 | 0,9375 |
 | Por grupo + `foto_mes` | baseline | −1,2 | 8 | 0,24 | −4,4 | 1 | 0,0001 | −5,7 | 0,9373 |
+
+![Comparación principal](figuras/comparacion_principal.png)
 
 **Comparaciones entre brazos**
 
@@ -239,12 +246,14 @@ AUC de validación (201908) del mejor intento de cada Optuna: baseline 0,93294 �
 |---|---|---|---|
 | AUC del modelo que distingue los meses | 1,000 | 1,000 | 1,000 |
 | Mediana del AUC por columna, como drift (\|AUC − 0,5\|) | 0,0114 | 0,0083 | 0,0077 |
-| Columnas con drift > 0,05 | 14 | 10 | — |
+| Columnas con drift > 0,05 | 14 | 10 | 10 |
 
 - La columna que más separa los meses en todas las corridas es `mrentabilidad_annual`.
 - Las columnas con más drift son cortes de datos: rentabilidad, márgenes y comisiones (0 en 201910) y `mtransferencias_recibidas` (casi inexistente antes de 201906).
 - En consumos de tarjeta, saldos y límites, el AUC por columna baja de ~0,55 a ~0,51 al deflactar.
 - Con 201908 contra 201910 no hay diferencias entre los tres.
+
+![Validación adversarial por columna](figuras/adversarial_columnas.png)
 
 **Cortes de los árboles (modelo final del baseline)**
 
@@ -293,7 +302,6 @@ El pico de la curva del baseline está en 4.000 envíos (289,2 M), el de G en 4.
 
 **Zona plana definida en validación** (R21): con la curva del baseline en 201908, la zona con ganancia ≥ 95% del máximo va de 3.000 a 6.000 envíos. Recalculada para todas las pruebas, ningún veredicto cambia: H +2,1 M (17/20, p 0,002), M +1,1 M (p 0,03), G +0,5 M (p 0,20) y todos los brazos que dividen por un índice pierden. Detalle en `reportes/zona_validacion/comparacion.csv`.
 
-![Diferencias contra el baseline](figuras/diferencias_vs_baseline.png)
 
 ![Ganancia según el N elegido](figuras/curva_por_n.png)
 
@@ -303,11 +311,11 @@ El pico de la curva del baseline está en 4.000 envíos (289,2 M), el de G en 4.
 
 ### Resultados ↔ hipótesis
 - **La hipótesis no se confirma en ninguna de sus dos partes.**
-  - *Deflactar contra no deflactar:* ningún brazo deflactado le gana al baseline. Con N fijo empatan o pierden; en la zona plana pierden en casi todas las semillas, con los hiperparámetros del baseline y con Optuna propia.
+  - *Deflactar contra no deflactar (objetivo 5):* ningún brazo deflactado le gana al baseline. Con N fijo empatan o pierden; en la zona plana pierden en casi todas las semillas, con los hiperparámetros del baseline y con Optuna propia.
   - *Por grupo contra IPC:* por grupo gana con los hiperparámetros del baseline (+2,1 M), pero empata cuando cada brazo tiene su propia Optuna. Es una diferencia chica que depende de la configuración.
 - **Los montos importan, pero deflactarlos no ayuda.** Las variables monetarias explican la mitad del gain del modelo, y `mcaja_ahorro` es la segunda variable más importante. El modelo no ignora los montos: los usa mucho.
 - **Objetivo 1:** usar el IPC del mes anterior, que es el único disponible al predecir, cuesta ~1,5 M frente al del mismo mes. Es chico pero consistente.
-- **Objetivo 2:** con una sola semilla, el ruido (±3,3 M) es del tamaño de los efectos que buscamos. Sin 20 semillas pareadas y sin el chequeo de Optuna propia, el +2,1 M de "por grupo" lo habríamos reportado como hallazgo.
+- **Objetivo 2:** con una sola semilla, el ruido (±3,3 M) es del tamaño de los efectos que buscamos. Sin 20 semillas y sin el chequeo de Optuna propia, el +2,1 M de "por grupo" lo habríamos reportado como hallazgo.
 
 ### Familia ↔ familia
 - **Por qué deflactar no ayuda (familias 2 y 3).**
@@ -337,27 +345,29 @@ El pico de la curva del baseline está en 4.000 envíos (289,2 M), el de G en 4.
 En el churn de 2019, con un modelo LightGBM de lags y deltas, **dividir las variables monetarias por un índice no mejora la ganancia**, se use el índice que se use: IPC, un índice por grupo de variables o la mediana de cada columna en el mes. El modelo sin deflactar es igual o mejor en las 20 semillas, también con hiperparámetros propios para cada brazo.
 
 - Deflactar por grupo le ganó a deflactar todo por IPC solo con los hiperparámetros del baseline. Con hiperparámetros propios empatan, así que esa ventaja no es robusta. La hipótesis original no se confirma en ninguna de sus dos partes.
-- **Corregir la inflación sin dividir los montos sí mejora la ganancia.** Lo que funciona es medir los *cambios* de cada monto sin que dependan del nivel de precios:
+- **Fuera de la hipótesis, corregir la inflación sin dividir los montos sí mejora la ganancia.** Lo que funciona es medir los *cambios* de cada monto sin que dependan del nivel de precios:
   - Con deltas relativos (tasa de crecimiento en lugar de diferencia en pesos, con los montos del mes nominales), la ganancia sube +5,0 M con N fijo y +2,1 M en la zona plana en 201910. En un segundo mes de test, 201909, se repite: +5,2 M con N fijo y +3,2 M en la zona plana, a favor en las 20 semillas. Y se sostiene con hiperparámetros propios: +3,9 M con N fijo y +1,7 M en la zona plana.
   - El ranking del cliente dentro de su mes, con el cero fijo, mejora con el N del esquema pero no en la zona plana.
+  - Es todo 2019: antes de recomendarlo hay que confirmarlo en otros años (ver Futuros).
 - **Recomendación práctica:**
-  - No dividir los montos por un índice.
-  - Usar los deltas relativos: mejoran la ganancia en los dos meses de test, también con hiperparámetros propios, y no requieren ningún índice.
-  - Si igual se deflacta, usar el índice del mes anterior, el único disponible al predecir. Cuesta poco.
+  - No dividir los montos por un índice: cuesta trabajo y resta ganancia.
+  - Si igual se deflacta, usar el índice del mes anterior, el único disponible al predecir. Cuesta poco (1,4–1,7 M).
+  - Antes de corregir nada, medir qué está cambiando entre meses con una validación adversarial.
+  - Confirmar los deltas relativos en otros años y con más inflación.
 
 ---
 
 ## 09 · Futuros problemas y experimentos
 
 **Nuevas preguntas** (por resultados no intuitivos)
-- ¿Por qué los deltas relativos y el ranking mejoran la ganancia sin mejorar el AUC? ¿Qué clientes cambian de lugar en la lista entre los envíos 4.000 y 6.000?
-- ¿Por qué el ranking empeora a los primeros clientes de la lista, si mejora a los siguientes?
-- ¿El monto en pesos tiene información propia? M quedó en el límite (el modelo reparte mitad y mitad). Hace falta una prueba más directa, por ejemplo sacar los montos del mes y dejar solo lags y deltas.
+- Deflactar cambia de lado de un corte a solo el ~2% de los clientes de 201910 (R11). ¿Cómo puede entonces costar 3,5 a 4,9 M en la zona plana, en casi todas las semillas?
+- Si lo que se pierde al deflactar es el monto nominal (R6), ¿el monto en pesos informa por sí mismo? M quedó en el límite (el modelo reparte el gain mitad y mitad). Hace falta una prueba más directa, por ejemplo sacar los montos del mes y dejar solo lags y deltas.
+- Los deltas relativos suben la ganancia sin mejorar el AUC. ¿Mejoran el orden solo cerca del corte? ¿Qué clientes cambian de lugar entre los envíos 4.000 y 6.000?
 
 **Extensiones**
+- **Confirmar los deltas relativos** en otros años y con más inflación, en particular 2020–2021, donde el drift por precios podría pesar más. Hoy están probados solo en 201909 y 201910.
+- **Combinar** deltas relativos con el ranking en los niveles: las dos correcciones que funcionaron actúan sobre cosas distintas (el cambio entre meses y el nivel dentro del mes). También probar cocientes entre columnas del mismo cliente y mes (uso del límite, consumo sobre saldo), que no dependen de ningún deflactor.
 - **Optuna propia para G y M**, que todavía usan los hiperparámetros del baseline.
-- **Más meses de test y otros años**, en particular 2020–2021, con más inflación, donde el drift por precios podría pesar más que la dispersión entre clientes.
-- **Combinar** deltas relativos con el ranking en los niveles, y probar cocientes entre columnas del mismo cliente y mes (uso del límite, consumo sobre saldo), que no dependen de ningún deflactor.
 
 ---
 
@@ -382,6 +392,7 @@ python src/07_comparar.py <referencia> <brazo> [...] --salida <archivo.csv>     
 
 - Tablas de comparación: `reportes/comparacion_todas.csv` (todas contra el baseline) y `comparacion*.csv` dentro de cada carpeta.
 - Zona plana definida en validación: `python src/14_zona_validacion.py` → `reportes/zona_validacion/`.
-- Figuras de Resultados: `python src/13_figuras.py` → `docs/figuras/`.
+- Figuras de Resultados (las cinco): `python src/13_figuras.py` → `docs/figuras/`.
 - Las probabilidades por cliente y semilla (`probs_*.parquet`) y los datasets no están en git por tamaño: se regeneran con los scripts.
+- Presentación del video: `docs/presentacion_final/index.html` (abrir en el navegador), con su guion en `docs/presentacion_final/guion.md`.
 - Detalle de cada decisión y resultado: `DECISIONES.md`. Clasificación de columnas: `docs/paso10_clasificacion.md`. Búsqueda bibliográfica: `docs/investigacion_bibliografica.md`.
