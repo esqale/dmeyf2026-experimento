@@ -60,7 +60,7 @@ Ahora sí, los resultados. Primero, cuánto se mueve la ganancia por azar. Corri
 
 Ahora la comparación principal, con los hiperparámetros del baseline y las mismas 20 semillas. El modelo sin deflactar da 284 millones con 5.000 envíos. Deflactar todo con el IPC del mes anterior da 282,3: con 5.000 envíos la diferencia no se distingue del azar, pero en la zona plana pierde casi 5 millones y no le gana al baseline en ninguna de las 20 semillas. El brazo por grupo da 284,4 con 5.000 envíos, empatado con el baseline, y en la zona plana pierde 3,5 millones.
 
-O sea: la primera parte de la hipótesis se cumple, porque deflactar por grupo le gana a deflactar todo por IPC, por unos 2 millones. Pero no es robusta: cuando repetimos todo con una optimización de hiperparámetros propia para cada brazo, por grupo e IPC empatan. Y la segunda parte no se cumple: ninguna forma de deflactar le gana al modelo sin deflactar, ni con los hiperparámetros del baseline ni con los propios. El orden real quedó al revés de lo esperado en los extremos: el modelo sin deflactar arriba y el IPC abajo.
+O sea: la primera parte de la hipótesis se cumple, porque deflactar por grupo le gana a deflactar todo por IPC, por unos 2 millones. Pero no es robusta: cuando repetimos todo con una optimización de hiperparámetros propia para cada brazo, por grupo e IPC empatan. Y la segunda parte no se cumple: ninguna forma de deflactar le gana al modelo sin deflactar, ni con los hiperparámetros del baseline ni con los propios. El orden real quedó así: el modelo sin deflactar arriba, por grupo en el medio y el IPC abajo, cuando esperábamos al modelo sin deflactar abajo de todo.
 
 ## Diapositiva 9 · Resultados 3/4, el índice del mes anterior y la pista del mes (7:45 – 8:30) · Persona 3
 
