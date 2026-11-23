@@ -394,5 +394,5 @@ python src/07_comparar.py <referencia> <brazo> [...] --salida <archivo.csv>     
 - Zona plana definida en validación: `python src/14_zona_validacion.py` → `reportes/zona_validacion/`.
 - Figuras de Resultados (las cinco): `python src/13_figuras.py` → `docs/figuras/`.
 - Las probabilidades por cliente y semilla (`probs_*.parquet`) y los datasets no están en git por tamaño: se regeneran con los scripts.
-- Presentación del video: `docs/presentacion_final/index.html` (abrir en el navegador), con su guion en `docs/presentacion_final/guion.md`.
+- Presentación del video: `docs/presentacion_final/index.html` (abrir en el navegador).
 - Detalle de cada decisión y resultado: `DECISIONES.md`. Clasificación de columnas: `docs/paso10_clasificacion.md`. Búsqueda bibliográfica: `docs/investigacion_bibliografica.md`.

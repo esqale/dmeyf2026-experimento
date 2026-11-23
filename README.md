@@ -10,7 +10,7 @@ Manuel Marasco · Alejandro Esquivel · Alexander Arias
 - Fuera de la hipótesis, calcular los deltas como **tasa de crecimiento** en lugar de diferencia en pesos suma **+5 M** con 5.000 envíos, en 201909 y en 201910, también con hiperparámetros propios.
 
 **Dónde leer más:**
-- `docs/presentacion_final/index.html`: la presentación del video (abrir en el navegador), con su guion en `guion.md`.
+- `docs/presentacion_final/index.html`: la presentación del video (abrir en el navegador).
 - `docs/investigacion.md`: el informe completo, con hipótesis, diseño, limitaciones, resultados y discusión.
 - `DECISIONES.md`: cada decisión (D1, D2, …) y cada resultado (R1, R2, …), con el criterio escrito antes de correr cada prueba.
 
@@ -104,7 +104,7 @@ Get-Content reportes\baseline\log.txt -Wait -Tail 20 -Encoding UTF8 | Select-Str
 | Carpeta | Contenido | ¿En git? |
 |---|---|---|
 | `src/` | Scripts numerados en orden de ejecución. Módulos comunes: `comun.py` (meses, ganancia, funciones compartidas), `fe.py` (la única definición de lags, deltas y clase), `deflactar.py` (los índices de cada grupo) y `rankear.py`. | sí |
-| `docs/` | `investigacion.md` (informe), `presentacion_final/` (presentación y guion), `paso10_clasificacion.md` (cada columna monetaria y su deflactor), `investigacion_bibliografica.md`, `figuras/`. En `docs/interno/`, las hojas de ruta y versiones anteriores de la presentación. | sí |
+| `docs/` | `investigacion.md` (informe), `presentacion_final/` (presentación del video), `paso10_clasificacion.md` (cada columna monetaria y su deflactor), `investigacion_bibliografica.md`, `figuras/`. En `docs/interno/`, las hojas de ruta y versiones anteriores de la presentación. | sí |
 | `DECISIONES.md` | Qué se decidió, por qué y qué se descartó, más los resultados | sí |
 | `datos_externos/` | Índices mensuales (IPC, RIPTE, tasas, CER, tipo de cambio), las descargas en bruto y `FUENTES.md` | sí |
 | `reportes/` | Resultados de cada prueba: una carpeta por brazo (tabla abajo) y las tablas de comparación | sí |
